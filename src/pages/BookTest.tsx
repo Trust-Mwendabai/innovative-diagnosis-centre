@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { CalendarIcon, MapPin, Home, Check, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { CalendarIcon, MapPin, Home, Check, ChevronLeft, ChevronRight, Sparkles, FlaskConical } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -103,24 +103,24 @@ export default function BookTest() {
               <Check className="h-12 w-12 text-[hsl(var(--gold))] -rotate-6" />
             </motion.div>
 
-            <h1 className="font-heading text-4xl font-black text-white mb-4">Slot Secured!</h1>
-            <p className="text-white/40 mb-10 font-medium tracking-wide">
+            <h1 className="font-heading text-4xl font-black text-foreground mb-4">Slot Secured!</h1>
+            <p className="text-muted-foreground mb-10 font-medium tracking-wide">
               Your diagnostic appointment for <span className="text-[hsl(var(--gold))]">{selected?.label}</span> has been provisionally booked. Our medical coordinator will reach out shortly.
             </p>
 
-            <div className="rounded-[2rem] bg-white/5 border border-white/5 p-8 text-left space-y-4 mb-10">
+            <div className="rounded-[2rem] bg-foreground/5 border border-foreground/5 p-8 text-left space-y-4 mb-10">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-1">Appointment Date</p>
-                  <p className="text-sm font-bold text-white">{date ? format(date, "PPP") : "—"}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Appointment Date</p>
+                  <p className="text-sm font-bold text-foreground">{date ? format(date, "PPP") : "—"}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-1">Slotted Time</p>
-                  <p className="text-sm font-bold text-white">{time}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Slotted Time</p>
+                  <p className="text-sm font-bold text-foreground">{time}</p>
                 </div>
               </div>
-              <div className="pt-4 border-t border-white/5">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-1">Service Location</p>
+              <div className="pt-4 border-t border-foreground/5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Service Location</p>
                 <p className="text-sm font-bold text-[hsl(var(--gold))]">
                   {locationType === "home" ? "Premium Home Collection" : branches.find((b) => b.id === branch)?.name}
                 </p>
@@ -147,10 +147,10 @@ export default function BookTest() {
               <CalendarIcon className="h-3.5 w-3.5 text-[hsl(var(--gold))]" />
               Booking Center
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl font-black text-white leading-tight">
+            <h1 className="font-heading text-4xl md:text-5xl font-black text-foreground leading-tight">
               Schedule Your <span className="text-[hsl(var(--gold))]">Appointment</span>
             </h1>
-            <p className="mt-4 text-white/40 font-medium italic">Swift, secure, and hassle-free diagnostic scheduling.</p>
+            <p className="mt-4 text-muted-foreground font-medium italic">Swift, secure, and hassle-free diagnostic scheduling.</p>
           </motion.div>
         </div>
       </section>
@@ -167,15 +167,15 @@ export default function BookTest() {
                   backgroundColor: i < step ? "hsl(var(--emerald-india))" : i === step ? "hsl(var(--gold))" : "rgba(255,255,255,0.05)"
                 }}
                 className={cn(
-                  "h-12 w-12 rounded-2xl flex items-center justify-center text-sm font-black transition-all duration-500 border border-white/10",
-                  i <= step ? "text-white shadow-glow" : "text-white/20"
+                  "h-12 w-12 rounded-2xl flex items-center justify-center text-sm font-black transition-all duration-500 border border-border",
+                  i <= step ? "text-white shadow-glow" : "text-muted-foreground/40"
                 )}
               >
                 {i < step ? <Check className="h-6 w-6" /> : i + 1}
               </motion.div>
               <span className={cn(
                 "hidden md:block text-[10px] font-black uppercase tracking-widest transition-colors duration-500",
-                i <= step ? "text-white" : "text-white/20"
+                i <= step ? "text-foreground" : "text-muted-foreground/40"
               )}>{s}</span>
             </div>
           ))}
@@ -200,8 +200,8 @@ export default function BookTest() {
                       <FlaskConical className="h-6 w-6 text-[hsl(var(--gold))]" />
                     </div>
                     <div>
-                      <h2 className="font-heading font-black text-2xl text-white">Select Diagnostics</h2>
-                      <p className="text-white/40 text-sm font-medium">Choose a test or health package to continue.</p>
+                      <h2 className="font-heading font-black text-2xl text-foreground">Select Diagnostics</h2>
+                      <p className="text-muted-foreground text-sm font-medium">Choose a test or health package to continue.</p>
                     </div>
                   </div>
                   <div className="grid gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -216,9 +216,9 @@ export default function BookTest() {
                             : "border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/20"
                         )}
                       >
-                        <span className={cn("font-bold text-lg transition-colors", selectedTest === o.id ? "text-white" : "text-white/60")}>{o.label}</span>
+                        <span className={cn("font-bold text-lg transition-colors", selectedTest === o.id ? "text-foreground" : "text-muted-foreground")}>{o.label}</span>
                         <div className="flex flex-col items-end">
-                          <span className="text-[10px] uppercase font-black tracking-widest text-white/20 group-hover:text-white/40">ZMW Price</span>
+                          <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/40 group-hover:text-muted-foreground/60">ZMW Price</span>
                           <span className="font-heading font-black text-xl text-[hsl(var(--gold))]">ZMW {o.price}</span>
                         </div>
                       </button>
@@ -237,8 +237,8 @@ export default function BookTest() {
                       <MapPin className="h-6 w-6 text-[hsl(var(--gold))]" />
                     </div>
                     <div>
-                      <h2 className="font-heading font-black text-2xl text-white">Choose Location</h2>
-                      <p className="text-white/40 text-sm font-medium">Select your preferred sampling point.</p>
+                      <h2 className="font-heading font-black text-2xl text-foreground">Choose Location</h2>
+                      <p className="text-muted-foreground text-sm font-medium">Select your preferred sampling point.</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -249,9 +249,9 @@ export default function BookTest() {
                         locationType === "branch" ? "border-[hsl(var(--gold))] bg-[hsl(var(--gold))]/10" : "border-white/5 bg-white/5 hover:bg-white/10"
                       )}
                     >
-                      <MapPin className={cn("h-8 w-8 mb-4 transition-colors", locationType === "branch" ? "text-[hsl(var(--gold))]" : "text-white/20")} />
-                      <span className="text-xl font-black text-white block">Visit Clinic</span>
-                      <p className="text-sm text-white/40 mt-1">Walk-in to any of our modern facilities.</p>
+                      <MapPin className={cn("h-8 w-8 mb-4 transition-colors", locationType === "branch" ? "text-[hsl(var(--gold))]" : "text-muted-foreground/30")} />
+                      <span className="text-xl font-black text-foreground block">Visit Clinic</span>
+                      <p className="text-sm text-muted-foreground mt-1">Walk-in to any of our modern facilities.</p>
                       {locationType === "branch" && <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-[hsl(var(--gold))] animate-pulse" />}
                     </button>
                     <button
@@ -261,18 +261,18 @@ export default function BookTest() {
                         locationType === "home" ? "border-[hsl(var(--emerald-india))] bg-[hsl(var(--emerald-india))]/10" : "border-white/5 bg-white/5 hover:bg-white/10"
                       )}
                     >
-                      <Home className={cn("h-8 w-8 mb-4 transition-colors", locationType === "home" ? "text-[hsl(var(--emerald-india))]" : "text-white/20")} />
-                      <span className="text-xl font-black text-white block">Home Collection</span>
-                      <p className="text-sm text-white/40 mt-1">Professional sample collection at your door.</p>
+                      <Home className={cn("h-8 w-8 mb-4 transition-colors", locationType === "home" ? "text-[hsl(var(--emerald-india))]" : "text-muted-foreground/30")} />
+                      <span className="text-xl font-black text-foreground block">Home Collection</span>
+                      <p className="text-sm text-muted-foreground mt-1">Professional sample collection at your door.</p>
                       {locationType === "home" && <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-[hsl(var(--emerald-india))] animate-pulse" />}
                     </button>
                   </div>
                   {locationType === "branch" && (
                     <div className="space-y-3 pt-4">
                       {branches.map((b) => (
-                        <button key={b.id} onClick={() => setBranch(b.id)} className={cn("w-full text-left p-6 rounded-2xl border transition-all duration-300", branch === b.id ? "border-[hsl(var(--gold))] bg-[hsl(var(--gold))]/10" : "border-white/5 bg-white/5 hover:bg-white/10")}>
-                          <div className="font-bold text-white mb-1">{b.name}</div>
-                          <div className="text-white/40 text-[10px] font-black uppercase tracking-widest">{b.address} · {b.hours}</div>
+                        <button key={b.id} onClick={() => setBranch(b.id)} className={cn("w-full text-left p-6 rounded-2xl border transition-all duration-300", branch === b.id ? "border-[hsl(var(--gold))] bg-[hsl(var(--gold))]/10" : "border-foreground/5 bg-foreground/5 hover:bg-foreground/10")}>
+                          <div className="font-bold text-foreground mb-1">{b.name}</div>
+                          <div className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">{b.address} · {b.hours}</div>
                         </button>
                       ))}
                     </div>
@@ -290,15 +290,15 @@ export default function BookTest() {
                       <CalendarIcon className="h-6 w-6 text-[hsl(var(--gold))]" />
                     </div>
                     <div>
-                      <h2 className="font-heading font-black text-2xl text-white">Pick Date & Time</h2>
-                      <p className="text-white/40 text-sm font-medium">When should we expect you?</p>
+                      <h2 className="font-heading font-black text-2xl text-foreground">Pick Date & Time</h2>
+                      <p className="text-muted-foreground text-sm font-medium">When should we expect you?</p>
                     </div>
                   </div>
 
                   <div className="space-y-6">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button className={cn("w-full justify-start h-14 rounded-2xl bg-white/5 border-white/10 text-white hover:bg-white/10 text-lg font-bold", !date && "text-white/20")}>
+                        <Button className={cn("w-full justify-start h-14 rounded-2xl bg-foreground/5 border-foreground/10 text-foreground hover:bg-foreground/10 text-lg font-bold", !date && "text-muted-foreground")}>
                           <CalendarIcon className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
                           {date ? format(date, "PPP") : "Select an available date"}
                         </Button>
@@ -309,7 +309,7 @@ export default function BookTest() {
                     </Popover>
 
                     <div className="pt-4">
-                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1 mb-4 block">Available Time Slots</Label>
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 mb-4 block">Available Time Slots</Label>
                       <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                         {timeSlots.map((t) => (
                           <button
@@ -317,7 +317,7 @@ export default function BookTest() {
                             onClick={() => setTime(t)}
                             className={cn(
                               "py-3 rounded-xl border text-sm font-black transition-all duration-300",
-                              time === t ? "bg-[hsl(var(--gold))] text-white border-transparent shadow-glow-gold" : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/30"
+                              time === t ? "bg-[hsl(var(--gold))] text-white border-transparent shadow-glow-gold" : "bg-foreground/5 border-foreground/10 text-muted-foreground hover:text-foreground hover:bg-foreground/10"
                             )}
                           >{t}</button>
                         ))}
@@ -337,23 +337,23 @@ export default function BookTest() {
                       <Check className="h-6 w-6 text-[hsl(var(--gold))]" />
                     </div>
                     <div>
-                      <h2 className="font-heading font-black text-2xl text-white">Contact Information</h2>
-                      <p className="text-white/40 text-sm font-medium">To confirm your clinical appointment.</p>
+                      <h2 className="font-heading font-black text-2xl text-foreground">Contact Information</h2>
+                      <p className="text-muted-foreground text-sm font-medium">To confirm your clinical appointment.</p>
                     </div>
                   </div>
 
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black tracking-widest text-white/30 ml-1">Full Patient Name</Label>
-                      <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="John Doe" className="h-14 bg-white/5 border-white/10 text-white rounded-2xl px-6 font-bold text-lg focus:border-[hsl(var(--gold))]/50 transition-all" />
+                      <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground ml-1">Full Patient Name</Label>
+                      <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="John Doe" className="h-14 bg-foreground/5 border-foreground/10 text-foreground rounded-2xl px-6 font-bold text-lg focus:border-[hsl(var(--gold))]/50 transition-all" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black tracking-widest text-white/30 ml-1">Contact Phone Number</Label>
-                      <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+260 97xxx" className="h-14 bg-white/5 border-white/10 text-white rounded-2xl px-6 font-bold text-lg focus:border-[hsl(var(--gold))]/50 transition-all" />
+                      <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground ml-1">Contact Phone Number</Label>
+                      <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+260 97xxx" className="h-14 bg-foreground/5 border-foreground/10 text-foreground rounded-2xl px-6 font-bold text-lg focus:border-[hsl(var(--gold))]/50 transition-all" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-black tracking-widest text-white/30 ml-1">Email Address</Label>
-                      <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="patient@example.zm" className="h-14 bg-white/5 border-white/10 text-white rounded-2xl px-6 font-bold text-lg focus:border-[hsl(var(--gold))]/50 transition-all" />
+                      <Label className="text-[10px] uppercase font-black tracking-widest text-muted-foreground ml-1">Email Address</Label>
+                      <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="patient@example.zm" className="h-14 bg-foreground/5 border-foreground/10 text-foreground rounded-2xl px-6 font-bold text-lg focus:border-[hsl(var(--gold))]/50 transition-all" />
                     </div>
                   </div>
                 </CardContent>
@@ -369,8 +369,8 @@ export default function BookTest() {
                       <Sparkles className="h-6 w-6 text-[hsl(var(--gold))]" />
                     </div>
                     <div>
-                      <h2 className="font-heading font-black text-2xl text-white">Review Summary</h2>
-                      <p className="text-white/40 text-sm font-medium">Finalize your slot before submission.</p>
+                      <h2 className="font-heading font-black text-2xl text-foreground">Review Summary</h2>
+                      <p className="text-muted-foreground text-sm font-medium">Finalize your slot before submission.</p>
                     </div>
                   </div>
 
@@ -407,7 +407,7 @@ export default function BookTest() {
             variant="ghost"
             onClick={goBack}
             disabled={step === 0}
-            className="h-14 px-8 rounded-2xl text-white/40 hover:text-white font-black uppercase tracking-widest text-[10px]"
+            className="h-14 px-8 rounded-2xl text-muted-foreground hover:text-foreground font-black uppercase tracking-widest text-[10px]"
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> Go Back
           </Button>

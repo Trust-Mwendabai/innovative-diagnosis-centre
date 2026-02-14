@@ -38,8 +38,8 @@ export default function Header() {
             className={cn(
                 "fixed top-0 left-0 right-0 z-[100] transition-all duration-500",
                 scrolled
-                    ? "h-20 bg-slate-950/90 backdrop-blur-2xl shadow-2xl border-b border-white/10"
-                    : "h-24 bg-slate-950/80 backdrop-blur-xl border-b border-white/5"
+                    ? "h-20 bg-background/90 backdrop-blur-2xl shadow-2xl border-b border-border"
+                    : "h-24 bg-background/80 backdrop-blur-xl border-b border-border/50"
             )}
         >
             <div className="container h-full flex items-center justify-between">
@@ -55,7 +55,7 @@ export default function Header() {
                     </div>
                     <div className="flex flex-col leading-none">
                         <span className="gradient-text font-black tracking-tighter text-2xl">IDC</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 hidden sm:block">Pure Precision</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hidden sm:block">Pure Precision</span>
                     </div>
                 </Link>
 
@@ -68,8 +68,8 @@ export default function Header() {
                                 key={l.path}
                                 to={l.path}
                                 className={cn(
-                                    "relative px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 hover:text-white group",
-                                    isActive ? "text-white bg-white/5" : "text-white/40"
+                                    "relative px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 hover:text-foreground group",
+                                    isActive ? "text-foreground bg-foreground/5" : "text-muted-foreground"
                                 )}
                             >
                                 {l.label}
@@ -87,10 +87,10 @@ export default function Header() {
                 <div className="flex items-center gap-4">
                     <button
                         onClick={toggleDark}
-                        className="hidden sm:flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all duration-300"
+                        className="hidden sm:flex h-12 w-12 items-center justify-center rounded-2xl bg-foreground/5 border border-border/50 hover:bg-foreground/10 transition-all duration-300"
                         aria-label="Toggle dark mode"
                     >
-                        {dark ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5 text-white/60" />}
+                        {dark ? <Sun className="h-5 w-5 text-foreground" /> : <Moon className="h-5 w-5 text-muted-foreground" />}
                     </button>
 
                     <Link to="/book">
@@ -103,7 +103,7 @@ export default function Header() {
 
                     <button
                         onClick={() => setOpen(!open)}
-                        className="xl:hidden h-12 w-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/5 text-white"
+                        className="xl:hidden h-12 w-12 flex items-center justify-center rounded-2xl bg-foreground/5 border border-border/50 text-foreground"
                     >
                         {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </button>
@@ -117,7 +117,7 @@ export default function Header() {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="absolute top-full left-0 right-0 bg-slate-950/98 backdrop-blur-3xl border-b border-white/10 shadow-3xl xl:hidden z-[-1]"
+                        className="absolute top-full left-0 right-0 bg-background/98 backdrop-blur-3xl border-b border-border shadow-3xl xl:hidden z-[-1]"
                     >
                         <nav className="p-8 space-y-2">
                             {navLinks.map((l) => (
@@ -127,7 +127,7 @@ export default function Header() {
                                     onClick={() => setOpen(false)}
                                     className={cn(
                                         "block px-6 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all",
-                                        location.pathname === l.path ? "bg-white/5 text-[hsl(var(--gold))]" : "text-white/40 hover:text-white"
+                                        location.pathname === l.path ? "bg-foreground/5 text-[hsl(var(--gold))]" : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
                                     {l.label}
