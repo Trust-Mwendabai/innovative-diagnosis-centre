@@ -72,6 +72,26 @@ const PatientWrapper = () => {
   );
 };
 
+const DoctorWrapper = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--gold))]"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== 'doctor') return <Navigate to="/login" replace />;
+
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
+};
+
 import BlogDetail from "./pages/BlogDetail";
 
 const App = () => (
@@ -106,6 +126,11 @@ const App = () => (
                 <Route path="/admin/notifications" element={<AdminNotifications />} />
                 <Route path="/admin/reports" element={<Reports />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
+              </Route>
+
+              {/* Doctor Routes - Protected by DoctorWrapper */}
+              <Route element={<DoctorWrapper />}>
+                <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
               </Route>
 
               {/* Patient Routes - Protected by PatientWrapper */}
