@@ -17,7 +17,7 @@ import Register from "./pages/Register";
 import PatientLogin from "./pages/Login";
 import PatientDashboard from "./pages/patient/Dashboard";
 import AdminLogin from "./pages/admin/Login";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const Patients = lazy(() => import("./pages/admin/Patients"));
@@ -81,47 +81,53 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <BrowserRouter>
-          <Routes>
-            {/* Auth Routes (No layout) */}
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/login" element={<PatientLogin />} />
-            <Route path="/register" element={<Register />} />
+          <Suspense fallback={
+            <div className="h-screen w-full flex items-center justify-center bg-background">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--gold))]"></div>
+            </div>
+          }>
+            <Routes>
+              {/* Auth Routes (No layout) */}
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/login" element={<PatientLogin />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* Admin Routes - Protected by AdminLayout */}
-            <Route element={<AdminWrapper />}>
-              <Route path="/admin/dashboard" element={<Dashboard />} />
-              <Route path="/admin/appointments" element={<Dashboard />} />
-              <Route path="/admin/patients" element={<Patients />} />
-              <Route path="/admin/doctors" element={<AdminDoctors />} />
-              <Route path="/admin/tests" element={<Tests />} />
-              <Route path="/admin/results" element={<Results />} />
-              <Route path="/admin/branches" element={<Branches />} />
-              <Route path="/admin/content" element={<AdminContent />} />
-              <Route path="/admin/blog" element={<AdminBlog />} />
-              <Route path="/admin/notifications" element={<AdminNotifications />} />
-              <Route path="/admin/reports" element={<Reports />} />
-              <Route path="/admin/settings" element={<AdminSettings />} />
-            </Route>
+              {/* Admin Routes - Protected by AdminLayout */}
+              <Route element={<AdminWrapper />}>
+                <Route path="/admin/dashboard" element={<Dashboard />} />
+                <Route path="/admin/appointments" element={<Dashboard />} />
+                <Route path="/admin/patients" element={<Patients />} />
+                <Route path="/admin/doctors" element={<AdminDoctors />} />
+                <Route path="/admin/tests" element={<Tests />} />
+                <Route path="/admin/results" element={<Results />} />
+                <Route path="/admin/branches" element={<Branches />} />
+                <Route path="/admin/content" element={<AdminContent />} />
+                <Route path="/admin/blog" element={<AdminBlog />} />
+                <Route path="/admin/notifications" element={<AdminNotifications />} />
+                <Route path="/admin/reports" element={<Reports />} />
+                <Route path="/admin/settings" element={<AdminSettings />} />
+              </Route>
 
-            {/* Patient Routes - Protected by PatientWrapper */}
-            <Route element={<PatientWrapper />}>
-              <Route path="/patient/dashboard" element={<PatientDashboard />} />
-            </Route>
+              {/* Patient Routes - Protected by PatientWrapper */}
+              <Route element={<PatientWrapper />}>
+                <Route path="/patient/dashboard" element={<PatientDashboard />} />
+              </Route>
 
-            {/* Public Routes - With Layout */}
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/book" element={<BookTest />} />
-              <Route path="/recommender" element={<TestRecommender />} />
-              <Route path="/locations" element={<Locations />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogDetail />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
+              {/* Public Routes - With Layout */}
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/book" element={<BookTest />} />
+                <Route path="/recommender" element={<TestRecommender />} />
+                <Route path="/locations" element={<Locations />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:id" element={<BlogDetail />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>

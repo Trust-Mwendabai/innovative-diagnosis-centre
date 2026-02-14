@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Microscope, FlaskConical, MapPin, ShieldCheck, Home, Star, ChevronRight, Sparkles, Activity, Clock } from "lucide-react";
+import { ArrowRight, Microscope, FlaskConical, MapPin, ShieldCheck, Home, Star, ChevronRight, Sparkles, Activity, Clock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -374,37 +374,14 @@ export default function Index() {
 
       {/* ================== PATIENT PORTAL ================== */}
       <section className="container py-32 relative overflow-hidden">
-        <div className="absolute top-1/2 right-0 w-96 h-96 bg-[hsl(var(--gold))]/5 rounded-full blur-[120px] -z-10" />
+        <div className="absolute top-1/2 left-0 w-96 h-96 bg-[hsl(var(--gold))]/5 rounded-full blur-[120px] -z-10" />
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeLeft}
-            className="order-2 lg:order-1"
-          >
-            <div className="rounded-[4rem] overflow-hidden border-[12px] border-white/5 shadow-2xl relative aspect-[4/3] bg-slate-900 flex items-center justify-center">
-              <img
-                src="https://images.unsplash.com/photo-1576091160550-217359f49f4a?auto=format&fit=crop&q=80&w=800"
-                alt="Patient accessing portal"
-                className="h-full w-full object-cover relative z-10"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Microscope className="h-20 w-20 text-[hsl(var(--gold))]/20" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-20" />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeRight}
-            className="order-1 lg:order-2"
+            className="order-1"
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(var(--gold))]/10 text-[hsl(var(--gold))] text-[10px] font-black mb-6 uppercase tracking-[0.2em]">
               <ShieldCheck className="h-3.5 w-3.5" />
@@ -452,6 +429,60 @@ export default function Index() {
                 </Button>
               </Link>
             </div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeRight}
+            className="order-2 relative"
+          >
+            <div className="rounded-[4rem] overflow-hidden border-[12px] border-white/5 shadow-2xl relative aspect-[4/3] bg-slate-900 group">
+              <img
+                src="https://images.unsplash.com/photo-1576089172869-4f5f6f315620?auto=format&fit=crop&q=80&w=1200"
+                alt="Patient Health Dashboard"
+                className="h-full w-full object-cover relative z-10 transition-transform duration-700 group-hover:scale-105"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Activity className="h-20 w-20 text-[hsl(var(--gold))]/20 animate-pulse" />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/40 via-transparent to-white/5 z-20" />
+
+              {/* Floating UI Elements */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-10 left-10 z-30 glass p-4 rounded-2xl border-white/20 shadow-xl hidden md:block"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  </div>
+                  <div>
+                    <div className="text-[9px] font-black uppercase text-foreground/40 tracking-widest">Lab Results</div>
+                    <div className="text-[11px] font-bold text-foreground">Verified & Ready</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute bottom-10 right-10 z-30 glass p-5 rounded-3xl border-white/20 shadow-2xl hidden md:block"
+              >
+                <div className="text-center">
+                  <div className="text-[24px] font-black text-[hsl(var(--gold))] italic tracking-tighter">98.4%</div>
+                  <div className="text-[9px] font-black uppercase text-foreground/40 tracking-widest">Health Index</div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Background Decoration */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[hsl(var(--gold))]/10 rounded-full blur-3xl -z-10" />
           </motion.div>
         </div>
       </section>
