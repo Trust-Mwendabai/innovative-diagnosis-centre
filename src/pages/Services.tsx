@@ -26,9 +26,9 @@ export default function Services() {
     <>
       {/* Header */}
       <section className="relative overflow-hidden py-24 md:py-32">
-        <div className="absolute inset-0 gradient-indian opacity-90" />
+        <div className="absolute inset-0 gradient-indian opacity-70" />
         <div className="absolute inset-0 pattern-mandala opacity-20" />
-        <div className="absolute top-1/2 -right-20 w-96 h-96 bg-[hsl(var(--gold))]/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute top-1/2 -right-20 w-96 h-96 bg-[hsl(var(--gold))]/10 rounded-full blur-[120px] animate-pulse" />
 
         <div className="container relative">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} transition={{ duration: 0.6 }} className="text-center">
@@ -39,7 +39,7 @@ export default function Services() {
             <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-black text-foreground leading-tight">
               Our Clinical <span className="text-[hsl(var(--gold))]">Services</span>
             </h1>
-            <p className="mt-4 text-foreground/70 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
+            <p className="mt-4 text-foreground max-w-2xl mx-auto text-lg font-medium leading-relaxed">
               Experience Zambia's most innovative diagnostic technology with our comprehensive catalog of 500+ specialized tests.
             </p>
           </motion.div>
@@ -55,12 +55,12 @@ export default function Services() {
         >
           <div className="flex flex-col lg:flex-row gap-6 items-center">
             <div className="relative flex-1 w-full">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/20" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60" />
               <Input
                 placeholder="Search for tests, packages, or symptoms..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-12 h-14 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/20 focus:border-[hsl(var(--gold))]/50 transition-all rounded-2xl text-lg"
+                className="pl-12 h-14 bg-foreground/5 border-foreground/10 text-foreground placeholder:text-muted-foreground focus:border-[hsl(var(--gold))]/50 transition-all rounded-2xl text-lg"
               />
             </div>
             <div className="flex gap-2 flex-wrap justify-center">
@@ -109,20 +109,20 @@ export default function Services() {
                   <h3 className="font-heading font-black text-xl text-foreground group-hover:text-[hsl(var(--gold))] transition-colors duration-300 mb-2 leading-tight">
                     {t.name}
                   </h3>
-                  <p className="text-sm text-foreground/40 mb-6 flex-1 line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-muted-foreground mb-6 flex-1 line-clamp-3 leading-relaxed">
                     {t.description}
                   </p>
 
                   <div className="p-4 rounded-2xl bg-white/5 border border-white/5 mb-6">
-                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-foreground/20">
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-muted-foreground/60">
                       Prep Advice
                     </div>
-                    <p className="text-foreground/60 text-xs mt-1 italic">{t.preparation}</p>
+                    <p className="text-muted-foreground text-xs mt-1 italic">{t.preparation}</p>
                   </div>
 
                   <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-auto">
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-0.5">Test Price</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">Test Price</p>
                       <span className="font-heading font-black text-2xl text-[hsl(var(--gold))]">ZMW {t.price}</span>
                     </div>
                     <Link to={`/book?test=${t.id}`}>
@@ -156,7 +156,7 @@ export default function Services() {
         <div className="container relative">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mb-16">
             <h2 className="font-heading text-4xl md:text-5xl font-black text-foreground mb-4 italic">Exclusive Health Packages</h2>
-            <p className="text-foreground/40 max-w-lg mx-auto font-medium">Bundled diagnostics at exceptional value for holistic health tracking.</p>
+            <p className="text-muted-foreground max-w-lg mx-auto font-medium">Bundled diagnostics at exceptional value for holistic health tracking.</p>
           </motion.div>
 
           <motion.div
@@ -176,7 +176,7 @@ export default function Services() {
                   )}
                   <CardContent className="p-10 flex flex-col h-full">
                     <h3 className="font-heading text-2xl font-black text-foreground mb-2 leading-tight">{pkg.name}</h3>
-                    <p className="text-sm text-foreground/40 mb-8">{pkg.description}</p>
+                    <p className="text-sm text-muted-foreground mb-8">{pkg.description}</p>
 
                     <ul className="space-y-4 mb-10 flex-1">
                       {pkg.tests.map((t) => (
@@ -191,7 +191,7 @@ export default function Services() {
 
                     <div className="pt-8 border-t border-white/5 flex items-center justify-between mt-auto">
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-0.5">Package Price</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">Package Price</p>
                         <span className="font-heading text-3xl font-black text-[hsl(var(--gold))]">ZMW {pkg.price}</span>
                       </div>
                       <Link to={`/book?package=${pkg.id}`}>

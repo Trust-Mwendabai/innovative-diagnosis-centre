@@ -89,7 +89,7 @@ export default function Index() {
               animate="visible"
               variants={fadeUp}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="mt-8 text-xl text-white/60 max-w-xl leading-relaxed font-medium"
+              className="mt-8 text-xl text-white/80 max-w-xl leading-relaxed font-medium"
             >
               Harnessing global diagnostic innovations to provide Zambia with world-class medical testing and compassionate patient services.
             </motion.p>
@@ -145,7 +145,7 @@ export default function Index() {
                 <div className="text-3xl font-black text-foreground tracking-tighter mb-1">
                   {stat}
                 </div>
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{label}</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
               </div>
             </motion.div>
           ))}
@@ -194,7 +194,7 @@ export default function Index() {
                   <h3 className="font-heading text-xl font-black text-foreground group-hover:text-[hsl(var(--gold))] transition-all mb-3 leading-tight">
                     {t.name}
                   </h3>
-                  <p className="text-sm text-foreground/40 font-medium leading-relaxed mb-8">{t.description}</p>
+                  <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-8">{t.description}</p>
 
                   <Link to={`/book?test=${t.id}`} className="block">
                     <Button
@@ -331,7 +331,7 @@ export default function Index() {
                     <item.icon className="h-8 w-8" />
                   </div>
                   <h3 className="text-foreground font-black text-sm uppercase tracking-wider mb-2">{item.title}</h3>
-                  <p className="text-foreground/40 text-xs font-medium leading-relaxed">{item.desc}</p>
+                  <p className="text-muted-foreground text-xs font-medium leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -358,11 +358,11 @@ export default function Index() {
                       <Sparkles className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Innovation</div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-foreground/60">Innovation</div>
                       <div className="text-foreground font-bold italic">Roche Automated Systems</div>
                     </div>
                   </div>
-                  <p className="text-[11px] text-foreground/50 font-medium italic leading-relaxed">"Integrating state-of-the-art analytical platforms to deliver unprecedented speed and accuracy for our patients."</p>
+                  <p className="text-[11px] text-foreground/70 font-medium italic leading-relaxed">"Integrating state-of-the-art analytical platforms to deliver unprecedented speed and accuracy for our patients."</p>
                 </div>
               </div>
             </div>
@@ -386,7 +386,7 @@ export default function Index() {
             className="text-center mb-20"
           >
             <h2 className="font-heading text-4xl font-black text-foreground italic">Clinical <span className="text-[hsl(var(--gold))]">Testimonials</span></h2>
-            <p className="text-foreground/40 mt-4 max-w-lg mx-auto font-medium">Genuine feedback from patients across our Zambian network.</p>
+            <p className="text-muted-foreground mt-4 max-w-lg mx-auto font-medium">Genuine feedback from patients across our Zambian network.</p>
           </motion.div>
 
           <motion.div
@@ -451,7 +451,7 @@ export default function Index() {
             <h2 className="font-heading text-5xl md:text-7xl font-black text-white leading-[1.1] mb-8">
               Experience the <span className="italic text-[hsl(var(--gold))]">Modern</span> <br /> Standard of Care.
             </h2>
-            <p className="text-white/60 mb-12 max-w-xl text-xl font-medium leading-relaxed">
+            <p className="text-white/80 mb-12 max-w-xl text-xl font-medium leading-relaxed">
               Don't compromise on your health. Join thousands of Zambians who trust IDC for clinical precision and absolute reliability.
             </p>
             <div className="flex flex-wrap gap-6">
