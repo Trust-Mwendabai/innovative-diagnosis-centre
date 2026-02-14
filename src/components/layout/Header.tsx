@@ -117,7 +117,7 @@ export default function Header() {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="absolute top-full left-0 right-0 bg-background/98 backdrop-blur-3xl border-b border-border shadow-3xl xl:hidden z-[-1]"
+                        className="absolute top-full left-0 right-0 bg-background border-b border-border shadow-2xl xl:hidden z-[-1]"
                     >
                         <nav className="p-8 space-y-2">
                             {navLinks.map((l) => (
