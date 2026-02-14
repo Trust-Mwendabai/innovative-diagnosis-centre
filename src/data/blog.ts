@@ -93,6 +93,6 @@ We believe that every Zambian deserves access to world-class clinical intelligen
     category: "Diagnostic Tech",
     readTime: "6 min",
     date: "2026-02-01",
-    image: "https://images.unsplash.com/photo-1532187863486-abf9b3c341b1?w=800&q=80"
+    image: "https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?auto=format&fit=crop&q=80&w=800"
   }
 ];

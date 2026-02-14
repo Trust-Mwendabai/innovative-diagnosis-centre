@@ -23,9 +23,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const sidebarItems = [
-    { icon: LayoutDashboard, label: "Overview", path: "/admin/dashboard" },
+    { icon: LayoutDashboard, label: "Overview", path: "" },
     { icon: CalendarDays, label: "Appointments", path: "/admin/appointments" },
     { icon: Users, label: "Patients", path: "/admin/patients" },
+    { icon: Stethoscope, label: "Expert Panel", path: "/admin/doctors" },
     { icon: Microscope, label: "Tests & Packages", path: "/admin/tests" },
     { icon: FileCheck, label: "Results Center", path: "/admin/results" },
     { icon: MapPin, label: "Branches", path: "/admin/branches" },
@@ -66,12 +67,18 @@ export default function AdminSidebar() {
 
             {/* Navigation */}
             <nav className="flex-1 px-4 space-y-1.5 custom-scrollbar overflow-y-auto">
-                {sidebarItems.map((item) => {
-                    const isActive = location.pathname === item.path;
+                {sidebarItems.filter(item => {
+                    if (user?.role === 'doctor') {
+                        return ["Overview", "Patients"].includes(item.label);
+                    }
+                    return true;
+                }).map((item) => {
+                    const itemPath = item.path || (user?.role === 'doctor' ? "/doctor/dashboard" : "/admin/dashboard");
+                    const isActive = location.pathname === itemPath;
                     return (
                         <button
-                            key={item.path}
-                            onClick={() => navigate(item.path)}
+                            key={item.label}
+                            onClick={() => navigate(itemPath)}
                             className={cn(
                                 "flex items-center w-full gap-3 px-3 py-3.5 rounded-2xl transition-all duration-300 group relative",
                                 isActive

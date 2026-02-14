@@ -57,12 +57,20 @@ export default function Blog() {
       try {
         const res = await fetch("http://localhost/IDC/api/blog/read.php");
         const data = await res.json();
-        if (data.success && data.posts && data.posts.length > 0) {
+        if (data.success && Array.isArray(data.posts)) {
           // Only show published posts on public site
           const published = data.posts.filter((p: any) => p.status === 'published');
-          setPosts(published.length > 0 ? published : staticPosts.map(p => ({ ...p, created_at: p.date })));
+
+          if (published.length > 0) {
+            setPosts(published);
+          } else if (staticPosts.length > 0) {
+            // Fallback to static if no published posts in DB
+            setPosts(staticPosts.map(p => ({ ...p, created_at: p.date })));
+          } else {
+            setPosts([]);
+          }
         } else {
-          // Fallback to static sample blogs if API is empty or fails to return posts
+          // Fallback to static sample blogs if API fails to return posts
           setPosts(staticPosts.map(p => ({ ...p, created_at: p.date })));
         }
       } catch (error) {
@@ -173,7 +181,7 @@ export default function Blog() {
               <motion.div key={post.id} variants={fadeUp}>
                 <Card
                   className="glass-card border-border/50 overflow-hidden group hover:border-[hsl(var(--gold))]/30 transition-all duration-500 rounded-[3rem] h-full cursor-pointer flex flex-col"
-                  onClick={() => navigate(`/blog/${post.id}`)}
+                  onClick={() => navigate(`/blog/${(post as any).slug || post.id}`)}
                 >
                   <div className="aspect-[16/10] overflow-hidden relative">
                     <img

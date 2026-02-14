@@ -10,7 +10,22 @@ try {
         MODIFY COLUMN role ENUM('admin', 'staff', 'doctor', 'patient') DEFAULT 'patient'");
     echo "Users table updated.\n";
 
-    // 2. Update appointments table
+    // 2. Update patients table
+    // Using a more manual approach to be compatible with older MySQL/MariaDB versions if needed
+    try {
+        $conn->exec("ALTER TABLE patients ADD COLUMN user_id INT AFTER id");
+    } catch (Exception $e) {
+        // Ignore "Duplicate column name" error
+    }
+    
+    try {
+        $conn->exec("ALTER TABLE patients ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE");
+    } catch (Exception $e) {
+        // Ignore "Duplicate key name" error or similar
+    }
+    echo "Patients table updated.\n";
+
+    // 3. Update appointments table
     $conn->exec("ALTER TABLE appointments 
         ADD COLUMN IF NOT EXISTS patient_id INT FIRST,
         ADD FOREIGN KEY IF NOT EXISTS (patient_id) REFERENCES patients(id) ON DELETE SET NULL");

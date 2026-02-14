@@ -68,6 +68,8 @@ export default function PatientLogin() {
                 // Route based on role
                 if (data.user.role === 'admin' || data.user.role === 'staff') {
                     navigate("/admin/dashboard");
+                } else if (data.user.role === 'doctor') {
+                    navigate("/doctor/dashboard");
                 } else {
                     navigate("/patient/dashboard");
                 }
@@ -93,6 +95,20 @@ export default function PatientLogin() {
                 variants={fadeUp}
                 className="w-full max-w-md relative z-10"
             >
+                <div className="flex justify-center mb-10 mt-4">
+                    <Link
+                        to="/"
+                        className="group flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[hsl(var(--gold))]/30 transition-all duration-300 backdrop-blur-xl shadow-2xl"
+                    >
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] flex items-center justify-center shadow-glow-gold transition-transform group-hover:-translate-x-1">
+                            <ArrowRight className="h-4 w-4 text-white rotate-180" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60 group-hover:text-white transition-colors">
+                            Return to Homepage
+                        </span>
+                    </Link>
+                </div>
+
                 <Card className="glass-card border-white/10 shadow-2xl overflow-hidden rounded-[2.5rem]">
                     <CardHeader className="text-center pb-2">
                         <div className="mx-auto w-20 h-20 rounded-3xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] flex items-center justify-center mb-6 shadow-glow-gold rotate-3">

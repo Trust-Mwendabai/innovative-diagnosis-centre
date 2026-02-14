@@ -35,8 +35,8 @@ export default function Register() {
             const data = await res.json();
 
             if (data.success) {
-                toast.success("Account created! You can now log in.");
-                navigate("/admin"); // Redirect to login (assuming admin login is used for now or I'll create a dedicated login)
+                toast.success("Account created! Access the secure portal via OTP.");
+                navigate("/login");
             } else {
                 toast.error(data.message || "Registration failed");
             }
@@ -59,6 +59,20 @@ export default function Register() {
                 variants={fadeUp}
                 className="w-full max-w-md relative z-10"
             >
+                <div className="flex justify-center mb-10 mt-4">
+                    <Link
+                        to="/"
+                        className="group flex items-center gap-3 px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[hsl(var(--gold))]/30 transition-all duration-300 backdrop-blur-xl shadow-2xl"
+                    >
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] flex items-center justify-center shadow-glow-gold transition-transform group-hover:-translate-x-1">
+                            <ArrowRight className="h-4 w-4 text-white rotate-180" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60 group-hover:text-white transition-colors">
+                            Return to Homepage
+                        </span>
+                    </Link>
+                </div>
+
                 <Card className="glass-card border-white/10 shadow-2xl overflow-hidden">
                     <CardHeader className="text-center pb-2">
                         <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] flex items-center justify-center mb-6 shadow-glow-gold">
@@ -137,7 +151,7 @@ export default function Register() {
 
                             <div className="text-center mt-6 text-sm">
                                 <span className="text-white/40">Already have an account?</span>{" "}
-                                <Link to="/admin" className="text-[hsl(var(--gold))] font-bold hover:underline">Log In</Link>
+                                <Link to="/login" className="text-[hsl(var(--gold))] font-bold hover:underline">Log In</Link>
                             </div>
                         </form>
                     </CardContent>

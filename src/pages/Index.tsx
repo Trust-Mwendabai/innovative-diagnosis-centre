@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, FlaskConical, MapPin, ShieldCheck, Home, Star, ChevronRight, Sparkles, Activity, Clock } from "lucide-react";
+import { ArrowRight, Microscope, FlaskConical, MapPin, ShieldCheck, Home, Star, ChevronRight, Sparkles, Activity, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -372,6 +372,90 @@ export default function Index() {
         </div>
       </section>
 
+      {/* ================== PATIENT PORTAL ================== */}
+      <section className="container py-32 relative overflow-hidden">
+        <div className="absolute top-1/2 right-0 w-96 h-96 bg-[hsl(var(--gold))]/5 rounded-full blur-[120px] -z-10" />
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeLeft}
+            className="order-2 lg:order-1"
+          >
+            <div className="rounded-[4rem] overflow-hidden border-[12px] border-white/5 shadow-2xl relative aspect-[4/3] bg-slate-900 flex items-center justify-center">
+              <img
+                src="https://images.unsplash.com/photo-1576091160550-217359f49f4a?auto=format&fit=crop&q=80&w=800"
+                alt="Patient accessing portal"
+                className="h-full w-full object-cover relative z-10"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Microscope className="h-20 w-20 text-[hsl(var(--gold))]/20" />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-20" />
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeRight}
+            className="order-1 lg:order-2"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(var(--gold))]/10 text-[hsl(var(--gold))] text-[10px] font-black mb-6 uppercase tracking-[0.2em]">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Empowering Patients
+            </div>
+            <h2 className="font-heading text-4xl md:text-5xl font-black text-foreground leading-tight mb-8">
+              Your Health, <br />
+              <span className="italic text-[hsl(var(--gold))] underline decoration-4 underline-offset-8">Digitized & Secure</span>
+            </h2>
+            <p className="text-muted-foreground text-lg font-medium leading-relaxed mb-10">
+              Join the IDC Patient Portal to manage your healthcare journey with absolute ease. Access results, track history, and communicate with specialists from any device.
+            </p>
+
+            <div className="grid sm:grid-cols-2 gap-6 mb-12">
+              {[
+                "Instant Report Access",
+                "Digital Health Archive",
+                "SMS Result Alerts",
+                "Direct Doctor Outreach",
+              ].map((benefit) => (
+                <div key={benefit} className="flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-full bg-[hsl(var(--emerald-india))]/10 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="h-4 w-4 text-[hsl(var(--emerald-india))]" />
+                  </div>
+                  <span className="text-sm font-bold text-foreground/80">{benefit}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-5">
+              <Link to="/register">
+                <Button
+                  size="lg"
+                  className="h-16 px-10 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest text-[11px] shadow-glow-gold hover:scale-[1.05] transition-all"
+                >
+                  Create Patient Account
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button
+                  variant="outline"
+                  className="h-16 px-10 rounded-2xl border-white/10 text-white hover:bg-white/5 transition-all font-black uppercase tracking-widest text-[11px]"
+                >
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ================== TESTIMONIALS ================== */}
       <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0 bg-slate-900/50" />
@@ -441,38 +525,90 @@ export default function Index() {
         </div>
 
         <div className="container relative">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="max-w-3xl"
-          >
-            <h2 className="font-heading text-5xl md:text-7xl font-black text-white leading-[1.1] mb-8">
-              Experience the <span className="italic text-[hsl(var(--gold))]">Modern</span> <br /> Standard of Care.
-            </h2>
-            <p className="text-white/80 mb-12 max-w-xl text-xl font-medium leading-relaxed">
-              Don't compromise on your health. Join thousands of Zambians who trust IDC for clinical precision and absolute reliability.
-            </p>
-            <div className="flex flex-wrap gap-6">
-              <Link to="/book">
-                <Button
-                  size="lg"
-                  className="h-16 px-10 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest text-[11px] shadow-glow-gold hover:scale-[1.05] transition-all gap-3"
-                >
-                  Initiate Booking Flow <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/recommender">
-                <Button
-                  size="lg"
-                  className="h-16 px-10 rounded-2xl bg-white/5 border border-white/10 text-white backdrop-blur-xl hover:bg-white/10 transition-all font-black uppercase tracking-widest text-[11px]"
-                >
-                  Analyze My Symptoms
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="max-w-3xl"
+            >
+              <h2 className="font-heading text-5xl md:text-7xl font-black text-white leading-[1.1] mb-8">
+                Experience the <span className="italic text-[hsl(var(--gold))]">Modern</span> <br /> Standard of Care.
+              </h2>
+              <p className="text-white/80 mb-12 max-w-xl text-xl font-medium leading-relaxed">
+                Don't compromise on your health. Join thousands of Zambians who trust IDC for clinical precision and absolute reliability.
+              </p>
+              <div className="flex flex-wrap gap-6">
+                <Link to="/book">
+                  <Button
+                    size="lg"
+                    className="h-16 px-10 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest text-[11px] shadow-glow-gold hover:scale-[1.05] transition-all gap-3"
+                  >
+                    Book Your Test <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button
+                    size="lg"
+                    className="h-16 px-10 rounded-2xl bg-white/10 border border-white/20 text-white backdrop-blur-xl hover:bg-white/20 transition-all font-black uppercase tracking-widest text-[11px]"
+                  >
+                    Register Now
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeRight}
+              className="hidden lg:block relative"
+            >
+              <div className="relative z-10 p-12 glass-card border-white/10 rounded-[4rem] aspect-square flex flex-col justify-center items-center text-center overflow-hidden group">
+                {/* Floating animated background shapes */}
+                <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-[hsl(var(--gold))]/20 rounded-full blur-3xl animate-pulse-gentle" />
+                <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-[hsl(var(--saffron))]/10 rounded-full blur-[100px] animate-float" />
+
+                <div className="relative mb-10 h-32 w-32 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center rotate-3 group-hover:rotate-6 transition-transform">
+                  <ShieldCheck className="h-16 w-16 text-[hsl(var(--gold))]" />
+                </div>
+
+                <h3 className="font-heading text-3xl font-black text-white mb-4">Quality Assured</h3>
+                <p className="text-white/50 text-sm font-medium max-w-xs leading-relaxed">
+                  ISO 15189:2012 Certified Laboratory.
+                  <br />
+                  Zambia Medical Regulatory Authority Approved.
+                </p>
+
+                <div className="mt-10 flex gap-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl">
+                      <Star className="h-5 w-5 text-[hsl(var(--gold))]/60" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Decorative extra floating badge */}
+              <motion.div
+                animate={{ y: [0, -20, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-10 -right-10 glass p-6 rounded-3xl border-white/20 shadow-glow-gold z-20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-[hsl(var(--emerald-india))] flex items-center justify-center">
+                    <Activity className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">Global Rank</div>
+                    <div className="text-white font-bold leading-none">Top Tier</div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
 
         {/* Final mandalas */}

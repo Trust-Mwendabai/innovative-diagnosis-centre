@@ -93,6 +93,15 @@ export default function Header() {
                         {dark ? <Sun className="h-5 w-5 text-foreground" /> : <Moon className="h-5 w-5 text-muted-foreground" />}
                     </button>
 
+                    <Link to="/register" className="hidden md:block">
+                        <Button
+                            variant="outline"
+                            className="h-12 px-8 rounded-2xl border-white/10 text-white hover:bg-white/5 transition-all font-black uppercase tracking-widest text-[10px]"
+                        >
+                            Register
+                        </Button>
+                    </Link>
+
                     <Link to="/book">
                         <Button
                             className="h-12 px-8 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest text-[10px] shadow-glow-gold hover:scale-[1.05] transition-all"

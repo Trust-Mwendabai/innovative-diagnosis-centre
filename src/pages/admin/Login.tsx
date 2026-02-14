@@ -30,8 +30,14 @@ export default function AdminLogin() {
 
             if (response.ok) {
                 login(data.token, data.user);
-                toast.success("Welcome back, Admin!");
-                navigate("/admin/dashboard");
+
+                if (data.user.role === 'doctor') {
+                    toast.success(`Welcome, Dr. ${data.user.name}!`);
+                    navigate("/doctor/dashboard");
+                } else {
+                    toast.success("Welcome back, Admin!");
+                    navigate("/admin/dashboard");
+                }
             } else {
                 toast.error(data.message || "Invalid credentials");
             }

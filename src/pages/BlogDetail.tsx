@@ -36,15 +36,16 @@ export default function BlogDetail() {
                 const res = await fetch(`http://localhost/IDC/api/blog/read.php`);
                 const data = await res.json();
 
-                if (data.success && data.posts && data.posts.length > 0) {
-                    const found = data.posts.find((p: BlogPost) => p.id === id);
+                if (data.success && Array.isArray(data.posts)) {
+                    // Try to find by slug first, then by ID
+                    const found = data.posts.find((p: any) => p.slug === id || String(p.id) === String(id));
                     if (found) {
                         setPost(found);
                     } else {
                         // Check static data if not in API results
                         const staticFound = staticPosts.find(p => p.id === id);
                         if (staticFound) {
-                            setPost({ ...staticFound, status: 'published', created_at: staticFound.date });
+                            setPost({ ...staticFound, status: 'published', created_at: staticFound.date } as any);
                         } else {
                             toast.error("Article not found");
                         }
@@ -53,7 +54,7 @@ export default function BlogDetail() {
                     // Check static data if API is empty or fails
                     const staticFound = staticPosts.find(p => p.id === id);
                     if (staticFound) {
-                        setPost({ ...staticFound, status: 'published', created_at: staticFound.date });
+                        setPost({ ...staticFound, status: 'published', created_at: staticFound.date } as any);
                     } else {
                         toast.error("Article not found");
                     }

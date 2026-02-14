@@ -17,16 +17,22 @@ import Register from "./pages/Register";
 import PatientLogin from "./pages/Login";
 import PatientDashboard from "./pages/patient/Dashboard";
 import AdminLogin from "./pages/admin/Login";
-import Dashboard from "./pages/admin/Dashboard";
-import Patients from "./pages/admin/Patients";
-import Tests from "./pages/admin/Tests";
-import Results from "./pages/admin/Results";
-import Branches from "./pages/admin/Branches";
-import Content from "./pages/admin/Content";
-import AdminBlog from "./pages/admin/Blog";
-import Notifications from "./pages/admin/Notifications";
-import Reports from "./pages/admin/Reports";
-import Settings from "./pages/admin/Settings";
+import { lazy } from "react";
+
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Patients = lazy(() => import("./pages/admin/Patients"));
+const AdminDoctors = lazy(() => import("./pages/admin/Doctors"));
+const Tests = lazy(() => import("./pages/admin/Tests"));
+const Results = lazy(() => import("./pages/admin/Results"));
+const Branches = lazy(() => import("./pages/admin/Branches"));
+const AdminContent = lazy(() => import("./pages/admin/Content"));
+const AdminBlog = lazy(() => import("./pages/admin/Blog"));
+const AdminNotifications = lazy(() => import("./pages/admin/Notifications"));
+const Reports = lazy(() => import("./pages/admin/Reports"));
+const AdminSettings = lazy(() => import("./pages/admin/Settings"));
+
+// Doctor Dashboard
+const DoctorDashboard = lazy(() => import("./pages/doctor/Dashboard"));
 
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
@@ -47,7 +53,16 @@ const AdminWrapper = () => (
 );
 
 const PatientWrapper = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--gold))]"></div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   // Even if authenticated, ensure it's a patient or admin (admins can view patient dashboards)
   return (
@@ -77,14 +92,15 @@ const App = () => (
               <Route path="/admin/dashboard" element={<Dashboard />} />
               <Route path="/admin/appointments" element={<Dashboard />} />
               <Route path="/admin/patients" element={<Patients />} />
+              <Route path="/admin/doctors" element={<AdminDoctors />} />
               <Route path="/admin/tests" element={<Tests />} />
               <Route path="/admin/results" element={<Results />} />
               <Route path="/admin/branches" element={<Branches />} />
-              <Route path="/admin/content" element={<Content />} />
+              <Route path="/admin/content" element={<AdminContent />} />
               <Route path="/admin/blog" element={<AdminBlog />} />
-              <Route path="/admin/notifications" element={<Notifications />} />
+              <Route path="/admin/notifications" element={<AdminNotifications />} />
               <Route path="/admin/reports" element={<Reports />} />
-              <Route path="/admin/settings" element={<Settings />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
             </Route>
 
             {/* Patient Routes - Protected by PatientWrapper */}
