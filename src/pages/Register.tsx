@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/lib/config";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -27,7 +28,7 @@ export default function Register() {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost/IDC/api/auth/register.php", {
+            const res = await fetch(`${API_BASE_URL}/auth/register.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
@@ -35,7 +36,7 @@ export default function Register() {
             const data = await res.json();
 
             if (data.success) {
-                toast.success("Account created! Access the secure portal via OTP.");
+                toast.success("Account created! Please log in with your credentials.");
                 navigate("/login");
             } else {
                 toast.error(data.message || "Registration failed");

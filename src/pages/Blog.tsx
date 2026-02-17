@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { blogPosts as staticPosts } from "@/data/blog";
+import { API_BASE_URL } from "@/lib/config";
 
 interface BlogPost {
   id: string;
@@ -55,7 +56,7 @@ export default function Blog() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch("http://localhost/IDC/api/blog/read.php");
+        const res = await fetch(`${API_BASE_URL}/blog/read.php`);
         const data = await res.json();
         if (data.success && Array.isArray(data.posts)) {
           // Only show published posts on public site

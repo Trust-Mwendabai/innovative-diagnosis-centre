@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "@/lib/config";
 import {
     Dialog,
     DialogContent,
@@ -34,7 +35,7 @@ export default function AddAppointmentModal({ isOpen, onClose, onSuccess }: AddA
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost/IDC/api/appointments/create.php", {
+            const response = await fetch(`${API_BASE_URL}/appointments/create.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
@@ -155,8 +156,8 @@ export default function AddAppointmentModal({ isOpen, onClose, onSuccess }: AddA
                                     type="button"
                                     onClick={() => setFormData({ ...formData, location_type: "branch" })}
                                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border transition-all ${formData.location_type === "branch"
-                                            ? "bg-primary text-white border-primary shadow-lg shadow-primary/25"
-                                            : "bg-white/50 border-white/20 text-muted-foreground hover:bg-white"
+                                        ? "bg-primary text-white border-primary shadow-lg shadow-primary/25"
+                                        : "bg-white/50 border-white/20 text-muted-foreground hover:bg-white"
                                         }`}
                                 >
                                     <MapPin className="h-4 w-4" /> Branch
@@ -165,8 +166,8 @@ export default function AddAppointmentModal({ isOpen, onClose, onSuccess }: AddA
                                     type="button"
                                     onClick={() => setFormData({ ...formData, location_type: "home" })}
                                     className={`flex items-center justify-center gap-2 p-3 rounded-xl border transition-all ${formData.location_type === "home"
-                                            ? "bg-primary text-white border-primary shadow-lg shadow-primary/25"
-                                            : "bg-white/50 border-white/20 text-muted-foreground hover:bg-white"
+                                        ? "bg-primary text-white border-primary shadow-lg shadow-primary/25"
+                                        : "bg-white/50 border-white/20 text-muted-foreground hover:bg-white"
                                         }`}
                                 >
                                     <MapPin className="h-4 w-4" /> Home

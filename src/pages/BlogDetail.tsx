@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { blogPosts as staticPosts } from "@/data/blog";
+import { API_BASE_URL } from "@/lib/config";
 
 interface BlogPost {
     id: string;
@@ -33,7 +34,7 @@ export default function BlogDetail() {
         const fetchPost = async () => {
             try {
                 // Attempt to fetch from API
-                const res = await fetch(`http://localhost/IDC/api/blog/read.php`);
+                const res = await fetch(`${API_BASE_URL}/blog/read.php`);
                 const data = await res.json();
 
                 if (data.success && Array.isArray(data.posts)) {

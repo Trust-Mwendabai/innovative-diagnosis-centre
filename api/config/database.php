@@ -1,19 +1,23 @@
 <?php
-// CORS Headers
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+// Include CORS configuration
+require_once "cors.php";
 
-// Handle preflight requests
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
+// Environment Detection
+$is_production = $_SERVER['SERVER_NAME'] !== 'localhost' && $_SERVER['SERVER_ADDR'] !== '127.0.0.1';
+
+if ($is_production) {
+    // Production Credentials (to be filled by user in cPanel)
+    $host = 'localhost'; // Usually localhost in cPanel
+    $db_name = 'u123456789_idc'; 
+    $username = 'u123456789_admin';
+    $password = 'Your_Strong_Password_Here';
+} else {
+    // Development Credentials
+    $host = 'localhost';
+    $db_name = 'zambia_test_booking';
+    $username = 'root';
+    $password = '';
 }
-
-$host = 'localhost';
-$db_name = 'zambia_test_booking';
-$username = 'root';
-$password = '';
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
@@ -21,7 +25,7 @@ try {
     $conn->exec("set names utf8");
 } catch(PDOException $e) {
     http_response_code(500);
-    echo json_encode(["error" => "Connection error: " . $e->getMessage()]);
+    echo json_encode(["error" => "Secure connection failure: DB linkage disrupted."]);
     exit();
 }
 ?>

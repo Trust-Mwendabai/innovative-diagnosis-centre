@@ -29,6 +29,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface Branch {
     id: string;
@@ -59,7 +60,7 @@ export default function Branches() {
 
     const fetchBranches = async () => {
         try {
-            const res = await fetch("http://localhost/IDC/api/branches/read.php");
+            const res = await fetch(`${API_BASE_URL}/branches/read.php`);
             const data = await res.json();
             if (data.success) setBranches(data.branches);
         } catch (error) {
@@ -72,8 +73,8 @@ export default function Branches() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const url = editingBranch
-            ? "http://localhost/IDC/api/branches/update.php"
-            : "http://localhost/IDC/api/branches/create.php";
+            ? `${API_BASE_URL}/branches/update.php`
+            : `${API_BASE_URL}/branches/create.php`;
 
         try {
             const response = await fetch(url, {
@@ -96,7 +97,7 @@ export default function Branches() {
     const deleteBranch = async (id: string) => {
         if (!confirm("Are you sure? This will affect staff assigned to this branch.")) return;
         try {
-            const response = await fetch("http://localhost/IDC/api/branches/delete.php", {
+            const response = await fetch(`${API_BASE_URL}/branches/delete.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id }),

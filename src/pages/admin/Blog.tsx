@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface BlogPost {
@@ -95,7 +96,7 @@ export default function Blog() {
     const fetchPosts = async () => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost/IDC/api/blog/read.php");
+            const res = await fetch(`${API_BASE_URL}/blog/read.php`);
             const data = await res.json();
             if (data.success) {
                 setPosts(data.posts);
@@ -113,8 +114,8 @@ export default function Blog() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const url = editingPost
-            ? "http://localhost/IDC/api/blog/update.php"
-            : "http://localhost/IDC/api/blog/create.php";
+            ? `${API_BASE_URL}/blog/update.php`
+            : `${API_BASE_URL}/blog/create.php`;
 
         const submission = editingPost ? { id: editingPost.id, ...form } : form;
 
@@ -141,7 +142,7 @@ export default function Blog() {
     const deletePost = async (id: string) => {
         if (!confirm("Are you sure you want to decommission this article?")) return;
         try {
-            const response = await fetch("http://localhost/IDC/api/blog/delete.php", {
+            const response = await fetch(`${API_BASE_URL}/blog/delete.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id }),

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Lock, Mail, ChevronRight, Stethoscope } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { API_BASE_URL } from "@/lib/config";
 
 export default function AdminLogin() {
     const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function AdminLogin() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost/IDC/api/auth/login.php", {
+            const response = await fetch(`${API_BASE_URL}/auth/login.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

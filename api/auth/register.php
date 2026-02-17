@@ -3,7 +3,7 @@ include_once '../config/database.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-if(!empty($data->name) && (!empty($data->email) || !empty($data->phone))) {
+if(!empty($data->name) && (!empty($data->email) || !empty($data->phone)) && !empty($data->password)) {
     try {
         $conn->beginTransaction();
 
@@ -14,7 +14,7 @@ if(!empty($data->name) && (!empty($data->email) || !empty($data->phone))) {
         $name = htmlspecialchars(strip_tags($data->name));
         $email = !empty($data->email) ? htmlspecialchars(strip_tags($data->email)) : null;
         $phone = htmlspecialchars(strip_tags($data->phone));
-        $password = !empty($data->password) ? password_hash($data->password, PASSWORD_DEFAULT) : null;
+        $password = password_hash($data->password, PASSWORD_DEFAULT);
 
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);

@@ -35,6 +35,7 @@ import {
 } from "recharts";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
@@ -48,7 +49,7 @@ export default function Reports() {
 
     const fetchStats = async () => {
         try {
-            const res = await fetch("http://localhost/IDC/api/reports/stats.php");
+            const res = await fetch(`${API_BASE_URL}/reports/stats.php`);
             const result = await res.json();
             if (result.success) setData(result);
         } catch (error) {

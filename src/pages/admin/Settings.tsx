@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface StaffMember {
@@ -88,9 +89,9 @@ export default function Settings() {
         setLoading(true);
         try {
             const [settingsRes, staffRes, branchesRes] = await Promise.all([
-                fetch("http://localhost/IDC/api/settings/read.php"),
-                fetch("http://localhost/IDC/api/staff/read.php"),
-                fetch("http://localhost/IDC/api/branches/read.php")
+                fetch(`${API_BASE_URL}/settings/read.php`),
+                fetch(`${API_BASE_URL}/staff/read.php`),
+                fetch(`${API_BASE_URL}/branches/read.php`)
             ]);
 
             const settingsData = await settingsRes.json();

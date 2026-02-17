@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { tests, healthPackages } from "@/data/tests";
 import { branches } from "@/data/branches";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 const timeSlots = ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "14:00", "15:00", "16:00"];
 const steps = ["Select Test", "Location", "Date & Time", "Your Details", "Confirm"];
@@ -52,7 +53,7 @@ export default function BookTest() {
     }
 
     try {
-      const response = await fetch("http://localhost/IDC/api/appointments/create.php", {
+      const response = await fetch(`${API_BASE_URL}/appointments/create.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

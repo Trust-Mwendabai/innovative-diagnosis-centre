@@ -24,6 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface Notification {
     id: string;
@@ -53,7 +54,7 @@ export default function Notifications() {
 
     const fetchLogs = async () => {
         try {
-            const res = await fetch("http://localhost/IDC/api/notifications/read.php");
+            const res = await fetch(`${API_BASE_URL}/notifications/read.php`);
             const data = await res.json();
             if (data.success) setLogs(data.notifications);
         } catch (error) {

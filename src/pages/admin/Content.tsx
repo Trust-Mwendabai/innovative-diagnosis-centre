@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface CMSItem {
     id: string;
@@ -46,7 +47,7 @@ export default function Content() {
 
     const fetchContent = async () => {
         try {
-            const res = await fetch("http://localhost/IDC/api/cms/read.php");
+            const res = await fetch(`${API_BASE_URL}/cms/read.php`);
             const data = await res.json();
             if (data.success) {
                 setContent(data.content);
@@ -68,7 +69,7 @@ export default function Content() {
         if (!changes[id]) return;
 
         try {
-            const response = await fetch("http://localhost/IDC/api/cms/update.php", {
+            const response = await fetch(`${API_BASE_URL}/cms/update.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, content_value: changes[id] }),

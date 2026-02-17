@@ -33,6 +33,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface TestResult {
     id: string;
@@ -78,7 +79,7 @@ export default function Results() {
     const fetchResults = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost/IDC/api/results/read.php`);
+            const res = await fetch(`${API_BASE_URL}/results/read.php`);
             const data = await res.json();
             if (data.success) setResults(data.results);
         } catch (error) {
@@ -90,7 +91,7 @@ export default function Results() {
 
     const fetchAppointmentsForUpload = async () => {
         try {
-            const res = await fetch(`http://localhost/IDC/api/appointments/read.php`);
+            const res = await fetch(`${API_BASE_URL}/appointments/read.php`);
             const data = await res.json();
             if (data.success) {
                 // Only show confirmed or pending for upload? 
@@ -115,7 +116,7 @@ export default function Results() {
         if (apt) formData.append("patient_id", apt.patient_id);
 
         try {
-            const response = await fetch("http://localhost/IDC/api/results/upload.php", {
+            const response = await fetch(`${API_BASE_URL}/results/upload.php`, {
                 method: "POST",
                 body: formData,
             });
@@ -138,7 +139,7 @@ export default function Results() {
         if (!selectedResult) return;
 
         try {
-            const response = await fetch("http://localhost/IDC/api/results/verify.php", {
+            const response = await fetch(`${API_BASE_URL}/results/verify.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: selectedResult.id, ...verifyForm }),

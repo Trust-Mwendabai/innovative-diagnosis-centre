@@ -40,6 +40,7 @@ import {
     Cell,
 } from "recharts";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 import AddAppointmentModal from "@/components/admin/AddAppointmentModal";
 import RescheduleModal from "@/components/admin/RescheduleModal";
 
@@ -92,8 +93,8 @@ export default function Dashboard() {
         setLoading(true);
         try {
             const [appRes, statsRes] = await Promise.all([
-                fetch("http://localhost/IDC/api/appointments/read.php"),
-                fetch("http://localhost/IDC/api/appointments/stats.php")
+                fetch(`${API_BASE_URL}/appointments/read.php`),
+                fetch(`${API_BASE_URL}/appointments/stats.php`)
             ]);
             const appData = await appRes.json();
             const statsData = await statsRes.json();
@@ -109,7 +110,7 @@ export default function Dashboard() {
 
     const fetchActivities = async () => {
         try {
-            const res = await fetch("http://localhost/IDC/api/activity/read.php?limit=5");
+            const res = await fetch(`${API_BASE_URL}/activity/read.php?limit=5`);
             const data = await res.json();
             if (data.success) setActivities(data.activities);
         } catch (error) {
@@ -119,7 +120,7 @@ export default function Dashboard() {
 
     const updateStatus = async (id: string, status: string) => {
         try {
-            const response = await fetch("http://localhost/IDC/api/appointments/update.php", {
+            const response = await fetch(`${API_BASE_URL}/appointments/update.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, status }),

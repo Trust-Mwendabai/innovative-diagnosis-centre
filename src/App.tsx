@@ -52,8 +52,19 @@ const AdminWrapper = () => (
   </AdminLayout>
 );
 
+import PatientLayout from "@/components/patient/PatientLayout";
+
+// Patient Portal Subpages
+const PatientAppointments = lazy(() => import("./pages/patient/subpages/Appointments"));
+const PatientResults = lazy(() => import("./pages/patient/subpages/Results"));
+const PatientHistory = lazy(() => import("./pages/patient/subpages/History"));
+const PatientProfile = lazy(() => import("./pages/patient/subpages/Profile"));
+const PatientBilling = lazy(() => import("./pages/patient/subpages/Billing"));
+const PatientNotifications = lazy(() => import("./pages/patient/subpages/Notifications"));
+const PatientResources = lazy(() => import("./pages/patient/subpages/Resources"));
+
 const PatientWrapper = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -64,11 +75,11 @@ const PatientWrapper = () => {
   }
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  // Even if authenticated, ensure it's a patient or admin (admins can view patient dashboards)
+
   return (
-    <Layout>
+    <PatientLayout>
       <Outlet />
-    </Layout>
+    </PatientLayout>
   );
 };
 
@@ -108,7 +119,8 @@ const App = () => (
           }>
             <Routes>
               {/* Auth Routes (No layout) */}
-              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/idc-portal-vault" element={<AdminLogin />} />
+              <Route path="/admin" element={<Navigate to="/" replace />} />
               <Route path="/login" element={<PatientLogin />} />
               <Route path="/register" element={<Register />} />
 
@@ -134,8 +146,16 @@ const App = () => (
               </Route>
 
               {/* Patient Routes - Protected by PatientWrapper */}
-              <Route element={<PatientWrapper />}>
-                <Route path="/patient/dashboard" element={<PatientDashboard />} />
+              <Route path="/patient" element={<PatientWrapper />}>
+                <Route index element={<Navigate to="/patient/dashboard" replace />} />
+                <Route path="dashboard" element={<PatientDashboard />} />
+                <Route path="appointments" element={<PatientAppointments />} />
+                <Route path="results" element={<PatientResults />} />
+                <Route path="history" element={<PatientHistory />} />
+                <Route path="profile" element={<PatientProfile />} />
+                <Route path="billing" element={<PatientBilling />} />
+                <Route path="notifications" element={<PatientNotifications />} />
+                <Route path="resources" element={<PatientResources />} />
               </Route>
 
               {/* Public Routes - With Layout */}

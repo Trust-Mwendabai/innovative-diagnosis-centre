@@ -30,6 +30,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface Test {
     id: string;
@@ -73,7 +74,7 @@ export default function Tests() {
 
     const fetchTests = async () => {
         try {
-            const res = await fetch(`http://localhost/IDC/api/tests/read.php?search=${search}`);
+            const res = await fetch(`${API_BASE_URL}/tests/read.php?search=${search}`);
             const data = await res.json();
             if (data.success) setTests(data.tests);
         } catch (error) {
@@ -85,7 +86,7 @@ export default function Tests() {
 
     const fetchPackages = async () => {
         try {
-            const res = await fetch(`http://localhost/IDC/api/packages/read.php`);
+            const res = await fetch(`${API_BASE_URL}/packages/read.php`);
             const data = await res.json();
             if (data.success) setPackages(data.packages);
         } catch (error) {
@@ -96,8 +97,8 @@ export default function Tests() {
     const handleSubmitTest = async (e: React.FormEvent) => {
         e.preventDefault();
         const url = editingTest
-            ? "http://localhost/IDC/api/tests/update.php"
-            : "http://localhost/IDC/api/tests/create.php";
+            ? `${API_BASE_URL}/tests/update.php`
+            : `${API_BASE_URL}/tests/create.php`;
 
         try {
             const response = await fetch(url, {
@@ -122,7 +123,7 @@ export default function Tests() {
     const deleteTest = async (id: string) => {
         if (!confirm("Are you sure you want to delete this test?")) return;
         try {
-            const response = await fetch("http://localhost/IDC/api/tests/delete.php", {
+            const response = await fetch(`${API_BASE_URL}/tests/delete.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id }),

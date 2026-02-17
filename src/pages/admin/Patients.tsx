@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface Patient {
     id: string;
@@ -39,7 +40,7 @@ export default function Patients() {
     const fetchPatients = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost/IDC/api/patients/read.php?search=${search}`);
+            const res = await fetch(`${API_BASE_URL}/patients/read.php?search=${search}`);
             const data = await res.json();
             if (data.success) setPatients(data.patients);
         } catch (error) {
@@ -51,7 +52,7 @@ export default function Patients() {
 
     const viewDetails = async (id: string) => {
         try {
-            const res = await fetch(`http://localhost/IDC/api/patients/details.php?id=${id}`);
+            const res = await fetch(`${API_BASE_URL}/patients/details.php?id=${id}`);
             const data = await res.json();
             if (data.success) {
                 setSelectedPatient(data.patient);

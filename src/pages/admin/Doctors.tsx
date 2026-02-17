@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/config";
 
 interface Doctor {
     id: string;
@@ -38,7 +39,7 @@ export default function Doctors() {
     const fetchDoctors = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost/IDC/api/admin/doctors.php`);
+            const res = await fetch(`${API_BASE_URL}/admin/doctors.php`);
             const data = await res.json();
             if (data.success) {
                 setDoctors(data.doctors);
@@ -54,7 +55,7 @@ export default function Doctors() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await fetch("http://localhost/IDC/api/admin/doctors.php", {
+            const res = await fetch(`${API_BASE_URL}/admin/doctors.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newDoctor)
@@ -79,7 +80,7 @@ export default function Doctors() {
         if (!confirm("Are you sure you want to remove this doctor?")) return;
 
         try {
-            const res = await fetch(`http://localhost/IDC/api/admin/doctors.php?id=${id}`, {
+            const res = await fetch(`${API_BASE_URL}/admin/doctors.php?id=${id}`, {
                 method: "DELETE"
             });
             const data = await res.json();

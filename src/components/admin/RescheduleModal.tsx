@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "@/lib/config";
 import {
     Dialog,
     DialogContent,
@@ -43,7 +44,7 @@ export default function RescheduleModal({ isOpen, onClose, onSuccess, appointmen
 
     const fetchStaff = async () => {
         try {
-            const res = await fetch("http://localhost/IDC/api/staff/read.php");
+            const res = await fetch(`${API_BASE_URL}/staff/read.php`);
             const data = await res.json();
             if (data.success) setStaff(data.staff);
         } catch (error) {
@@ -56,7 +57,7 @@ export default function RescheduleModal({ isOpen, onClose, onSuccess, appointmen
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost/IDC/api/appointments/update.php", {
+            const response = await fetch(`${API_BASE_URL}/appointments/update.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
