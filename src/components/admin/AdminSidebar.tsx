@@ -29,7 +29,6 @@ const sidebarItems = [
     { icon: Stethoscope, label: "Doctors", path: "/admin/doctors" },
     { icon: Microscope, label: "Medical Tests", path: "/admin/tests" },
     { icon: FileCheck, label: "Test Results", path: "/admin/results" },
-    { icon: Layout, label: "Content Manager", path: "/admin/content" },
     { icon: Newspaper, label: "Blog Manager", path: "/admin/blog" },
     { icon: Bell, label: "Notifications", path: "/admin/notifications" },
     { icon: BarChart3, label: "Reports", path: "/admin/reports" },
@@ -38,116 +37,77 @@ const sidebarItems = [
 
 export default function AdminSidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const { logout, user } = useAuth();
-    const navigate = useNavigate();
     const location = useLocation();
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const handleLogout = () => {
         logout();
-        navigate("/admin");
-    };
-
-    // Determine the path for an item based on role
-    const getPath = (item: typeof sidebarItems[0]) => {
-        if (!item.path && user?.role === 'doctor') return "/doctor/dashboard";
-        if (!item.path) return "/admin/dashboard";
-        return item.path;
+        navigate("/login");
     };
 
     return (
-        <div
-            className={cn(
-                "relative flex flex-col h-screen border-r border-white/5 bg-slate-950 text-white/80 transition-all duration-300 overflow-visible z-50",
-                isCollapsed ? "w-20" : "w-64"
-            )}
+        <motion.div
+            animate={{ width: isCollapsed ? 100 : 280 }}
+            className="h-screen bg-slate-900 border-r border-slate-800 sticky top-0 left-0 z-40 hidden lg:flex flex-col shadow-2xl"
         >
-            {/* Logo Section */}
-            <div className="flex items-center gap-3 p-8 mb-4">
-                <div className="flex items-center justify-center min-w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] shadow-glow-gold rotate-3">
-                    <Stethoscope className="w-5 h-5 text-white -rotate-3" />
+            <div className="p-8 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+                    <span className="text-white font-black text-xl">IDC</span>
                 </div>
                 {!isCollapsed && (
-                    <span className="text-xl font-black tracking-tighter text-white">IDC <span className="text-[hsl(var(--gold))]">PRO</span></span>
+                    <div className="animate-fade-in">
+                        <h1 className="text-white font-black tracking-tighter text-xl">IDC Admin</h1>
+                        <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">Control Node</p>
+                    </div>
                 )}
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 px-4 space-y-1.5 custom-scrollbar overflow-y-auto">
-                {sidebarItems.filter(item => {
-                    if (user?.role === 'doctor') {
-                        return ["Dashboard", "Patients"].includes(item.label);
-                    }
-                    return true;
-                }).map((item) => {
-                    const itemPath = getPath(item);
-                    const isActive = location.pathname === itemPath;
+            <div className="flex-1 px-4 py-8 overflow-y-auto space-y-2 no-scrollbar">
+                {sidebarItems.map((item) => {
+                    // Check logic for active item
+                    const isActive = item.path === ""
+                        ? (location.pathname === "/admin" || location.pathname === "/admin/dashboard")
+                        : location.pathname.startsWith(item.path);
+
                     return (
                         <button
                             key={item.label}
-                            onClick={() => navigate(itemPath)}
+                            onClick={() => navigate(item.path ? item.path : "/admin/dashboard")}
                             className={cn(
-                                "flex items-center w-full gap-3 px-3 py-3.5 rounded-2xl transition-all duration-300 group relative",
+                                "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative overflow-hidden",
                                 isActive
-                                    ? "bg-white/5 text-white"
-                                    : "text-white/40 hover:bg-white/5 hover:text-white"
+                                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25"
+                                    : "text-slate-400 hover:bg-white/5 hover:text-white"
                             )}
                         >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="active-indicator"
-                                    className="absolute left-0 w-1 h-6 bg-[hsl(var(--gold))] rounded-r-full shadow-glow-gold"
-                                />
-                            )}
-                            <item.icon className={cn(
-                                "w-5 h-5 transition-all duration-300",
-                                isActive ? "text-[hsl(var(--gold))] scale-110" : "group-hover:scale-110 group-hover:text-[hsl(var(--saffron))]"
-                            )} />
+                            <item.icon className={cn("h-5 w-5 shrink-0 transition-transform duration-300", isActive ? "scale-110" : "group-hover:scale-110")} />
                             {!isCollapsed && (
-                                <span className={cn(
-                                    "font-bold text-xs uppercase tracking-widest",
-                                    isActive ? "opacity-100" : "opacity-100"
-                                )}>
-                                    {item.label}
-                                </span>
+                                <span className="font-bold text-sm tracking-wide">{item.label}</span>
+                            )}
+                            {isActive && (
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-l-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
                             )}
                         </button>
-                    );
+                    )
                 })}
-            </nav>
-
-            {/* User Profile / Logout */}
-            <div className="p-4 mt-auto">
-                <div className="rounded-[2rem] bg-white/5 border border-white/5 p-4 overflow-hidden mb-2">
-                    {!isCollapsed && (
-                        <div className="flex items-center gap-3 mb-6 px-1">
-                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[hsl(var(--gold))] to-[hsl(var(--saffron))] flex items-center justify-center text-xs font-black text-white shadow-lg">
-                                {user?.name?.charAt(0) || "A"}
-                            </div>
-                            <div className="flex flex-col min-w-0">
-                                <span className="text-xs font-black text-white truncate uppercase tracking-tighter">{user?.name || "Administrator"}</span>
-                                <span className="text-[10px] text-white/30 truncate font-bold uppercase">{user?.role === 'patient' ? 'Admin' : (user?.role || "System Admin")}</span>
-                            </div>
-                        </div>
-                    )}
-                    <button
-                        onClick={handleLogout}
-                        className={cn(
-                            "flex items-center w-full gap-3 px-3 py-3 rounded-xl text-white/40 hover:text-rose-400 hover:bg-rose-400/10 transition-all duration-200",
-                            isCollapsed && "justify-center"
-                        )}
-                    >
-                        <LogOut className="w-5 h-5" />
-                        {!isCollapsed && <span className="font-black text-[10px] uppercase tracking-widest">Terminate Session</span>}
-                    </button>
-                </div>
             </div>
 
-            <button
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute top-20 -right-3 w-6 h-6 rounded-lg bg-gradient-to-b from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white flex items-center justify-center shadow-lg border border-white/20 hover:scale-110 transition-transform active:scale-95"
-            >
-                {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-            </button>
-        </div>
+            <div className="p-4 border-t border-slate-800 space-y-2">
+                <button
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="w-full h-12 flex items-center justify-center rounded-xl bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+                >
+                    {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+                </button>
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-4 p-4 rounded-xl text-red-500 hover:bg-red-500/10 transition-all group"
+                >
+                    <LogOut className="h-5 w-5 shrink-0 group-hover:scale-110 transition-transform" />
+                    {!isCollapsed && <span className="font-bold text-sm">Disconnect</span>}
+                </button>
+            </div>
+        </motion.div>
     );
 }
