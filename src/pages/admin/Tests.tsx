@@ -154,8 +154,8 @@ export default function Tests() {
         <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Inventory</h1>
-                    <p className="text-muted-foreground font-medium">Manage diagnostic test catalog and pricing bundles.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Medical Tests</h1>
+                    <p className="text-muted-foreground font-medium">Manage diagnostic test catalog and pricing.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="outline" className="glass py-5 px-6 border-white/20 bg-white/40">
@@ -165,7 +165,7 @@ export default function Tests() {
                         className="gradient-primary py-5 px-6 shadow-lg shadow-primary/20"
                         onClick={() => { setEditingTest(null); setTestForm({ name: "", category: "General", price: "", description: "", preparation: "" }); setIsTestModalOpen(true); }}
                     >
-                        <Plus className="mr-2 h-4 w-4" /> New Item
+                        <Plus className="mr-2 h-4 w-4" /> New Test
                     </Button>
                 </div>
             </div>
@@ -184,7 +184,7 @@ export default function Tests() {
                     <Card className="glass-light border-white/20 shadow-2xl rounded-[2.5rem] overflow-hidden">
                         <CardHeader className="p-8 border-b border-white/10 bg-white/40">
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                                <CardTitle className="text-xl font-black text-slate-900">Diagnostic Catalog</CardTitle>
+                                <CardTitle className="text-xl font-black text-slate-900">Test List</CardTitle>
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
@@ -201,12 +201,12 @@ export default function Tests() {
                             {loading ? (
                                 <div className="flex flex-col items-center justify-center py-32 gap-4">
                                     <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                                    <p className="text-muted-foreground font-bold animate-pulse">Loading Catalog...</p>
+                                    <p className="text-muted-foreground font-bold animate-pulse">Loading tests...</p>
                                 </div>
                             ) : tests.length === 0 ? (
                                 <div className="text-center py-32 bg-white/20">
                                     <Archive className="w-20 h-20 text-slate-100 mx-auto mb-4" />
-                                    <h3 className="text-xl font-bold text-slate-800">Catalogue Empty</h3>
+                                    <h3 className="text-xl font-bold text-slate-800">No Tests Found</h3>
                                     <Button variant="link" onClick={() => setIsTestModalOpen(true)}>Add your first test now</Button>
                                 </div>
                             ) : (
@@ -310,7 +310,7 @@ export default function Tests() {
                     <DialogHeader className="p-8 bg-primary/5 border-b border-white/10">
                         <DialogTitle className="text-2xl font-black text-slate-900 flex items-center gap-2">
                             {editingTest ? <Edit3 className="h-6 w-6 text-primary" /> : <Plus className="h-6 w-6 text-primary" />}
-                            {editingTest ? "Edit Test Item" : "New Diagnostic Item"}
+                            {editingTest ? "Edit Test" : "New Test"}
                         </DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmitTest} className="p-8 space-y-6">
@@ -371,7 +371,7 @@ export default function Tests() {
                         <DialogFooter className="pt-4 gap-3">
                             <Button type="button" variant="ghost" className="py-6 px-10 rounded-2xl font-bold" onClick={() => setIsTestModalOpen(false)}>Cancel</Button>
                             <Button type="submit" className="flex-1 py-7 rounded-2xl gradient-primary shadow-xl shadow-primary/20 text-lg font-black">
-                                {editingTest ? "Update Changes" : "Create Test Record"}
+                                {editingTest ? "Update Changes" : "Create Test"}
                             </Button>
                         </DialogFooter>
                     </form>

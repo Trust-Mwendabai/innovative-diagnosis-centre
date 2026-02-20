@@ -31,8 +31,12 @@ export default function PatientResults() {
 
     useEffect(() => {
         const fetchResults = async () => {
+            if (!user?.id) {
+                setLoading(false);
+                return;
+            }
             try {
-                const res = await fetch(`${API_BASE_URL}/patients/details.php?id=${user?.id}`);
+                const res = await fetch(`${API_BASE_URL}/test_results/read_patient.php?patient_id=${user.id}`);
                 const data = await res.json();
                 if (data.success) {
                     setResults(data.results || []);
@@ -44,7 +48,7 @@ export default function PatientResults() {
             }
         };
 
-        if (user?.id) fetchResults();
+        fetchResults();
     }, [user?.id]);
 
     const filteredResults = results.filter(r =>
@@ -84,9 +88,9 @@ export default function PatientResults() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div>
                     <h1 className="text-5xl font-black font-heading tracking-tighter">
-                        Diagnostic <span className="text-[hsl(var(--gold))]">Results</span>
+                        My <span className="text-[hsl(var(--gold))]">Reports</span>
                     </h1>
-                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Secure Report Archive • Level 4 Access</p>
+                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">View and download your diagnostic results</p>
                 </div>
                 <div className="flex gap-4">
                     <div className="relative">

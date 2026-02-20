@@ -368,7 +368,7 @@ export default function Dashboard() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32 gap-4">
                             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                            <p className="text-muted-foreground font-bold animate-pulse">Syncing Diagnostic Cloud...</p>
+                            <p className="text-muted-foreground font-bold animate-pulse">Loading dashboard data...</p>
                         </div>
                     ) : filtered.length === 0 ? (
                         <div className="text-center py-32 bg-white/20">

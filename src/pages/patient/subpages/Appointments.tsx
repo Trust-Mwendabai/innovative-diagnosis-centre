@@ -44,32 +44,44 @@ export default function PatientAppointments() {
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!user?.id) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                const [testsRes, packagesRes, branchesRes, historyRes] = await Promise.all([
+                const [testsRes, packagesRes, branchesRes, summaryRes] = await Promise.all([
                     fetch(`${API_BASE_URL}/tests/read.php`),
                     fetch(`${API_BASE_URL}/packages/read.php`),
                     fetch(`${API_BASE_URL}/branches/read.php`),
-                    fetch(`${API_BASE_URL}/patients/details.php?id=${user?.id}`)
+                    fetch(`${API_BASE_URL}/patients/summary.php?id=${user?.id}`)
                 ]);
 
-                const testsData = await testsRes.json();
-                const packagesData = await packagesRes.json();
-                const branchesData = await branchesRes.json();
-                const historyData = await historyRes.json();
+                const [testsData, packagesData, branchesData, summaryData] = await Promise.all([
+                    testsRes.json().catch(() => ({ success: false, tests: [] })),
+                    packagesRes.json().catch(() => ({ success: false, packages: [] })),
+                    branchesRes.json().catch(() => ({ success: false, branches: [] })),
+                    summaryRes.json().catch(() => ({ success: false, recent_bookings: [] }))
+                ]);
 
                 if (testsData.success) setTests(testsData.tests);
                 if (packagesData.success) setPackages(packagesData.packages);
                 if (branchesData.success) setBranches(branchesData.branches);
-                if (historyData.success) setBookingHistory(historyData.history);
+                if (summaryData.success) setBookingHistory(summaryData.recent_bookings);
+
+                if (!testsData.success && !packagesData.success && !branchesData.success && !summaryData.success) {
+                    toast.error("Unable to connect to service. Please try again later.");
+                }
 
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Critical error fetching appointments data:", error);
+                toast.error("Failed to load appointments. Please check your connection.");
                 setLoading(false);
             }
         };
 
-        if (user?.id) fetchData();
+        fetchData();
     }, [user?.id]);
 
     const handleBooking = async () => {
@@ -129,9 +141,9 @@ export default function PatientAppointments() {
             {/* Page Header */}
             <div>
                 <h1 className="text-5xl font-black font-heading tracking-tighter">
-                    Appointment <span className="text-[hsl(var(--gold))]">Node</span>
+                    My <span className="text-[hsl(var(--gold))]">Appointments</span>
                 </h1>
-                <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Integrated Booking Protocol • High Priority Access</p>
+                <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Book a new test or view your schedule</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -349,7 +361,7 @@ export default function PatientAppointments() {
                                                 />
                                             </div>
                                             <div className="space-y-4">
-                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Temporal Sync (Time)</h5>
+                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Time</h5>
                                                 <div className="grid grid-cols-3 gap-3">
                                                     {["08:00", "09:30", "11:00", "13:30", "15:00", "16:30"].map((time) => (
                                                         <div
@@ -368,7 +380,7 @@ export default function PatientAppointments() {
                                         </div>
 
                                         <Card className="bg-[hsl(var(--emerald-india))]/5 border border-[hsl(var(--emerald-india))]/20 rounded-3xl p-6">
-                                            <h6 className="text-[10px] font-black uppercase text-[hsl(var(--emerald-india))] tracking-[0.3em] mb-4">Node Confirmation Briefing</h6>
+                                            <h6 className="text-[10px] font-black uppercase text-[hsl(var(--emerald-india))] tracking-[0.3em] mb-4">Appointment Summary</h6>
                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                                 <div>
                                                     <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Target</p>

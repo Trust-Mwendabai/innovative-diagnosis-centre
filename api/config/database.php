@@ -3,14 +3,27 @@
 require_once "cors.php";
 
 // Environment Detection
-$is_production = $_SERVER['SERVER_NAME'] !== 'localhost' && $_SERVER['SERVER_ADDR'] !== '127.0.0.1';
+// Environment Detection
+$http_host = $_SERVER['HTTP_HOST'] ?? '';
+$server_name = $_SERVER['SERVER_NAME'] ?? '';
+$is_cli = PHP_SAPI === 'cli';
+
+$is_local = $is_cli || 
+             in_array($server_name, ['localhost', '127.0.0.1', '::1']) || 
+             strpos($http_host, 'localhost') !== false ||
+             strpos($http_host, '127.0.0.1') !== false ||
+             strpos($http_host, '192.168.') !== false ||
+             strpos($http_host, '10.') === 0;
+
+$is_production = !$is_local;
+
 
 if ($is_production) {
     // Production Credentials (to be filled by user in cPanel)
     $host = 'localhost'; // Usually localhost in cPanel
-    $db_name = 'u123456789_idc'; 
-    $username = 'u123456789_admin';
-    $password = 'Your_Strong_Password_Here';
+    $db_name = 'trustmwe_idc'; 
+    $username = 'trustmwe_idc';
+    $password = 'mF*C8t)QuIqr';
 } else {
     // Development Credentials
     $host = 'localhost';

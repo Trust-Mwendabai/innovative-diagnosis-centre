@@ -62,6 +62,8 @@ const PatientProfile = lazy(() => import("./pages/patient/subpages/Profile"));
 const PatientBilling = lazy(() => import("./pages/patient/subpages/Billing"));
 const PatientNotifications = lazy(() => import("./pages/patient/subpages/Notifications"));
 const PatientResources = lazy(() => import("./pages/patient/subpages/Resources"));
+const HealthTrends = lazy(() => import("./pages/patient/subpages/HealthTrends"));
+
 
 const PatientWrapper = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -156,6 +158,8 @@ const App = () => (
                 <Route path="billing" element={<PatientBilling />} />
                 <Route path="notifications" element={<PatientNotifications />} />
                 <Route path="resources" element={<PatientResources />} />
+                <Route path="trends" element={<HealthTrends />} />
+
               </Route>
 
               {/* Public Routes - With Layout */}

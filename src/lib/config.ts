@@ -7,8 +7,10 @@ const isDevelopment = import.meta.env.MODE === 'development';
 
 // In production, the API is usually located at /api relative to the root or on a subdomain.
 // We assume it's in the /api folder on the same server where the frontend is hosted.
+// In development, we might be on localhost:8080 (Vite) while PHP is on localhost (Apache)
+// This logic tries to be smart about finding the backend.
 export const API_BASE_URL = isDevelopment
-    ? 'http://localhost/IDC/api'
+    ? (window.location.port === '8080' ? 'http://localhost/IDC/api' : '/IDC/api')
     : `${window.location.origin}/api`;
 
 /**

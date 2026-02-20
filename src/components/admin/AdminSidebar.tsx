@@ -23,17 +23,16 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const sidebarItems = [
-    { icon: LayoutDashboard, label: "Overview", path: "" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "" },
     { icon: CalendarDays, label: "Appointments", path: "/admin/appointments" },
     { icon: Users, label: "Patients", path: "/admin/patients" },
-    { icon: Stethoscope, label: "Expert Panel", path: "/admin/doctors" },
-    { icon: Microscope, label: "Tests & Packages", path: "/admin/tests" },
-    { icon: FileCheck, label: "Results Center", path: "/admin/results" },
-    { icon: MapPin, label: "Branches", path: "/admin/branches" },
+    { icon: Stethoscope, label: "Doctors", path: "/admin/doctors" },
+    { icon: Microscope, label: "Medical Tests", path: "/admin/tests" },
+    { icon: FileCheck, label: "Test Results", path: "/admin/results" },
     { icon: Layout, label: "Content Manager", path: "/admin/content" },
     { icon: Newspaper, label: "Blog Manager", path: "/admin/blog" },
     { icon: Bell, label: "Notifications", path: "/admin/notifications" },
-    { icon: BarChart3, label: "Reports & BI", path: "/admin/reports" },
+    { icon: BarChart3, label: "Reports", path: "/admin/reports" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 
@@ -46,6 +45,13 @@ export default function AdminSidebar() {
     const handleLogout = () => {
         logout();
         navigate("/admin");
+    };
+
+    // Determine the path for an item based on role
+    const getPath = (item: typeof sidebarItems[0]) => {
+        if (!item.path && user?.role === 'doctor') return "/doctor/dashboard";
+        if (!item.path) return "/admin/dashboard";
+        return item.path;
     };
 
     return (
@@ -69,11 +75,11 @@ export default function AdminSidebar() {
             <nav className="flex-1 px-4 space-y-1.5 custom-scrollbar overflow-y-auto">
                 {sidebarItems.filter(item => {
                     if (user?.role === 'doctor') {
-                        return ["Overview", "Patients"].includes(item.label);
+                        return ["Dashboard", "Patients"].includes(item.label);
                     }
                     return true;
                 }).map((item) => {
-                    const itemPath = item.path || (user?.role === 'doctor' ? "/doctor/dashboard" : "/admin/dashboard");
+                    const itemPath = getPath(item);
                     const isActive = location.pathname === itemPath;
                     return (
                         <button
@@ -119,7 +125,7 @@ export default function AdminSidebar() {
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-xs font-black text-white truncate uppercase tracking-tighter">{user?.name || "Administrator"}</span>
-                                <span className="text-[10px] text-white/30 truncate font-bold">{user?.role || "System Access"}</span>
+                                <span className="text-[10px] text-white/30 truncate font-bold uppercase">{user?.role === 'patient' ? 'Admin' : (user?.role || "System Admin")}</span>
                             </div>
                         </div>
                     )}

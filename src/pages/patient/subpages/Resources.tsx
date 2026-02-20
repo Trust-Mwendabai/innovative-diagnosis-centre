@@ -31,9 +31,9 @@ export default function PatientResources() {
                 if (data.success) {
                     setBlogs(data.blogs || []);
                 }
-                setLoading(false);
             } catch (error) {
                 console.error("Error fetching blogs:", error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -41,7 +41,7 @@ export default function PatientResources() {
     }, []);
 
     const categories = [
-        { name: "All Wisdom", icon: BookOpen },
+        { name: "All Articles", icon: BookOpen },
         { name: "Prep Guides", icon: FlaskConical },
         { name: "Heart Health", icon: Heart },
         { name: "Vitality", icon: Zap }
@@ -59,9 +59,9 @@ export default function PatientResources() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div>
                     <h1 className="text-5xl font-black font-heading tracking-tighter">
-                        Health <span className="text-[hsl(var(--gold))]">Guru</span>
+                        Health <span className="text-[hsl(var(--gold))]">Tips</span>
                     </h1>
-                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Integrated Health Intelligence • Level 4 Clearance</p>
+                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Learn how to stay healthy and prepare for tests</p>
                 </div>
                 <div className="flex gap-4">
                     <div className="relative">
@@ -100,7 +100,7 @@ export default function PatientResources() {
                 <div className="lg:col-span-8 space-y-8">
                     <h3 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
                         <Zap className="h-6 w-6 text-[hsl(var(--gold))]" />
-                        Latest Health Intelligence
+                        Latest Health Articles
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -131,7 +131,7 @@ export default function PatientResources() {
                                         {blog.excerpt || "Unlock the secrets of digital wellness and advanced diagnostics with our latest expert briefing."}
                                     </p>
                                     <div className="pt-4 flex items-center gap-2 text-[hsl(var(--gold))] text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform">
-                                        Read Briefing <ArrowUpRight className="h-4 w-4" />
+                                        Read Article <ArrowUpRight className="h-4 w-4" />
                                     </div>
                                 </CardContent>
                             </Card>
@@ -144,7 +144,7 @@ export default function PatientResources() {
                     <Card className="glass-card border-white/10 rounded-[2.5rem] p-8 space-y-8">
                         <CardTitle className="text-lg font-black text-white uppercase tracking-tighter flex items-center gap-3">
                             <FlaskConical className="h-6 w-6 text-[hsl(var(--saffron))]" />
-                            Preparation Protocols
+                            Test Preparation
                         </CardTitle>
                         <div className="space-y-4">
                             {prepGuides.map((guide, i) => (

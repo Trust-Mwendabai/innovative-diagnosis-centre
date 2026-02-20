@@ -29,7 +29,10 @@ export default function PatientNotifications() {
 
     React.useEffect(() => {
         const fetchNotifications = async () => {
-            if (!user?.id) return;
+            if (!user?.id) {
+                setLoading(false);
+                return;
+            }
             try {
                 const res = await fetch(`${API_BASE_URL}/notifications/read.php?patient_id=${user.id}`);
                 const data = await res.json();

@@ -28,9 +28,9 @@ export default function PatientBilling() {
             {/* Page Header */}
             <div>
                 <h1 className="text-5xl font-black font-heading tracking-tighter">
-                    Financial <span className="text-[hsl(var(--gold))]">Ledger</span>
+                    Billing <span className="text-[hsl(var(--gold))]">Records</span>
                 </h1>
-                <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Integrated Billing Protocol • Secure Transaction Stream</p>
+                <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">View your payment history and invoices</p>
             </div>
 
             {/* Billing Stats */}
@@ -77,12 +77,12 @@ export default function PatientBilling() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/5 text-[10px] font-black uppercase tracking-[0.3em] text-white/20 bg-white/5">
-                                    <th className="p-10">Invoice Node</th>
-                                    <th className="p-10">Diagnostic Target</th>
-                                    <th className="p-10">Temporal Sync</th>
-                                    <th className="p-10">Payload (Cost)</th>
+                                    <th className="p-10">Invoice #</th>
+                                    <th className="p-10">Test Name</th>
+                                    <th className="p-10">Date</th>
+                                    <th className="p-10">Amount</th>
                                     <th className="p-10">Status</th>
-                                    <th className="p-10">Protocols</th>
+                                    <th className="p-10">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5">
@@ -127,60 +127,7 @@ export default function PatientBilling() {
                 </CardContent>
             </Card>
 
-            {/* Payment Methods */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <Card className="glass-card border-white/10 rounded-[3rem] p-10 space-y-8">
-                    <div className="flex items-center justify-between">
-                        <h4 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-                            <CreditCard className="h-6 w-6 text-[hsl(var(--gold))]" />
-                            Linked Nodes
-                        </h4>
-                        <Button variant="ghost" className="text-[10px] font-black uppercase tracking-widest text-[hsl(var(--gold))] underline">Add Network</Button>
-                    </div>
 
-                    <div className="space-y-4">
-                        <div className="p-8 rounded-[2rem] bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-white/10 flex items-center justify-between group hover:scale-[1.02] transition-all cursor-pointer">
-                            <div className="flex items-center gap-6">
-                                <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center">
-                                    <CreditCard className="h-6 w-6 text-white" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-black text-white uppercase tracking-widest">VISA PLATINUM</p>
-                                    <p className="text-[10px] font-bold text-white/30 tracking-widest mt-1">•••• •••• •••• 4242</p>
-                                </div>
-                            </div>
-                            <CheckCircle2 className="h-6 w-6 text-blue-400" />
-                        </div>
-
-                        <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all cursor-pointer">
-                            <div className="flex items-center gap-6">
-                                <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center">
-                                    <div className="w-6 h-6 rounded-full bg-blue-500 animate-pulse" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-black text-white/60 uppercase tracking-widest">AIRTEL MONEY</p>
-                                    <p className="text-[10px] font-bold text-white/20 tracking-widest mt-1">+260 971 ••• 000</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-
-                <Card className="glass-card border-none bg-gradient-to-br from-[hsl(var(--gold))]/10 to-transparent p-1 rounded-[3rem]">
-                    <div className="bg-slate-950/80 backdrop-blur-3xl rounded-[2.9rem] p-10 space-y-6">
-                        <div className="h-16 w-16 rounded-[1.5rem] bg-white/5 flex items-center justify-center border border-white/10">
-                            <FileText className="h-8 w-8 text-[hsl(var(--gold))]" />
-                        </div>
-                        <h4 className="text-2xl font-black text-white uppercase tracking-tight leading-tight">Secure Payment<br />Manifesto</h4>
-                        <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest leading-relaxed">
-                            All transactions are routed through encrypted high-security gateways. IDC does not store your raw credentials, only tokenized access links.
-                        </p>
-                        <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[11px]">
-                            Security Audit Log →
-                        </Button>
-                    </div>
-                </Card>
-            </div>
         </div>
     );
 }

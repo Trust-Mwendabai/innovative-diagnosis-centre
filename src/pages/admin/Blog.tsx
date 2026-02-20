@@ -127,20 +127,20 @@ export default function Blog() {
             });
             const data = await response.json();
             if (data.success) {
-                toast.success(editingPost ? "Protocol Updated" : "Intelligence Published");
+                toast.success(editingPost ? "Article Updated" : "Article Published");
                 setIsModalOpen(false);
                 setEditingPost(null);
                 fetchPosts();
             } else {
-                toast.error(data.message || "Archive process failed");
+                toast.error(data.message || "Failed to save article");
             }
         } catch (error) {
-            toast.error("Communication failure with persistence layer");
+            toast.error("Failed to connect to the server");
         }
     };
 
     const deletePost = async (id: string) => {
-        if (!confirm("Are you sure you want to decommission this article?")) return;
+        if (!confirm("Are you sure you want to delete this article?")) return;
         try {
             const response = await fetch(`${API_BASE_URL}/blog/delete.php`, {
                 method: "POST",
@@ -149,11 +149,11 @@ export default function Blog() {
             });
             const data = await response.json();
             if (data.success) {
-                toast.success("Article Decommissioned");
+                toast.success("Article Deleted");
                 fetchPosts();
             }
         } catch (error) {
-            toast.error("Failed to remove record");
+            toast.error("Failed to remove article");
         }
     };
 
@@ -180,13 +180,13 @@ export default function Blog() {
             {/* Header Area */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-200 text-[9px] font-black uppercase tracking-widest mb-4 border border-slate-700">
                         <Newspaper className="h-3 w-3" /> Content Management
                     </div>
-                    <h1 className="text-4xl font-black tracking-tighter text-slate-900 italic">
-                        Intelligence <span className="text-primary underline decoration-primary/20 underline-offset-8">Repository</span>
+                    <h1 className="text-4xl font-black tracking-tighter text-white italic">
+                        Blog & <span className="text-primary underline decoration-primary/20 underline-offset-8">Articles</span>
                     </h1>
-                    <p className="text-slate-500 font-medium mt-2">Disseminate diagnostic insights and medical protocols.</p>
+                    <p className="text-slate-400 font-bold mt-2">Manage health articles and patient guides.</p>
                 </div>
                 <Button
                     onClick={() => {
@@ -194,29 +194,29 @@ export default function Blog() {
                         setForm({ title: "", excerpt: "", content: "", category: "Patient Guide", status: "draft", image: "" });
                         setIsModalOpen(true);
                     }}
-                    className="h-16 px-8 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-widest text-[10px] shadow-2xl transition-all gap-3 overflow-hidden group"
+                    className="h-16 px-8 rounded-2xl bg-white text-slate-900 hover:bg-slate-200 font-black uppercase tracking-widest text-[10px] shadow-2xl transition-all gap-3 overflow-hidden group"
                 >
-                    <div className="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="h-8 w-8 rounded-lg bg-slate-900/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Plus className="h-4 w-4" />
                     </div>
-                    Draft New Analysis
+                    New Article
                 </Button>
             </div>
 
             {/* Filter Bar */}
             <div className="grid md:grid-cols-12 gap-4">
                 <div className="md:col-span-8 relative group">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-primary transition-colors" />
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-primary transition-colors" />
                     <Input
                         placeholder="Search repository by title or category..."
-                        className="pl-16 h-16 bg-white border-slate-100 text-slate-900 font-bold placeholder:text-slate-200 placeholder:font-medium rounded-2xl shadow-sm focus:ring-4 focus:ring-primary/5 transition-all"
+                        className="pl-16 h-16 bg-slate-800/50 border-slate-700 text-white font-bold placeholder:text-slate-500 placeholder:font-medium rounded-2xl shadow-sm focus:ring-4 focus:ring-primary/20 transition-all focus:bg-slate-800"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="md:col-span-4 h-16 p-2 rounded-2xl bg-slate-100 flex gap-2">
+                <div className="md:col-span-4 h-16 p-2 rounded-2xl bg-slate-800/50 border border-slate-700/50 flex gap-2">
                     {['Grid', 'Table'].map(view => (
-                        <Button key={view} variant="ghost" className={cn("flex-1 h-full rounded-xl text-[10px] font-black uppercase tracking-widest", view === 'Grid' ? "bg-white text-slate-900 shadow-sm" : "text-slate-400")}>
+                        <Button key={view} variant="ghost" onClick={() => { }} className={cn("flex-1 h-full rounded-xl text-[10px] font-black uppercase tracking-widest", view === 'Grid' ? "bg-slate-700 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-slate-700/50")}>
                             {view} View
                         </Button>
                     ))}
@@ -227,16 +227,16 @@ export default function Blog() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {loading ? (
                     Array(4).fill(0).map((_, i) => (
-                        <div key={i} className="h-72 rounded-[3rem] bg-slate-50 border border-slate-100 animate-pulse" />
+                        <div key={i} className="h-72 rounded-[3rem] bg-slate-800/50 border border-slate-700 animate-pulse" />
                     ))
                 ) : filteredPosts.length === 0 ? (
-                    <div className="col-span-full py-40 text-center bg-slate-50 border border-dashed border-slate-200 rounded-[3rem]">
-                        <div className="h-24 w-24 rounded-[2.5rem] bg-white shadow-xl flex items-center justify-center mx-auto mb-8">
-                            <Newspaper className="w-10 h-10 text-slate-100" />
+                    <div className="col-span-full py-40 text-center bg-slate-800/30 border border-dashed border-slate-700 rounded-[3rem]">
+                        <div className="h-24 w-24 rounded-[2.5rem] bg-slate-800 shadow-xl flex items-center justify-center mx-auto mb-8 border border-slate-700">
+                            <Newspaper className="w-10 h-10 text-slate-500" />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-800 italic">Repository Void</h3>
-                        <p className="text-slate-400 font-medium mb-10 max-w-sm mx-auto">Start populate the world with surgical insights and diagnostic excellence.</p>
-                        <Button variant="outline" className="h-12 px-8 rounded-xl border-slate-200" onClick={() => setIsModalOpen(true)}>Initialize First Draft</Button>
+                        <h3 className="text-2xl font-black text-white italic">No Articles Found</h3>
+                        <p className="text-slate-400 font-medium mb-10 max-w-sm mx-auto">Start by creating your first health article or guide.</p>
+                        <Button variant="outline" className="h-12 px-8 rounded-xl border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800 font-bold" onClick={() => setIsModalOpen(true)}>Create First Article</Button>
                     </div>
                 ) : (
                     <AnimatePresence>
@@ -248,52 +248,52 @@ export default function Blog() {
                                 variants={fadeUp}
                                 transition={{ delay: idx * 0.05 }}
                             >
-                                <Card className="group h-full bg-white border-slate-100 hover:border-primary/20 shadow-premium hover:shadow-2xl transition-all duration-500 rounded-[3rem] overflow-hidden">
+                                <Card className="group h-full bg-slate-800/40 backdrop-blur-md border-slate-700 hover:border-primary/50 shadow-sm hover:shadow-2xl transition-all duration-500 rounded-[3rem] overflow-hidden">
                                     <div className="flex h-full flex-col md:flex-row">
                                         <div className="flex-1 p-10 flex flex-col justify-between">
                                             <div>
                                                 <div className="flex items-center justify-between mb-6">
                                                     <span className={cn(
-                                                        "px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm",
-                                                        p.status === 'published' ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
+                                                        "px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm border",
+                                                        p.status === 'published' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                                                     )}>
                                                         {p.status}
                                                     </span>
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" className="h-10 w-10 p-0 rounded-2xl bg-slate-50 hover:bg-slate-100"><MoreVertical className="h-4 w-4 text-slate-400" /></Button>
+                                                            <Button variant="ghost" className="h-10 w-10 p-0 rounded-2xl bg-white/5 hover:bg-white/10"><MoreVertical className="h-4 w-4 text-slate-400" /></Button>
                                                         </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end" className="p-2 rounded-2xl border-slate-100 shadow-2xl min-w-[180px]">
-                                                            <DropdownMenuItem className="rounded-xl font-bold gap-3 py-3" onClick={() => openEdit(p)}><Edit3 className="h-4 w-4 text-primary" /> Edit Protocol</DropdownMenuItem>
-                                                            <DropdownMenuItem className="rounded-xl font-bold gap-3 py-3" onClick={() => window.open(`/blog/${p.id}`, '_blank')}><Eye className="h-4 w-4" /> Preview Live</DropdownMenuItem>
-                                                            <DropdownMenuSeparator className="my-2" />
-                                                            <DropdownMenuItem className="rounded-xl font-bold gap-3 py-3 text-rose-600 focus:text-rose-600" onClick={() => deletePost(p.id)}><Trash2 className="h-4 w-4" /> Decommission</DropdownMenuItem>
+                                                        <DropdownMenuContent align="end" className="p-2 rounded-2xl border-slate-700 bg-slate-800 text-slate-200 shadow-2xl min-w-[180px]">
+                                                            <DropdownMenuItem className="rounded-xl font-bold gap-3 py-3 focus:bg-slate-700 focus:text-white" onClick={() => openEdit(p)}><Edit3 className="h-4 w-4 text-primary" /> Edit Article</DropdownMenuItem>
+                                                            <DropdownMenuItem className="rounded-xl font-bold gap-3 py-3 focus:bg-slate-700 focus:text-white" onClick={() => window.open(`/blog/${p.id}`, '_blank')}><Eye className="h-4 w-4" /> Preview Live</DropdownMenuItem>
+                                                            <DropdownMenuSeparator className="my-2 bg-slate-700" />
+                                                            <DropdownMenuItem className="rounded-xl font-bold gap-3 py-3 text-rose-500 focus:text-rose-500 focus:bg-rose-500/10" onClick={() => deletePost(p.id)}><Trash2 className="h-4 w-4" /> Delete Article</DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </div>
-                                                <h3 className="text-2xl font-black text-slate-900 leading-tight group-hover:text-primary transition-colors italic mb-4">{p.title}</h3>
+                                                <h3 className="text-2xl font-black text-white leading-tight group-hover:text-primary transition-colors italic mb-4">{p.title}</h3>
                                                 <p className="text-sm text-slate-400 font-medium line-clamp-2 leading-relaxed">{p.excerpt || 'No summary provided.'}</p>
                                             </div>
 
-                                            <div className="flex items-center justify-between mt-10 pt-8 border-t border-slate-50">
+                                            <div className="flex items-center justify-between mt-10 pt-8 border-t border-slate-700/50">
                                                 <div className="flex flex-wrap gap-4">
-                                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-300">
+                                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
                                                         <Layers className="h-3.5 w-3.5 text-primary" /> {p.category}
                                                     </div>
-                                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-300">
+                                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
                                                         <Calendar className="h-3.5 w-3.5" /> {new Date(p.created_at).toLocaleDateString()}
                                                     </div>
                                                 </div>
-                                                <Button size="sm" variant="ghost" className="rounded-xl font-black text-[9px] uppercase gap-2 hover:bg-primary/5 hover:text-primary transition-all">
+                                                <Button size="sm" variant="ghost" className="rounded-xl font-black text-[9px] uppercase gap-2 hover:bg-primary/10 hover:text-primary text-slate-400 transition-all">
                                                     Analysis <ChevronRight className="h-3 w-3" />
                                                 </Button>
                                             </div>
                                         </div>
-                                        <div className="w-full md:w-1/3 bg-slate-50 relative overflow-hidden group-hover:bg-slate-100 transition-colors border-l border-slate-50">
+                                        <div className="w-full md:w-1/3 bg-slate-800/50 relative overflow-hidden group-hover:bg-slate-800 transition-colors border-l border-slate-700/50">
                                             {p.image ? (
                                                 <img src={p.image} className="absolute inset-0 h-full w-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
                                             ) : (
-                                                <FileText className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-slate-200" />
+                                                <FileText className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-slate-700" />
                                             )}
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@ export default function Blog() {
                         <DialogTitle className="text-2xl font-black text-slate-900 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <Sparkles className="h-6 w-6 text-primary" />
-                                {editingPost ? "Refine Intelligence" : "Draft New Protocol"}
+                                {editingPost ? "Edit Article" : "New Article"}
                             </div>
                             <Button variant="ghost" className="h-10 w-10 p-0 rounded-full" onClick={() => setIsModalOpen(false)}>
                                 <X className="h-5 w-5" />
@@ -324,20 +324,20 @@ export default function Blog() {
                             <div className="lg:col-span-8 space-y-8">
                                 <div className="space-y-3">
                                     <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                        <Type className="h-3 w-3" /> Intelligence Heading
+                                        <Type className="h-3 w-3" /> Article Title
                                     </Label>
                                     <Input
                                         required
                                         className="h-16 text-2xl font-black italic border-slate-100 focus:border-primary/30 focus:ring-4 focus:ring-primary/5 rounded-2xl transition-all"
                                         value={form.title}
                                         onChange={(e) => setForm({ ...form, title: e.target.value })}
-                                        placeholder="Enter definitive article title..."
+                                        placeholder="Enter article title..."
                                     />
                                 </div>
 
                                 <div className="space-y-3">
                                     <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                                        <FileText className="h-3 w-3" /> Analytical Content
+                                        <FileText className="h-3 w-3" /> Content
                                     </Label>
                                     <div className="relative group">
                                         <textarea
@@ -345,7 +345,7 @@ export default function Blog() {
                                             className="w-full min-h-[400px] rounded-[2rem] border border-slate-100 bg-slate-50/50 p-8 text-base font-medium focus:outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary/30 transition-all shadow-inner leading-relaxed"
                                             value={form.content}
                                             onChange={(e) => setForm({ ...form, content: e.target.value })}
-                                            placeholder="Synthesize your findings here..."
+                                            placeholder="Write your article content here..."
                                         />
                                         <div className="absolute top-4 right-4 text-[10px] font-bold text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">
                                             {form.content.length} characters
@@ -438,14 +438,14 @@ export default function Blog() {
                                 className="h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-[10px] text-slate-400 hover:text-slate-600"
                                 onClick={() => setIsModalOpen(false)}
                             >
-                                <Undo2 className="h-4 w-4 mr-2" /> Discard Analysis
+                                <Undo2 className="h-4 w-4 mr-2" /> Discard
                             </Button>
                             <Button
                                 type="submit"
                                 className="flex-1 h-20 rounded-[2rem] bg-primary text-white text-xl font-black italic shadow-2xl shadow-primary/20 hover:scale-[1.02] transition-all gap-4 ring-8 ring-primary/5"
                             >
                                 <CheckCircle className="h-6 w-6" />
-                                {editingPost ? "Finalize Updates" : "Commit to Repository"}
+                                {editingPost ? "Save Changes" : "Save Article"}
                             </Button>
                         </DialogFooter>
                     </form>

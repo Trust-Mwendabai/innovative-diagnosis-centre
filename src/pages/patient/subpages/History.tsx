@@ -51,20 +51,26 @@ export default function PatientHistory() {
                         icon: FileText
                     }));
 
-                    const combined = [...appointments, ...results].sort((a, b) =>
-                        new Date(b.date + ' ' + b.time) - new Date(a.date + ' ' + a.time)
-                    );
+                    const combined = [...appointments, ...results].sort((a, b) => {
+                        const dateB = new Date(`${b.date}T${b.time || '00:00:00'}`).getTime();
+                        const dateA = new Date(`${a.date}T${a.time || '00:00:00'}`).getTime();
+                        return dateB - dateA;
+                    });
 
                     setEvents(combined);
                 }
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching history:", error);
+                console.error("Temporal synchronization failed:", error);
                 setLoading(false);
             }
         };
 
-        if (user?.id) fetchHistory();
+        if (!user?.id) {
+            setLoading(false);
+            return;
+        }
+        fetchHistory();
     }, [user?.id]);
 
     return (
@@ -73,9 +79,9 @@ export default function PatientHistory() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div>
                     <h1 className="text-5xl font-black font-heading tracking-tighter">
-                        Medical <span className="text-[hsl(var(--gold))]">Timeline</span>
+                        My Health <span className="text-[hsl(var(--gold))]">History</span>
                     </h1>
-                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Integrated Health Log • Temporal Data Stream</p>
+                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Past appointments and test results</p>
                 </div>
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" />
@@ -180,7 +186,7 @@ export default function PatientHistory() {
                             <FileText className="h-10 w-10 text-[hsl(var(--gold))]" />
                         </div>
                         <div>
-                            <h4 className="text-2xl font-black text-white uppercase tracking-tight">Consolidated Record</h4>
+                            <h4 className="text-2xl font-black text-white uppercase tracking-tight">Full Medical Record</h4>
                             <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest mt-1">Export your complete diagnostic history as a single document</p>
                         </div>
                     </div>

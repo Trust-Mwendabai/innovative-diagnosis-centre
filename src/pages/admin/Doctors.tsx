@@ -105,18 +105,18 @@ export default function Doctors() {
         <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Expert Panel</h1>
-                    <p className="text-muted-foreground font-medium">Manage clinical staff and diagnostic experts.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Doctors</h1>
+                    <p className="text-muted-foreground font-medium">Manage clinical staff and doctors.</p>
                 </div>
                 <Button onClick={() => setIsAddModalOpen(true)} className="gradient-primary py-5 px-6 shadow-lg shadow-primary/20">
-                    <UserPlus className="mr-2 h-4 w-4" /> Add Specialist
+                    <UserPlus className="mr-2 h-4 w-4" /> Add Doctor
                 </Button>
             </div>
 
             <Card className="glass-light border-white/20 shadow-2xl rounded-[2.5rem] overflow-hidden">
                 <CardHeader className="p-8 border-b border-white/10 bg-white/40">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                        <CardTitle className="text-xl font-black text-slate-900">Clinical Directory</CardTitle>
+                        <CardTitle className="text-xl font-black text-slate-900">Medical Staff</CardTitle>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
@@ -132,16 +132,16 @@ export default function Doctors() {
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32 gap-4">
                             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                            <p className="text-muted-foreground font-bold animate-pulse">Scanning Personnel Records...</p>
+                            <p className="text-muted-foreground font-bold animate-pulse">Loading doctors...</p>
                         </div>
                     ) : filteredDoctors.length === 0 ? (
                         <div className="text-center py-32 bg-white/20">
                             <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Stethoscope className="w-10 h-10 text-slate-300" />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-800">No Specialists Found</h3>
+                            <h3 className="text-xl font-bold text-slate-800">No Doctors Found</h3>
                             <p className="text-muted-foreground font-medium max-w-md mx-auto">
-                                Manage your medical team by adding new specialists to the panel.
+                                Manage your medical team by adding new doctors to the system.
                             </p>
                         </div>
                     ) : (
@@ -149,8 +149,8 @@ export default function Doctors() {
                             <Table>
                                 <TableHeader className="bg-slate-50/50">
                                     <TableRow className="hover:bg-transparent border-white/10">
-                                        <TableHead className="py-6 px-8 text-xs font-bold uppercase tracking-widest">Specialist</TableHead>
-                                        <TableHead className="py-6 text-xs font-bold uppercase tracking-widest">Contact Intelligence</TableHead>
+                                        <TableHead className="py-6 px-8 text-xs font-bold uppercase tracking-widest">Doctor Name</TableHead>
+                                        <TableHead className="py-6 text-xs font-bold uppercase tracking-widest">Contact Details</TableHead>
                                         <TableHead className="py-6 text-xs font-bold uppercase tracking-widest text-center">Joined</TableHead>
                                         <TableHead className="py-6 px-8 text-right text-xs font-bold uppercase tracking-widest">Actions</TableHead>
                                     </TableRow>
@@ -209,9 +209,9 @@ export default function Doctors() {
             <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
                 <DialogContent className="sm:max-w-md rounded-[2rem] border-white/20 glass-light backdrop-blur-2xl">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-900">Onboard Specialist</DialogTitle>
+                        <DialogTitle className="text-2xl font-black text-slate-900">Add New Doctor</DialogTitle>
                         <DialogDescription className="font-medium">
-                            Register a new medical professional to the IDC Expert Panel.
+                            Register a new medical professional to the system.
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleAddDoctor} className="space-y-4 pt-4">
@@ -257,7 +257,7 @@ export default function Doctors() {
                         </div>
                         <DialogFooter className="pt-6">
                             <Button type="submit" className="w-full h-12 rounded-xl gradient-primary font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20" disabled={submitting}>
-                                {submitting ? "Processing..." : "Authorize Specialist"}
+                                {submitting ? "Processing..." : "Add Doctor"}
                             </Button>
                         </DialogFooter>
                     </form>

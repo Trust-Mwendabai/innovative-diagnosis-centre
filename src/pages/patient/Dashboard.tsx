@@ -34,61 +34,76 @@ export default function PatientDashboard() {
         completed: 0,
         results: 0
     });
+    const [patientData, setPatientData] = useState<any>(null);
+    const [latestMetrics, setLatestMetrics] = useState<any[]>([]);
     const [recentBookings, setRecentBookings] = useState<any[]>([]);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
-            if (!user?.id) return;
+            if (!user?.id) {
+                setLoading(false);
+                return;
+            }
 
             try {
-                // Fetch patient details (includes history and results)
-                const detailsRes = await fetch(`${API_BASE_URL}/patients/details.php?id=${user.id}`);
-                const detailsData = await detailsRes.json();
+                // Fetch summary and notifications in parallel
+                const [summaryRes, notifRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/patients/summary.php?id=${user.id}`).catch(err => {
+                        console.error("Summary fetch failed:", err);
+                        return null;
+                    }),
+                    fetch(`${API_BASE_URL}/notifications/read.php?patient_id=${user.id}`).catch(err => {
+                        console.error("Notifications fetch failed:", err);
+                        return null;
+                    })
+                ]);
 
-                if (detailsData.success) {
-                    const history = detailsData.history || [];
-                    const results = detailsData.results || [];
+                // Process Summary Data
+                if (summaryRes && summaryRes.ok) {
+                    try {
+                        const summaryData = await summaryRes.json();
+                        if (summaryData.success) {
+                            setStats(summaryData.stats || { pending: 0, completed: 0, results: 0 });
+                            setPatientData(summaryData.patient);
+                            setLatestMetrics(summaryData.latest_metrics || []);
 
-                    // Set recent bookings (confirmed or pending)
-                    const upcoming = history
-                        .filter((h: any) => h.status === 'confirmed' || h.status === 'pending')
-                        .slice(0, 5)
-                        .map((h: any) => ({
-                            id: h.id,
-                            test: h.test_name || "Diagnostic Test",
-                            date: h.date,
-                            time: h.time,
-                            status: h.status,
-                            branch: h.branch_name || "Main Branch"
-                        }));
-                    setRecentBookings(upcoming);
-
-                    // Generate stats
-                    setStats({
-                        pending: history.filter((h: any) => h.status === 'pending' || h.status === 'confirmed').length,
-                        completed: history.filter((h: any) => h.status === 'completed').length,
-                        results: results.length
-                    });
+                            const upcoming = (summaryData.recent_bookings || []).map((h: any) => ({
+                                id: h.id,
+                                test: h.test_name || "Diagnostic Test",
+                                date: h.date,
+                                time: h.time,
+                                status: h.status,
+                                branch: h.branch_name || "Main Branch"
+                            }));
+                            setRecentBookings(upcoming);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing summary JSON:", e);
+                    }
                 }
 
-                // Fetch notifications
-                const notifRes = await fetch(`${API_BASE_URL}/notifications/read.php?patient_id=${user.id}`);
-                const notifData = await notifRes.json();
-
-                if (notifData.success) {
-                    setNotifications(notifData.notifications.map((n: any) => ({
-                        id: n.id,
-                        type: n.type || "alert",
-                        message: n.message,
-                        time: new Date(n.sent_at).toLocaleDateString(),
-                        read: n.status === 'read'
-                    })));
+                // Process Notifications Data
+                if (notifRes && notifRes.ok) {
+                    try {
+                        const notifData = await notifRes.json();
+                        if (notifData.success) {
+                            setNotifications((notifData.notifications || []).map((n: any) => ({
+                                id: n.id,
+                                type: n.type || "alert",
+                                message: n.message,
+                                time: n.sent_at ? new Date(n.sent_at).toLocaleDateString() : "Recent",
+                                read: n.status === 'read'
+                            })));
+                        }
+                    } catch (e) {
+                        console.error("Error parsing notifications JSON:", e);
+                    }
                 }
 
             } catch (error) {
-                console.error("Error fetching dashboard data:", error);
+                console.error("Critical error fetching dashboard data:", error);
             } finally {
                 setLoading(false);
             }
@@ -98,7 +113,7 @@ export default function PatientDashboard() {
     }, [user?.id]);
 
     return (
-        <div className="space-y-10 animate-fade-in pb-12">
+        <div className="space-y-10 pb-12">
             {/* Header with Quick Actions */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div>
@@ -108,13 +123,17 @@ export default function PatientDashboard() {
                     <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Integrated Diagnostic Control • Level 4 Clearance</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
-                    <Button className="h-14 px-8 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest shadow-glow-gold hover:scale-[1.05] transition-all">
-                        <FlaskConical className="mr-3 h-5 w-5" />
-                        Book New Test
+                    <Button asChild className="h-14 px-8 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest shadow-glow-gold hover:scale-[1.05] transition-all">
+                        <Link to="/patient/profile" className="flex items-center">
+                            <User className="mr-3 h-5 w-5" />
+                            View User Profile
+                        </Link>
                     </Button>
-                    <Button variant="outline" className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 text-white font-black uppercase tracking-widest hover:bg-white/10">
-                        <FileText className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
-                        Download Report
+                    <Button asChild variant="outline" className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 text-white font-black uppercase tracking-widest hover:bg-white/10">
+                        <Link to="/patient/appointments" className="flex items-center">
+                            <FlaskConical className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
+                            Book New Test
+                        </Link>
                     </Button>
                 </div>
             </div>
@@ -281,15 +300,28 @@ export default function PatientDashboard() {
                                     <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
                                 </div>
                                 <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">Primary Blood Node</p>
-                                <p className="text-2xl font-black text-white">O Positive</p>
+                                <p className="text-2xl font-black text-white">{patientData?.blood_group || "NOT SET"}</p>
                             </div>
-                            <div className="p-6 rounded-3xl bg-white/5 border border-white/5 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-3">
-                                    <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
+
+                            {latestMetrics.slice(0, 2).map((metric: any) => (
+                                <div key={metric.metric_name} className="p-6 rounded-3xl bg-white/5 border border-white/5 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3">
+                                        <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
+                                    </div>
+                                    <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">{metric.metric_name}</p>
+                                    <p className="text-2xl font-black text-white">{metric.metric_value} <span className="text-[10px] text-white/20 uppercase">{metric.unit}</span></p>
                                 </div>
-                                <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">Latest Session</p>
-                                <p className="text-2xl font-black text-white">15 Mar 2024</p>
-                            </div>
+                            ))}
+
+                            {latestMetrics.length === 0 && (
+                                <div className="p-6 rounded-3xl bg-white/5 border border-white/5 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-3">
+                                        <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
+                                    </div>
+                                    <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">Latest Session</p>
+                                    <p className="text-2xl font-black text-white">NO DATA</p>
+                                </div>
+                            )}
 
                             <div className="pt-4">
                                 <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[11px] group">

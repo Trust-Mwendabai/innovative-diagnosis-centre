@@ -1,5 +1,5 @@
 <?php
-include_once '../config/database.php';
+include_once __DIR__ . '/../config/database.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -14,7 +14,10 @@ if(!empty($data->id) && !empty($data->name)){
                     phone = :phone,
                     address = :address,
                     dob = :dob,
-                    gender = :gender
+                    gender = :gender,
+                    blood_group = :blood_group,
+                    weight = :weight,
+                    height = :height
                   WHERE id = :id";
 
         $stmt = $conn->prepare($query);
@@ -27,6 +30,9 @@ if(!empty($data->id) && !empty($data->name)){
         $address = htmlspecialchars(strip_tags($data->address));
         $dob = !empty($data->dob) ? htmlspecialchars(strip_tags($data->dob)) : null;
         $gender = !empty($data->gender) ? htmlspecialchars(strip_tags($data->gender)) : null;
+        $blood_group = !empty($data->blood_group) ? htmlspecialchars(strip_tags($data->blood_group)) : null;
+        $weight = !empty($data->weight) ? (float)$data->weight : null;
+        $height = !empty($data->height) ? (float)$data->height : null;
 
         // Bind
         $stmt->bindParam(':id', $id);
@@ -36,6 +42,9 @@ if(!empty($data->id) && !empty($data->name)){
         $stmt->bindParam(':address', $address);
         $stmt->bindParam(':dob', $dob);
         $stmt->bindParam(':gender', $gender);
+        $stmt->bindParam(':blood_group', $blood_group);
+        $stmt->bindParam(':weight', $weight);
+        $stmt->bindParam(':height', $height);
 
         if($stmt->execute()){
             http_response_code(200);
