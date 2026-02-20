@@ -29,7 +29,7 @@ const sidebarItems = [
     { icon: Settings, label: "Settings", path: "/doctor/settings" },
 ];
 
-export default function DoctorSidebar() {
+export default function DoctorSidebar({ onNavigate }: { onNavigate?: () => void }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [notifCount, setNotifCount] = useState(0);
     const location = useLocation();
@@ -86,7 +86,10 @@ export default function DoctorSidebar() {
                     return (
                         <button
                             key={item.label}
-                            onClick={() => navigate(item.path)}
+                            onClick={() => {
+                                navigate(item.path);
+                                if (onNavigate) onNavigate();
+                            }}
                             className={cn(
                                 "w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-500 group relative overflow-hidden",
                                 isActive

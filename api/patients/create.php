@@ -45,7 +45,7 @@ if (
             $user_id = $conn->lastInsertId();
 
             // 3. Insert into patients table
-            $queryPatient = "INSERT INTO patients (user_id, name, email, phone, date_of_birth, gender, address) VALUES (:user_id, :name, :email, :phone, :dob, :gender, :address)";
+            $queryPatient = "INSERT INTO patients (user_id, name, email, phone, dob, gender, address) VALUES (:user_id, :name, :email, :phone, :dob, :gender, :address)";
             $stmtPatient = $conn->prepare($queryPatient);
             
             $stmtPatient->bindParam(":user_id", $user_id);
