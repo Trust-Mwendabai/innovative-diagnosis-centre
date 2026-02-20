@@ -4,11 +4,24 @@ include_once __DIR__ . '/../config/database.php';
 header("Content-Type: application/json; charset=UTF-8");
 
 try {
-    if (empty($_GET['patient_id'])) {
-        throw new Exception("Patient ID is required.");
+    $patient_id = null;
+
+    if (!empty($_GET['patient_id'])) {
+        $patient_id = (int)$_GET['patient_id'];
+    } else if (!empty($_GET['user_id'])) {
+        $user_id = (int)$_GET['user_id'];
+        $stmt = $conn->prepare("SELECT id FROM patients WHERE user_id = :user_id LIMIT 1");
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $patient = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($patient) {
+            $patient_id = $patient['id'];
+        }
     }
-    
-    $patient_id = (int)$_GET['patient_id'];
+
+    if (!$patient_id) {
+        throw new Exception("Patient record not found.");
+    }
     
     // Fetch appointments with potential test/package info
     $query = "SELECT 

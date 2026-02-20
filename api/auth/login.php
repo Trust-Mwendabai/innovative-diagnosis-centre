@@ -33,6 +33,7 @@ if(!empty($identifier) && !empty($data->password)) {
                     "success" => true,
                     "token" => "mock-jwt-token-" . bin2hex(random_bytes(16)),
                     "user" => [
+                        "id" => $row['id'],
                         "name" => $row['name'],
                         "email" => $row['email'],
                         "phone" => $row['phone'],

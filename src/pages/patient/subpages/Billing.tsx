@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
     CreditCard,
@@ -19,7 +19,6 @@ import { useAuth } from "@/context/AuthContext";
 import { API_BASE_URL } from "@/lib/config";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { API_BASE_URL as BASE } from "@/lib/config";
 
 export default function PatientBilling() {
     const { user } = useAuth();
@@ -33,9 +32,14 @@ export default function PatientBilling() {
 
     useEffect(() => {
         const fetchBillingData = async () => {
-            if (!user?.id) return;
+            if (!user?.id) {
+                // If user.id is missing but we're here, wait a bit or set loading false
+                // This prevents being stuck in loading state if user object is incomplete
+                setLoading(false);
+                return;
+            }
             try {
-                const res = await fetch(`${API_BASE_URL}/billing/read.php?patient_id=${user.id}`);
+                const res = await fetch(`${API_BASE_URL}/billing/read.php?user_id=${user.id}`);
                 const data = await res.json();
                 if (data.success) {
                     setTransactions(data.transactions || []);
