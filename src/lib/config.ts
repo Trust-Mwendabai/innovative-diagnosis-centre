@@ -10,7 +10,7 @@ const isDevelopment = import.meta.env.MODE === 'development';
 // In development, we might be on localhost:8080 (Vite) while PHP is on localhost (Apache)
 // This logic tries to be smart about finding the backend.
 export const API_BASE_URL = isDevelopment
-    ? (window.location.port === '8080' ? 'http://localhost/IDC/api' : '/IDC/api')
+    ? (window.location.port !== '' && window.location.port !== '80' ? 'http://localhost/IDC/api' : '/IDC/api')
     : `${window.location.origin}/api`;
 
 /**

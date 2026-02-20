@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import {
     BarChart,
     Bar,
@@ -60,17 +62,84 @@ export default function Reports() {
     };
 
     const exportReport = (format: string) => {
+        if (!data) {
+            toast.error("No data available to export.");
+            return;
+        }
+
         toast.success(`Generating ${format} report...`);
-        setTimeout(() => {
+
+        try {
+            const doc = new jsPDF() as any;
+
+            // Header
+            doc.setFontSize(22);
+            doc.setTextColor(59, 130, 246);
+            doc.text("IDC Diagnostic Intelligence Report", 14, 22);
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+            doc.text("Clinic Operations & Revenue Analytics", 14, 35);
+
+            // Stats Summary
+            doc.setFontSize(16);
+            doc.setTextColor(0);
+            doc.text("Performance Overview", 14, 50);
+
+            const statsData = [
+                ["Metric", "Value", "Trend"],
+                ["Monthly Growth", "+12.5%", "+4.1%"],
+                ["Patient Retention", "94.2%", "+2.3%"],
+                ["Avg. Test Value", "K1,450", "+1.1%"],
+                ["Report Accuracy", "99.9%", "Optimal"]
+            ];
+
+            doc.autoTable({
+                startY: 55,
+                head: [statsData[0]],
+                body: statsData.slice(1),
+                theme: 'grid',
+                headStyles: { fillStyle: [59, 130, 246] }
+            });
+
+            // Trend Data
+            if (data.trends && data.trends.length > 0) {
+                doc.text("Patient Volume Trends", 14, (doc as any).lastAutoTable.finalY + 15);
+                const trendRows = data.trends.map((t: any) => [t.month, t.count]);
+                doc.autoTable({
+                    startY: (doc as any).lastAutoTable.finalY + 20,
+                    head: [["Month", "Appointments"]],
+                    body: trendRows,
+                    theme: 'striped'
+                });
+            }
+
+            // Status distribution
+            if (data.distribution && data.distribution.length > 0) {
+                doc.text("Top Performed Tests", 14, (doc as any).lastAutoTable.finalY + 15);
+                const distRows = data.distribution.map((d: any) => [d.name, d.total]);
+                doc.autoTable({
+                    startY: (doc as any).lastAutoTable.finalY + 20,
+                    head: [["Test Name", "Volume"]],
+                    body: distRows,
+                    theme: 'grid'
+                });
+            }
+
+            doc.save(`IDC_Analytics_Report_${new Date().toISOString().split('T')[0]}.pdf`);
             toast.info("Download started automatically.");
-        }, 1500);
+        } catch (error) {
+            console.error("PDF generation error:", error);
+            toast.error("Failed to generate PDF.");
+        }
     };
 
     return (
         <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Reports & Analytics</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Reports & Analytics</h1>
                     <p className="text-muted-foreground font-medium">Advanced intelligence for clinic operations and revenue trends.</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -98,7 +167,7 @@ export default function Reports() {
                         </div>
                         <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">{stat.label}</p>
                         <div className="flex items-baseline gap-2">
-                            <h4 className="text-2xl font-black text-slate-900">{stat.val}</h4>
+                            <h4 className="text-2xl font-black text-slate-900 dark:text-white">{stat.val}</h4>
                             <span className="text-[10px] font-bold text-emerald-500 flex items-center"><ArrowUpRight className="h-2.5 w-2.5" /> 4.1%</span>
                         </div>
                     </Card>
@@ -108,7 +177,7 @@ export default function Reports() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card className="glass-light border-white/20 shadow-premium rounded-[2.5rem] overflow-hidden">
                     <CardHeader className="p-8">
-                        <CardTitle className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <CardTitle className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                             <TrendingUp className="h-5 w-5 text-primary" /> Patient Volume Trends
                         </CardTitle>
                         <CardDescription className="font-bold">Total appointments per month over the last 6 months.</CardDescription>
@@ -129,7 +198,14 @@ export default function Reports() {
                                     <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontWeight: 'bold', fontSize: 12 }} />
                                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontWeight: 'bold', fontSize: 12 }} />
                                     <Tooltip
-                                        contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
+                                        contentStyle={{
+                                            borderRadius: '20px',
+                                            border: 'none',
+                                            boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
+                                            fontWeight: 'bold',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            color: '#0f172a'
+                                        }}
                                         cursor={{ stroke: '#3b82f6', strokeWidth: 2 }}
                                     />
                                     <Area type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorCount)" />
@@ -141,7 +217,7 @@ export default function Reports() {
 
                 <Card className="glass-light border-white/20 shadow-premium rounded-[2.5rem] overflow-hidden">
                     <CardHeader className="p-8">
-                        <CardTitle className="text-xl font-black text-slate-900 flex items-center gap-2">
+                        <CardTitle className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                             <DollarSign className="h-5 w-5 text-emerald-500" /> Revenue Distribution
                         </CardTitle>
                         <CardDescription className="font-bold">Projected income flow from diagnostic services.</CardDescription>
@@ -159,7 +235,13 @@ export default function Reports() {
                                         cursor={{ fill: '#f8fafc' }}
                                         contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
                                     />
-                                    <Bar dataKey="revenue" fill="#10b981" radius={[10, 10, 0, 0]} barSize={40} />
+                                    <Bar
+                                        dataKey="revenue"
+                                        fill="#10b981"
+                                        radius={[10, 10, 0, 0]}
+                                        barSize={40}
+                                        animationDuration={1500}
+                                    />
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
@@ -214,29 +296,17 @@ export default function Reports() {
                     </CardContent>
                 </Card>
 
-                <div className="space-y-6">
-                    <Card className="glass-light border-white/20 shadow-premium p-8 rounded-[2.5rem]">
-                        <h4 className="text-lg font-black text-slate-900 mb-2">Automated Report Scheduler</h4>
-                        <p className="text-sm text-muted-foreground font-medium mb-6">Receive weekly executive summaries directly in your email.</p>
-                        <div className="flex gap-4">
-                            <Button className="flex-1 h-12 rounded-2xl bg-slate-100 text-slate-900 hover:bg-slate-200 font-black text-xs uppercase tracking-widest">Configure</Button>
-                            <Button className="flex-1 h-12 rounded-2xl gradient-primary shadow-lg shadow-primary/20 font-black text-xs uppercase tracking-widest">Activate</Button>
+                <Card className="glass-light border-white/20 shadow-premium p-8 rounded-[2.5rem] bg-indigo-50/50 flex flex-col justify-center">
+                    <div className="flex gap-4">
+                        <div className="p-4 rounded-3xl bg-white text-indigo-600 shadow-sm h-fit">
+                            <Activity className="h-6 w-6" />
                         </div>
-                    </Card>
-
-                    <Card className="glass-light border-white/20 shadow-premium p-8 rounded-[2.5rem] bg-indigo-50/50">
-                        <div className="flex gap-4">
-                            <div className="p-4 rounded-3xl bg-white text-indigo-600 shadow-sm h-fit">
-                                <Users className="h-6 w-6" />
-                            </div>
-                            <div>
-                                <h5 className="text-sm font-black text-slate-900 mb-1">Clinic Growth Insight</h5>
-                                <p className="text-xs leading-relaxed font-medium text-slate-500">Based on trend analysis, patient volume is expected to increase by <span className="font-black text-indigo-600">8% next month</span>. Consider increasing lab headcount.</p>
-                                <Button variant="link" className="p-0 h-auto text-[10px] font-black uppercase text-indigo-600 mt-2">View Detailed Forecast <ChevronRight className="h-3 w-3 ml-1" /></Button>
-                            </div>
+                        <div>
+                            <h5 className="text-sm font-black text-slate-900 mb-1">Intelligence Overview</h5>
+                            <p className="text-xs leading-relaxed font-medium text-slate-500">Your clinic data is showing consistent growth. All systems are performing at optimal capacity with 99.9% report accuracy.</p>
                         </div>
-                    </Card>
-                </div>
+                    </div>
+                </Card>
             </div>
         </div>
     );

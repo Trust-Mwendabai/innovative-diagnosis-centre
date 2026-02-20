@@ -154,8 +154,8 @@ export default function Tests() {
         <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Medical Tests</h1>
-                    <p className="text-muted-foreground font-medium">Manage diagnostic test catalog and pricing.</p>
+                    <h1 className="text-4xl font-black tracking-tighter text-slate-900 dark:text-white italic">Medical Tests</h1>
+                    <p className="text-muted-foreground font-bold mt-1">Manage diagnostic test catalog and pricing.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="outline" className="glass py-5 px-6 border-white/20 bg-white/40">
@@ -184,7 +184,7 @@ export default function Tests() {
                     <Card className="glass-light border-white/20 shadow-2xl rounded-[2.5rem] overflow-hidden">
                         <CardHeader className="p-8 border-b border-white/10 bg-white/40">
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                                <CardTitle className="text-xl font-black text-slate-900">Test List</CardTitle>
+                                <CardTitle className="text-2xl font-black text-slate-900 dark:text-white italic">Test List</CardTitle>
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
@@ -205,20 +205,20 @@ export default function Tests() {
                                 </div>
                             ) : tests.length === 0 ? (
                                 <div className="text-center py-32 bg-white/20">
-                                    <Archive className="w-20 h-20 text-slate-100 mx-auto mb-4" />
-                                    <h3 className="text-xl font-bold text-slate-800">No Tests Found</h3>
-                                    <Button variant="link" onClick={() => setIsTestModalOpen(true)}>Add your first test now</Button>
+                                    <Archive className="w-20 h-20 text-slate-300 mx-auto mb-4" />
+                                    <h3 className="text-2xl font-black text-slate-800 dark:text-white italic">No Tests Found</h3>
+                                    <Button variant="link" className="font-bold text-primary" onClick={() => setIsTestModalOpen(true)}>Add your first test now</Button>
                                 </div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <Table>
                                         <TableHeader className="bg-slate-50/50">
                                             <TableRow className="hover:bg-transparent border-white/10">
-                                                <TableHead className="py-6 px-8 text-xs font-bold uppercase tracking-widest">Test Name</TableHead>
-                                                <TableHead className="py-6 text-xs font-bold uppercase tracking-widest">Category</TableHead>
-                                                <TableHead className="py-6 text-xs font-bold uppercase tracking-widest text-center">Price ($)</TableHead>
-                                                <TableHead className="py-6 text-xs font-bold uppercase tracking-widest">Instructions</TableHead>
-                                                <TableHead className="py-6 px-8 text-right text-xs font-bold uppercase tracking-widest">Actions</TableHead>
+                                                <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Test Name</TableHead>
+                                                <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Category</TableHead>
+                                                <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 text-center">Price ($)</TableHead>
+                                                <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Instructions</TableHead>
+                                                <TableHead className="py-6 px-8 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Actions</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -226,8 +226,8 @@ export default function Tests() {
                                                 <TableRow key={test.id} className="group hover:bg-white/60 transition-colors border-white/5">
                                                     <TableCell className="py-6 px-8">
                                                         <div>
-                                                            <div className="font-black text-slate-900 group-hover:text-primary transition-colors text-base">{test.name}</div>
-                                                            <div className="text-xs text-muted-foreground font-medium line-clamp-1">{test.description}</div>
+                                                            <div className="font-black text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors text-lg italic">{test.name}</div>
+                                                            <div className="text-sm text-muted-foreground font-bold line-clamp-1 mt-1">{test.description}</div>
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="py-6">
@@ -235,12 +235,12 @@ export default function Tests() {
                                                             {test.category}
                                                         </span>
                                                     </TableCell>
-                                                    <TableCell className="py-6 text-center font-black text-slate-900">
+                                                    <TableCell className="py-6 text-center font-black text-slate-900 dark:text-white text-base">
                                                         {test.price}
                                                     </TableCell>
                                                     <TableCell className="py-6">
-                                                        <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                                                            <Info className="h-3.5 w-3.5 text-slate-400" /> {test.preparation || 'No specific prep'}
+                                                        <div className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400">
+                                                            <Info className="h-4 w-4 text-primary" /> {test.preparation || 'No specific prep'}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="py-6 px-8 text-right">
@@ -272,9 +272,9 @@ export default function Tests() {
                                         <div className="p-3 rounded-2xl bg-primary/10 text-primary">
                                             <Package className="h-6 w-6" />
                                         </div>
-                                        <span className="text-2xl font-black text-slate-900">${pkg.price}</span>
+                                        <span className="text-3xl font-black text-slate-900 dark:text-white">${pkg.price}</span>
                                     </div>
-                                    <CardTitle className="text-xl font-black text-slate-900 mt-6">{pkg.name}</CardTitle>
+                                    <CardTitle className="text-2xl font-black text-slate-900 dark:text-white italic mt-6">{pkg.name}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-8">
                                     <p className="text-sm text-muted-foreground font-medium mb-6 line-clamp-2">{pkg.description}</p>

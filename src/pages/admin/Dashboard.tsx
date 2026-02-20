@@ -170,7 +170,7 @@ export default function Dashboard() {
         <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Dashboard</h1>
                     <p className="text-muted-foreground font-medium">Overview of diagnostic appointments and activity logs.</p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -209,7 +209,7 @@ export default function Dashboard() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-black text-slate-900">{stats.counts.total}</div>
+                            <div className="text-2xl font-black text-slate-900 dark:text-white">{stats.counts.total}</div>
                             <p className="text-xs text-muted-foreground mt-1 font-medium">
                                 <span className="text-emerald-600">+{stats.counts.today} today</span> • {stats.counts.this_week} this week
                             </p>
@@ -224,7 +224,7 @@ export default function Dashboard() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-black text-slate-900">{stats.counts.patients}</div>
+                            <div className="text-2xl font-black text-slate-900 dark:text-white">{stats.counts.patients}</div>
                             <p className="text-xs text-muted-foreground mt-1 font-medium">Registered records</p>
                         </CardContent>
                     </Card>
@@ -237,7 +237,7 @@ export default function Dashboard() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-black text-slate-900">{stats.counts.pending}</div>
+                            <div className="text-2xl font-black text-slate-900 dark:text-white">{stats.counts.pending}</div>
                             <p className="text-xs text-muted-foreground mt-1 font-medium">Needs confirmation</p>
                         </CardContent>
                     </Card>
@@ -250,7 +250,7 @@ export default function Dashboard() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-black text-slate-900">{stats.counts.completed}</div>
+                            <div className="text-2xl font-black text-slate-900 dark:text-white">{stats.counts.completed}</div>
                             <p className="text-xs text-muted-foreground mt-1 font-medium">Results delivered</p>
                         </CardContent>
                     </Card>
@@ -258,9 +258,9 @@ export default function Dashboard() {
             )}
 
             {/* Charts & Activity Feed */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {stats && (
-                    <Card className="lg:col-span-2 glass-light border-white/20 shadow-xl overflow-hidden rounded-[2rem]">
+                    <Card className="lg:col-span-3 glass-light border-white/20 shadow-xl overflow-hidden rounded-[2rem]">
                         <CardHeader className="p-8 border-b border-white/5 bg-white/20">
                             <CardTitle className="text-lg font-bold flex items-center gap-2">
                                 <TrendingUp className="h-5 w-5 text-primary" />
@@ -273,17 +273,41 @@ export default function Dashboard() {
                                     <AreaChart data={stats.trend}>
                                         <defs>
                                             <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
                                                 <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
-                                        <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-                                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                                        <Tooltip
-                                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '12px' }}
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.03)" />
+                                        <XAxis
+                                            dataKey="date"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }}
+                                            dy={10}
                                         />
-                                        <Area type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorCount)" />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 'bold' }}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                borderRadius: '16px',
+                                                border: 'none',
+                                                boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)',
+                                                padding: '12px',
+                                                fontWeight: 'bold'
+                                            }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="count"
+                                            stroke="#3b82f6"
+                                            strokeWidth={4}
+                                            fillOpacity={1}
+                                            fill="url(#colorCount)"
+                                            animationDuration={2000}
+                                        />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
@@ -291,8 +315,53 @@ export default function Dashboard() {
                     </Card>
                 )}
 
+                {stats && stats.distribution && (
+                    <Card className="glass-light border-white/20 shadow-xl overflow-hidden rounded-[2rem]">
+                        <CardHeader className="p-8 border-b border-white/5 bg-white/20">
+                            <CardTitle className="text-lg font-bold flex items-center gap-2">
+                                <Activity className="h-5 w-5 text-emerald-500" />
+                                Collection Type
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-8 flex items-center justify-center">
+                            <div className="h-[250px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={stats.distribution}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={80}
+                                            paddingAngle={8}
+                                            dataKey="count"
+                                            nameKey="location_type"
+                                        >
+                                            {stats.distribution.map((_, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div className="mt-4 space-y-2">
+                                    {stats.distribution.map((item, index) => (
+                                        <div key={index} className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-2 h-2 rounded-full" style={{ background: COLORS[index % COLORS.length] }} />
+                                                {item.location_type}
+                                            </div>
+                                            <span className="text-slate-900">{item.count}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Activity Feed */}
-                <Card className="glass-light border-white/20 shadow-xl overflow-hidden rounded-[2rem]">
+                <Card className="lg:col-span-1 glass-light border-white/20 shadow-xl overflow-hidden rounded-[2rem]">
                     <CardHeader className="p-8 border-b border-white/5 bg-white/20">
                         <CardTitle className="text-lg font-bold flex items-center gap-2">
                             <Activity className="h-5 w-5 text-secondary" />
@@ -314,7 +383,7 @@ export default function Dashboard() {
                                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-sm font-bold text-slate-900 leading-none">{act.action}</p>
+                                        <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">{act.action}</p>
                                         <p className="text-xs text-muted-foreground leading-relaxed font-medium">
                                             {act.details} • <span className="font-bold text-slate-500">{act.staff_name || 'System'}</span>
                                         </p>
@@ -334,7 +403,7 @@ export default function Dashboard() {
                 <CardHeader className="p-8 border-b border-white/10 bg-white/40">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <div>
-                            <CardTitle className="text-2xl font-black text-slate-900">Appointment Management</CardTitle>
+                            <CardTitle className="text-2xl font-black text-slate-900 dark:text-white">Appointment Management</CardTitle>
                             <p className="text-muted-foreground font-medium mt-1">Search, filter, and manage all your clinic bookings.</p>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -399,7 +468,7 @@ export default function Dashboard() {
                                                         {apt.name.charAt(0)}
                                                     </div>
                                                     <div>
-                                                        <div className="font-black text-slate-900 group-hover:text-primary transition-colors text-base">{apt.name}</div>
+                                                        <div className="font-black text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors text-base">{apt.name}</div>
                                                         <div className="text-xs text-muted-foreground font-bold flex items-center gap-1">
                                                             <UserCircle className="h-3 w-3" /> ID: {apt.id} • {apt.phone}
                                                         </div>
@@ -408,7 +477,7 @@ export default function Dashboard() {
                                             </TableCell>
                                             <TableCell className="py-6">
                                                 <div className="space-y-1.5">
-                                                    <div className="flex items-center gap-2 text-sm font-black text-slate-700">
+                                                    <div className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300">
                                                         <Calendar className="h-4 w-4 text-blue-500" /> {apt.date}
                                                     </div>
                                                     <div className="flex items-center gap-2 text-xs text-muted-foreground font-bold">

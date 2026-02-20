@@ -26,31 +26,34 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
 
             {/* Mobile Header */}
             {isMobile && (
-                <header className="h-20 border-b border-white/10 bg-slate-950/50 backdrop-blur-xl flex items-center justify-between px-6 sticky top-0 z-50">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] flex items-center justify-center shadow-glow-gold rotate-3">
-                            <span className="text-white font-black text-sm -rotate-3">IDC</span>
+                <header className="h-24 border-b border-white/10 bg-slate-950/80 backdrop-blur-2xl flex items-center justify-between px-8 sticky top-0 z-50">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[hsl(var(--saffron))] to-[hsl(var(--gold))] flex items-center justify-center shadow-glow-gold rotate-3 scale-110">
+                            <span className="text-white font-black text-base -rotate-3">IDC</span>
                         </div>
-                        <span className="text-white font-black text-sm uppercase tracking-tighter">Guardian Vault</span>
+                        <div className="flex flex-col">
+                            <span className="text-white font-black text-base uppercase tracking-widest leading-none">Guardian Vault</span>
+                            <span className="text-[10px] font-black uppercase text-[hsl(var(--gold))] tracking-[0.3em] mt-1 ml-0.5 opacity-80">Security Protocol</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         <Button
                             asChild
                             variant="ghost"
                             size="icon"
-                            className="text-white hover:bg-white/5 rounded-xl h-10 w-10"
+                            className="text-white hover:bg-white/10 rounded-2xl h-12 w-12 border border-white/5 bg-white/5"
                         >
                             <Link to="/patient/profile">
-                                <User className="h-5 w-5" />
+                                <User className="h-6 w-6 text-[hsl(var(--gold))]" />
                             </Link>
                         </Button>
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setIsMobileMenuOpen(true)}
-                            className="text-white hover:bg-white/5 rounded-xl h-10 w-10"
+                            className="text-white hover:bg-white/10 rounded-2xl h-12 w-12 border border-white/5 bg-white/5"
                         >
-                            <Menu className="h-6 w-6" />
+                            <Menu className="h-7 w-7" />
                         </Button>
                     </div>
                 </header>

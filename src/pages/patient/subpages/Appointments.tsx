@@ -186,7 +186,7 @@ export default function PatientAppointments() {
                                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" />
                                                 <input
                                                     type="text"
-                                                    placeholder="SEARCH DIAGNOSTIC CODES..."
+                                                    placeholder="SEARCH FOR TESTS..."
                                                     className="w-full bg-white/5 border border-white/10 rounded-2xl h-12 pl-12 pr-4 text-[10px] font-black tracking-widest uppercase focus:border-[hsl(var(--gold))]/50 outline-none transition-all"
                                                 />
                                             </div>
@@ -317,7 +317,7 @@ export default function PatientAppointments() {
 
                                         {locationType === 'branch' && (
                                             <div className="space-y-4">
-                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Diagnostic Node</h5>
+                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Clinic Branch</h5>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                     {branches.map((branch) => (
                                                         <div
@@ -351,7 +351,7 @@ export default function PatientAppointments() {
                                     >
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                             <div className="space-y-4">
-                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Date Node</h5>
+                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Appointment Date</h5>
                                                 <input
                                                     type="date"
                                                     value={selectedDate}
@@ -383,7 +383,7 @@ export default function PatientAppointments() {
                                             <h6 className="text-[10px] font-black uppercase text-[hsl(var(--emerald-india))] tracking-[0.3em] mb-4">Appointment Summary</h6>
                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                                 <div>
-                                                    <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Target</p>
+                                                    <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Selected Test</p>
                                                     <p className="text-sm font-black text-white uppercase truncate">{selectedTest?.name}</p>
                                                 </div>
                                                 <div>
@@ -391,7 +391,7 @@ export default function PatientAppointments() {
                                                     <p className="text-sm font-black text-white uppercase">{locationType === 'home' ? 'Home' : selectedBranch?.name.split(' ')[0]}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Sync Date</p>
+                                                    <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Appointment Date</p>
                                                     <p className="text-sm font-black text-white uppercase">{selectedDate}</p>
                                                 </div>
                                                 <div>
@@ -426,7 +426,7 @@ export default function PatientAppointments() {
                                     onClick={handleBooking}
                                     className="h-14 px-10 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-slate-950 font-black uppercase tracking-widest shadow-glow-gold hover:scale-[1.05] transition-all"
                                 >
-                                    Lock Appointment <CheckCircle2 className="ml-2 h-4 w-4" />
+                                    Confirm Appointment <CheckCircle2 className="ml-2 h-4 w-4" />
                                 </Button>
                             )}
                         </CardHeader>
@@ -491,7 +491,7 @@ export default function PatientAppointments() {
                                     <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/5">
                                         <History className="h-6 w-6 text-white/10" />
                                     </div>
-                                    <p className="text-white/20 font-black uppercase text-[10px] tracking-widest">No previous data nodes found</p>
+                                    <p className="text-white/20 font-black uppercase text-[10px] tracking-widest">No previous records found</p>
                                 </div>
                             )}
                         </CardContent>
@@ -504,7 +504,7 @@ export default function PatientAppointments() {
                                 <h5 className="text-white font-black uppercase text-[10px] tracking-[0.3em]">Reschedule Policy</h5>
                             </div>
                             <p className="text-white/40 text-[10px] leading-relaxed font-bold uppercase tracking-wider">
-                                Cancellation or rescheduling is allowed up to <span className="text-[hsl(var(--saffron))]">24 HOURS</span> prior to the synchronized slot.
+                                Cancellation or rescheduling is allowed up to <span className="text-[hsl(var(--saffron))]">24 HOURS</span> prior to the scheduled slot.
                             </p>
                         </div>
                     </Card>

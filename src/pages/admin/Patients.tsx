@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, Search, UserPlus, Filter, Phone, Mail, Calendar, Eye, Activity, History, FileText, MapPin } from "lucide-react";
+import { Users, Search, UserPlus, Filter, Phone, Mail, Calendar, Eye, Activity, History, FileText, MapPin, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -303,46 +303,96 @@ export default function Patients() {
 
             {/* Add Patient Modal */}
             {isAddOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-black text-slate-900">Add New Patient</h2>
-                            <Button variant="ghost" onClick={() => setIsAddOpen(false)}>Close</Button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+                    <div className="relative bg-slate-900/95 border border-white/10 rounded-[2.5rem] p-8 w-full max-w-lg shadow-2xl space-y-8 overflow-hidden">
+                        {/* Decorative top bar */}
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+                        <div className="flex justify-between items-start">
+                            <div className="space-y-1">
+                                <h2 className="text-2xl font-black text-white">Add New Patient</h2>
+                                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Register a new clinical entry</p>
+                            </div>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setIsAddOpen(false)}
+                                className="text-slate-500 hover:text-white hover:bg-white/10 rounded-xl"
+                            >
+                                <X className="h-5 w-5" />
+                            </Button>
                         </div>
-                        <form onSubmit={handleAddPatient} className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-slate-500">Full Name</label>
-                                <Input required className="rounded-xl h-12" placeholder="John Doe" value={newPatient.name} onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })} />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-slate-500">Email Address</label>
-                                <Input type="email" className="rounded-xl h-12" placeholder="john@example.com" value={newPatient.email} onChange={(e) => setNewPatient({ ...newPatient, email: e.target.value })} />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-slate-500">Phone Number</label>
-                                <Input required className="rounded-xl h-12" placeholder="+260..." value={newPatient.phone} onChange={(e) => setNewPatient({ ...newPatient, phone: e.target.value })} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+
+                        <form onSubmit={handleAddPatient} className="space-y-6">
+                            <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-500">Date of Birth</label>
-                                    <Input type="date" className="rounded-xl h-12" value={newPatient.dob} onChange={(e) => setNewPatient({ ...newPatient, dob: e.target.value })} />
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Full Name</label>
+                                    <Input
+                                        required
+                                        className="rounded-xl h-12 bg-slate-950/50 border-white/10 text-white placeholder:text-slate-600 focus:bg-slate-950 focus:border-indigo-500/50 transition-all font-medium"
+                                        placeholder="e.g. John Doe"
+                                        value={newPatient.name}
+                                        onChange={(e) => setNewPatient({ ...newPatient, name: e.target.value })}
+                                    />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-500">Gender</label>
-                                    <select className="flex h-12 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                        value={newPatient.gender} onChange={(e) => setNewPatient({ ...newPatient, gender: e.target.value })}
-                                    >
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Email Address</label>
+                                    <Input
+                                        type="email"
+                                        className="rounded-xl h-12 bg-slate-950/50 border-white/10 text-white placeholder:text-slate-600 focus:bg-slate-950 focus:border-indigo-500/50 transition-all font-medium"
+                                        placeholder="e.g. john@example.com"
+                                        value={newPatient.email}
+                                        onChange={(e) => setNewPatient({ ...newPatient, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Phone Number</label>
+                                    <Input
+                                        required
+                                        className="rounded-xl h-12 bg-slate-950/50 border-white/10 text-white placeholder:text-slate-600 focus:bg-slate-950 focus:border-indigo-500/50 transition-all font-medium"
+                                        placeholder="e.g. +260 97..."
+                                        value={newPatient.phone}
+                                        onChange={(e) => setNewPatient({ ...newPatient, phone: e.target.value })}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Date of Birth</label>
+                                        <Input
+                                            type="date"
+                                            className="rounded-xl h-12 bg-slate-950/50 border-white/10 text-white placeholder:text-slate-600 focus:bg-slate-950 focus:border-indigo-500/50 transition-all font-medium w-full"
+                                            value={newPatient.dob}
+                                            onChange={(e) => setNewPatient({ ...newPatient, dob: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Gender</label>
+                                        <select
+                                            className="flex h-12 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm text-white focus-visible:outline-none focus:border-indigo-500/50 transition-all font-medium appearance-none"
+                                            value={newPatient.gender}
+                                            onChange={(e) => setNewPatient({ ...newPatient, gender: e.target.value })}
+                                        >
+                                            <option value="male" className="bg-slate-900">Male</option>
+                                            <option value="female" className="bg-slate-900">Female</option>
+                                            <option value="other" className="bg-slate-900">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Address (Optional)</label>
+                                    <Input
+                                        className="rounded-xl h-12 bg-slate-950/50 border-white/10 text-white placeholder:text-slate-600 focus:bg-slate-950 focus:border-indigo-500/50 transition-all font-medium"
+                                        placeholder="e.g. House 123, Lusaka"
+                                        value={newPatient.address}
+                                        onChange={(e) => setNewPatient({ ...newPatient, address: e.target.value })}
+                                    />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase text-slate-500">Address (Optional)</label>
-                                <Input className="rounded-xl h-12" placeholder="House 123, Street..." value={newPatient.address} onChange={(e) => setNewPatient({ ...newPatient, address: e.target.value })} />
-                            </div>
-                            <Button type="submit" className="w-full h-14 rounded-xl gradient-primary text-lg font-bold shadow-xl shadow-primary/20">
+
+                            <Button
+                                type="submit"
+                                className="w-full h-14 rounded-2xl gradient-primary text-base font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                            >
                                 Register Patient
                             </Button>
                         </form>

@@ -7,7 +7,7 @@ try {
     $status = isset($_GET['status']) ? $_GET['status'] : null;
     $search = isset($_GET['search']) ? $_GET['search'] : null;
     
-    $query = "SELECT * FROM blog_posts";
+    $query = "SELECT *, image as image_url FROM blog_posts";
     $conditions = [];
     $params = [];
     

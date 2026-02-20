@@ -88,16 +88,16 @@ export default function PatientResults() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div>
                     <h1 className="text-5xl font-black font-heading tracking-tighter">
-                        My <span className="text-[hsl(var(--gold))]">Reports</span>
+                        My <span className="text-[hsl(var(--gold))]">Results</span>
                     </h1>
-                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">View and download your diagnostic results</p>
+                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">View and download your test results</p>
                 </div>
                 <div className="flex gap-4">
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" />
                         <input
                             type="text"
-                            placeholder="SEARCH REPORTS..."
+                            placeholder="SEARCH RESULTS..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="bg-white/5 border border-white/10 rounded-2xl h-14 pl-12 pr-6 text-[10px] font-black tracking-widest uppercase focus:border-[hsl(var(--gold))]/50 outline-none transition-all w-64"
@@ -191,7 +191,7 @@ export default function PatientResults() {
                                                 </span>
                                                 <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Ref ID: {result.id.toString().padStart(6, '0')}</span>
                                             </div>
-                                            <h4 className="text-2xl font-black text-white tracking-tight uppercase">{result.test_name || 'DIAGNOSTIC REPORT'}</h4>
+                                            <h4 className="text-2xl font-black text-white tracking-tight uppercase">{result.test_name || 'LAB TEST REPORT'}</h4>
                                             <div className="flex items-center gap-4 mt-2">
                                                 <div className="flex items-center gap-2 text-white/40">
                                                     <Calendar className="h-3 w-3" />
@@ -229,7 +229,7 @@ export default function PatientResults() {
                         <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 border border-white/5">
                             <AlertCircle className="h-10 w-10 text-white/10" />
                         </div>
-                        <h3 className="text-xl font-black text-white/40 uppercase tracking-widest">No matching records detected</h3>
+                        <h3 className="text-xl font-black text-white/40 uppercase tracking-widest">No results found</h3>
                         <p className="text-white/20 text-xs font-bold uppercase tracking-[0.2em] mt-2">Try adjusting your search parameters</p>
                     </div>
                 )}

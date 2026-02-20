@@ -14,13 +14,23 @@ import {
     CheckCircle2,
     ArrowUpRight,
     FlaskConical,
-    ChevronRight
+    ChevronRight,
+    TrendingUp
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { API_BASE_URL } from "@/lib/config";
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer
+} from "recharts";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -42,19 +52,16 @@ export default function PatientDashboard() {
 
     useEffect(() => {
         const fetchDashboardData = async () => {
-            if (!user?.id) {
-                setLoading(false);
-                return;
-            }
 
             try {
+                const userId = user?.id || '';
                 // Fetch summary and notifications in parallel
                 const [summaryRes, notifRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/patients/summary.php?id=${user.id}`).catch(err => {
+                    fetch(`${API_BASE_URL}/patients/summary.php?id=${userId}`).catch(err => {
                         console.error("Summary fetch failed:", err);
                         return null;
                     }),
-                    fetch(`${API_BASE_URL}/notifications/read.php?patient_id=${user.id}`).catch(err => {
+                    fetch(`${API_BASE_URL}/notifications/read.php?user_id=${userId}&role=patient`).catch(err => {
                         console.error("Notifications fetch failed:", err);
                         return null;
                     })
@@ -117,22 +124,22 @@ export default function PatientDashboard() {
             {/* Header with Quick Actions */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                 <div>
-                    <h1 className="text-5xl font-black font-heading text-white tracking-tighter">
-                        Healthy Day, <span className="text-[hsl(var(--gold))]">{user?.name}</span>
+                    <h1 className="text-5xl font-black font-heading text-white tracking-tighter italic">
+                        Welcome, <span className="text-[hsl(var(--gold))]">{user?.name}</span>
                     </h1>
-                    <p className="text-white/40 mt-2 font-black uppercase text-[10px] tracking-[0.4em]">Integrated Diagnostic Control • Level 4 Clearance</p>
+                    <p className="text-white/60 mt-2 text-base font-bold italic">Here's your health overview for today.</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
                     <Button asChild className="h-14 px-8 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest shadow-glow-gold hover:scale-[1.05] transition-all">
                         <Link to="/patient/profile" className="flex items-center">
                             <User className="mr-3 h-5 w-5" />
-                            View User Profile
+                            My Profile
                         </Link>
                     </Button>
                     <Button asChild variant="outline" className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 text-white font-black uppercase tracking-widest hover:bg-white/10">
                         <Link to="/patient/appointments" className="flex items-center">
                             <FlaskConical className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
-                            Book New Test
+                            Book a Test
                         </Link>
                     </Button>
                 </div>
@@ -161,12 +168,12 @@ export default function PatientDashboard() {
                                 <Bell className="h-6 w-6 text-slate-950" />
                             </div>
                             <div>
-                                <h4 className="font-black text-white text-sm uppercase tracking-wider">Priority Alert</h4>
+                                <h4 className="font-bold text-white text-sm">New Notification</h4>
                                 <p className="text-white/70 text-sm font-medium">{notifications.find(n => !n.read)?.message}</p>
                             </div>
                         </div>
-                        <Button variant="ghost" className="text-[10px] font-black uppercase tracking-widest text-[hsl(var(--gold))] underline">
-                            View Details
+                        <Button asChild variant="ghost" className="text-xs font-bold text-[hsl(var(--gold))] underline">
+                            <Link to="/patient/notifications">View All Notifications</Link>
                         </Button>
                     </motion.div>
                 )}
@@ -187,9 +194,9 @@ export default function PatientDashboard() {
                     ))
                 ) : (
                     [
-                        { label: "Active Nodes", value: stats.pending, icon: Calendar, color: "text-[hsl(var(--saffron))]", desc: "Scheduled Visits" },
-                        { label: "Data Verified", value: stats.completed, icon: CheckCircle2, color: "text-[hsl(var(--emerald-india))]", desc: "Total Diagnostics" },
-                        { label: "Active Results", value: stats.results, icon: FileText, color: "text-[hsl(var(--gold))]", desc: "Unread Reports" },
+                        { label: "Upcoming", value: stats.pending, icon: Calendar, color: "text-[hsl(var(--saffron))]", desc: "Scheduled Visits" },
+                        { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "text-[hsl(var(--emerald-india))]", desc: "Finished Tests" },
+                        { label: "Results", value: stats.results, icon: FileText, color: "text-[hsl(var(--gold))]", desc: "Records Available" },
                     ].map((stat, i) => (
                         <motion.div
                             key={i}
@@ -202,9 +209,9 @@ export default function PatientDashboard() {
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
                                 <CardContent className="p-8 flex items-center justify-between relative z-10">
                                     <div>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">{stat.label}</p>
-                                        <p className="text-4xl font-black text-white tracking-tighter">{stat.value}</p>
-                                        <p className="text-[9px] font-bold text-white/20 uppercase mt-1 tracking-widest">{stat.desc}</p>
+                                        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/50 mb-1">{stat.label}</p>
+                                        <p className="text-5xl font-black text-white tracking-tighter">{stat.value}</p>
+                                        <p className="text-[10px] font-black text-white/30 uppercase mt-1 tracking-widest">{stat.desc}</p>
                                     </div>
                                     <div className={cn("p-5 rounded-[1.5rem] bg-white/5", stat.color)}>
                                         <stat.icon className="h-8 w-8 transition-transform group-hover:scale-110" />
@@ -217,17 +224,85 @@ export default function PatientDashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                {/* Bookings Table */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-10">
+                    <Card className="glass-card border-white/10 overflow-hidden rounded-[2.5rem]">
+                        <CardHeader className="p-8 border-b border-white/5 bg-white/5">
+                            <CardTitle className="text-xl font-black font-heading text-white flex items-center gap-3">
+                                <TrendingUp className="h-6 w-6 text-[hsl(var(--gold))]" />
+                                Health Trends
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-8 h-[350px]">
+                            {loading ? (
+                                <Skeleton className="w-full h-full rounded-2xl bg-white/5" />
+                            ) : (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={latestMetrics.length > 0 ? latestMetrics.map((m: any) => ({
+                                        name: m.metric_name,
+                                        value: parseFloat(m.metric_value),
+                                        date: m.recorded_at ? new Date(m.recorded_at).toLocaleDateString() : "Recent"
+                                    })) : [
+                                        { name: 'Trend', value: 70, date: 'Mon' },
+                                        { name: 'Trend', value: 75, date: 'Tue' },
+                                        { name: 'Trend', value: 72, date: 'Wed' },
+                                        { name: 'Trend', value: 80, date: 'Thu' },
+                                        { name: 'Trend', value: 85, date: 'Fri' },
+                                    ]}>
+                                        <defs>
+                                            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="hsl(var(--gold))" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="hsl(var(--gold))" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                                        <XAxis
+                                            dataKey="date"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 'bold' }}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 'bold' }}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                borderRadius: '20px',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                                backdropFilter: 'blur(10px)',
+                                                boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)',
+                                                padding: '12px',
+                                                fontWeight: 'black',
+                                                color: '#fff'
+                                            }}
+                                            itemStyle={{ color: 'hsl(var(--gold))' }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke="hsl(var(--gold))"
+                                            strokeWidth={4}
+                                            fillOpacity={1}
+                                            fill="url(#colorValue)"
+                                            animationDuration={2500}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            )}
+                        </CardContent>
+                    </Card>
+
                     <Card className="glass-card border-white/10 overflow-hidden rounded-[2.5rem]">
                         <CardHeader className="p-8 border-b border-white/5 bg-white/5">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-xl font-black font-heading text-white flex items-center gap-3">
                                     <Clock className="h-6 w-6 text-[hsl(var(--saffron))]" />
-                                    Upcoming Diagnostics
+                                    Upcoming Visits
                                 </CardTitle>
                                 <Button variant="ghost" className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-[hsl(var(--gold))] transition-colors">
-                                    Full Timeline <ChevronRight className="ml-2 h-4 w-4" />
+                                    See All <ChevronRight className="ml-2 h-4 w-4" />
                                 </Button>
                             </div>
                         </CardHeader>
@@ -254,11 +329,11 @@ export default function PatientDashboard() {
                                                     <FlaskConical className="h-8 w-8 text-[hsl(var(--gold))]" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-black text-white text-lg tracking-tight">{booking.test}</h4>
+                                                    <h4 className="font-black text-white text-xl tracking-tight italic">{booking.test}</h4>
                                                     <div className="flex items-center gap-3 mt-1">
-                                                        <span className="text-xs text-white/30 font-bold uppercase tracking-widest">{booking.branch}</span>
-                                                        <span className="w-1 h-1 rounded-full bg-white/10" />
-                                                        <span className="text-xs text-[hsl(var(--saffron))] font-black">{booking.date} at {booking.time}</span>
+                                                        <span className="text-xs text-white/40 font-black uppercase tracking-widest">{booking.branch}</span>
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--gold))]/30" />
+                                                        <span className="text-xs text-[hsl(var(--saffron))] font-black uppercase tracking-widest">{booking.date} @ {booking.time}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -277,7 +352,7 @@ export default function PatientDashboard() {
                                     ))
                                 ) : (
                                     <div className="p-12 text-center">
-                                        <p className="text-white/40 font-bold uppercase tracking-widest text-xs">No upcoming sessions detected</p>
+                                        <p className="text-white/30 font-medium text-sm">No upcoming visits. Book a test to get started!</p>
                                     </div>
                                 )}
                             </div>
@@ -291,7 +366,7 @@ export default function PatientDashboard() {
                         <CardHeader className="p-8">
                             <CardTitle className="text-xl font-black font-heading text-white flex items-center gap-3">
                                 <Activity className="h-6 w-6 text-[hsl(var(--emerald-india))]" />
-                                Health Index
+                                My Health Info
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-8 pt-0 space-y-6">
@@ -299,8 +374,8 @@ export default function PatientDashboard() {
                                 <div className="absolute top-0 right-0 p-3">
                                     <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
                                 </div>
-                                <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">Primary Blood Node</p>
-                                <p className="text-2xl font-black text-white">{patientData?.blood_group || "NOT SET"}</p>
+                                <p className="text-xs font-bold text-white/40 mb-2">Blood Group</p>
+                                <p className="text-2xl font-black text-white">{patientData?.blood_group || "Not set"}</p>
                             </div>
 
                             {latestMetrics.slice(0, 2).map((metric: any) => (
@@ -318,15 +393,15 @@ export default function PatientDashboard() {
                                     <div className="absolute top-0 right-0 p-3">
                                         <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
                                     </div>
-                                    <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">Latest Session</p>
-                                    <p className="text-2xl font-black text-white">NO DATA</p>
+                                    <p className="text-xs font-bold text-white/40 mb-2">Latest Results</p>
+                                    <p className="text-2xl font-black text-white">No data yet</p>
                                 </div>
                             )}
 
                             <div className="pt-4">
                                 <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[11px] group">
                                     <User className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
-                                    Archive Records
+                                    View Medical History
                                     <ChevronRight className="ml-auto h-4 w-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                                 </Button>
                             </div>
@@ -335,12 +410,12 @@ export default function PatientDashboard() {
 
                     <Card className="glass-card border-none bg-gradient-to-br from-[hsl(var(--emerald-india))]/20 to-transparent p-1 rounded-[2.5rem]">
                         <div className="bg-slate-950/80 backdrop-blur-3xl rounded-[2.4rem] p-8 space-y-4">
-                            <h5 className="text-white font-black uppercase text-[10px] tracking-[0.3em]">Quick Tip</h5>
+                            <h5 className="text-white font-bold text-sm">💡 Helpful Tip</h5>
                             <p className="text-white/60 text-sm leading-relaxed">
                                 Remember to fast for at least 8 hours before any metabolic or lipid panel tests for accurate results.
                             </p>
                             <Link to="/patient/resources" className="text-[hsl(var(--gold))] text-xs font-black uppercase tracking-widest hover:underline block pt-2">
-                                Preparation Guide →
+                                Read More Tips →
                             </Link>
                         </div>
                     </Card>

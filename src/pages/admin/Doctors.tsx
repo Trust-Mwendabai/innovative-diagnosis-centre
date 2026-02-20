@@ -105,8 +105,8 @@ export default function Doctors() {
         <div className="space-y-8 animate-fade-in pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Doctors</h1>
-                    <p className="text-muted-foreground font-medium">Manage clinical staff and doctors.</p>
+                    <h1 className="text-4xl font-black tracking-tighter text-slate-900 dark:text-white italic">Doctors</h1>
+                    <p className="text-muted-foreground font-bold mt-1">Manage clinical staff and doctors.</p>
                 </div>
                 <Button onClick={() => setIsAddModalOpen(true)} className="gradient-primary py-5 px-6 shadow-lg shadow-primary/20">
                     <UserPlus className="mr-2 h-4 w-4" /> Add Doctor
@@ -116,7 +116,7 @@ export default function Doctors() {
             <Card className="glass-light border-white/20 shadow-2xl rounded-[2.5rem] overflow-hidden">
                 <CardHeader className="p-8 border-b border-white/10 bg-white/40">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                        <CardTitle className="text-xl font-black text-slate-900">Medical Staff</CardTitle>
+                        <CardTitle className="text-2xl font-black text-slate-900 dark:text-white italic">Medical Staff</CardTitle>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
@@ -136,11 +136,11 @@ export default function Doctors() {
                         </div>
                     ) : filteredDoctors.length === 0 ? (
                         <div className="text-center py-32 bg-white/20">
-                            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Stethoscope className="w-10 h-10 text-slate-300" />
+                            <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Stethoscope className="w-10 h-10 text-slate-300 dark:text-slate-600" />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-800">No Doctors Found</h3>
-                            <p className="text-muted-foreground font-medium max-w-md mx-auto">
+                            <h3 className="text-2xl font-black text-slate-800 dark:text-white italic">No Doctors Found</h3>
+                            <p className="text-muted-foreground font-bold max-w-md mx-auto mt-2">
                                 Manage your medical team by adding new doctors to the system.
                             </p>
                         </div>
@@ -149,10 +149,10 @@ export default function Doctors() {
                             <Table>
                                 <TableHeader className="bg-slate-50/50">
                                     <TableRow className="hover:bg-transparent border-white/10">
-                                        <TableHead className="py-6 px-8 text-xs font-bold uppercase tracking-widest">Doctor Name</TableHead>
-                                        <TableHead className="py-6 text-xs font-bold uppercase tracking-widest">Contact Details</TableHead>
-                                        <TableHead className="py-6 text-xs font-bold uppercase tracking-widest text-center">Joined</TableHead>
-                                        <TableHead className="py-6 px-8 text-right text-xs font-bold uppercase tracking-widest">Actions</TableHead>
+                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Doctor Name</TableHead>
+                                        <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Contact Details</TableHead>
+                                        <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 text-center">Joined</TableHead>
+                                        <TableHead className="py-6 px-8 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -164,8 +164,8 @@ export default function Doctors() {
                                                         <Stethoscope className="h-6 w-6" />
                                                     </div>
                                                     <div>
-                                                        <div className="font-black text-slate-900 group-hover:text-primary transition-colors text-base">Dr. {d.name}</div>
-                                                        <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-1">
+                                                        <div className="font-black text-slate-900 dark:text-slate-200 group-hover:text-primary transition-colors text-lg italic">Dr. {d.name}</div>
+                                                        <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-1 mt-1">
                                                             <UserCheck className="h-3 w-3 text-emerald-500" /> Verified Practitioner
                                                         </div>
                                                     </div>
@@ -173,17 +173,17 @@ export default function Doctors() {
                                             </TableCell>
                                             <TableCell className="py-6">
                                                 <div className="space-y-1.5">
-                                                    <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                                                        <Mail className="h-3.5 w-3.5 text-slate-400" /> {d.email}
+                                                    <div className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-300">
+                                                        <Mail className="h-4 w-4 text-primary" /> {d.email}
                                                     </div>
                                                     {d.phone && (
-                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                                                            <Phone className="h-3.5 w-3.5" /> {d.phone}
+                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground font-bold italic">
+                                                            <Phone className="h-4 w-4 text-emerald-500" /> {d.phone}
                                                         </div>
                                                     )}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="py-6 text-center text-sm font-bold text-slate-600">
+                                            <TableCell className="py-6 text-center text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">
                                                 {new Date(d.created_at).toLocaleDateString()}
                                             </TableCell>
                                             <TableCell className="py-6 px-8 text-right">

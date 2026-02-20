@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
     LayoutDashboard,
@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { API_BASE_URL } from "@/lib/config";
 
 const menuItems = [
     { icon: LayoutDashboard, label: "Overview", path: "/patient/dashboard" },
@@ -40,7 +41,25 @@ interface SidebarProps {
 
 export default function PatientSidebar({ isCollapsed, onToggle, onNavigate }: SidebarProps) {
     const location = useLocation();
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
+    const [notifCount, setNotifCount] = useState(0);
+
+    useEffect(() => {
+        const fetchCount = async () => {
+            try {
+                const userId = user?.id || '';
+                const res = await fetch(`${API_BASE_URL}/notifications/read.php?user_id=${userId}&role=patient`);
+                const data = await res.json();
+                if (data.success) {
+                    const unreadCount = (data.notifications || []).filter((n: any) => n.status !== 'read').length;
+                    setNotifCount(unreadCount);
+                }
+            } catch (e) {
+                console.error('Failed to fetch notification count:', e);
+            }
+        };
+        fetchCount();
+    }, [user?.id]);
 
     return (
         <div className={cn(
@@ -59,7 +78,7 @@ export default function PatientSidebar({ isCollapsed, onToggle, onNavigate }: Si
                     {!isCollapsed && (
                         <div className="animate-fade-in whitespace-nowrap">
                             <h2 className="text-white font-black text-lg font-heading tracking-tight leading-none uppercase">Patient</h2>
-                            <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.3em]">Guardian Vault</span>
+                            <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.3em]">Portal</span>
                         </div>
                     )}
                 </Link>
@@ -110,10 +129,18 @@ export default function PatientSidebar({ isCollapsed, onToggle, onNavigate }: Si
                                 )} />
                                 {!isCollapsed && (
                                     <span className={cn(
-                                        "font-black uppercase tracking-widest text-[10px] whitespace-nowrap animate-fade-in",
+                                        "font-black uppercase tracking-widest text-[10px] whitespace-nowrap animate-fade-in flex-1",
                                         isActive ? "text-white" : "text-white/40 group-hover:text-white"
                                     )}>
                                         {item.label}
+                                    </span>
+                                )}
+                                {item.label === "Notifications" && notifCount > 0 && (
+                                    <span className={cn(
+                                        "bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg animate-pulse",
+                                        isCollapsed ? "absolute -top-1 -right-1 w-5 h-5" : "min-w-[22px] h-5 px-1.5"
+                                    )}>
+                                        {notifCount > 99 ? '99+' : notifCount}
                                     </span>
                                 )}
                             </Link>
@@ -152,7 +179,7 @@ export default function PatientSidebar({ isCollapsed, onToggle, onNavigate }: Si
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="bg-slate-900 border-white/10 text-white font-black uppercase text-[9px] tracking-widest ml-4">
-                                Security Lock
+                                Logout
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -165,7 +192,7 @@ export default function PatientSidebar({ isCollapsed, onToggle, onNavigate }: Si
                         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-red-500/10 group-hover:text-red-500 transition-colors">
                             <LogOut className="h-4 w-4" />
                         </div>
-                        <span className="font-black uppercase tracking-widest text-[10px] whitespace-nowrap">Security Lock</span>
+                        <span className="font-black uppercase tracking-widest text-[10px] whitespace-nowrap">Logout</span>
                     </Button>
                 )}
             </div>

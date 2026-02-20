@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
     Activity,
@@ -11,14 +12,37 @@ import {
     Filter,
     FlaskConical,
     ChevronRight,
-    Stethoscope
+    Stethoscope,
+    Bell,
+    CheckCircle2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { API_BASE_URL } from "@/lib/config";
 
 export default function DoctorDashboard() {
     const { user } = useAuth();
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [notifLoading, setNotifLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const userId = user?.id || '';
+                const res = await fetch(`${API_BASE_URL}/notifications/read.php?user_id=${userId}&role=doctor`);
+                const data = await res.json();
+                if (data.success) {
+                    setNotifications(data.notifications || []);
+                }
+            } catch (error) {
+                console.error("Error fetching doctor notifications:", error);
+            } finally {
+                setNotifLoading(false);
+            }
+        };
+        fetchNotifications();
+    }, [user?.id]);
 
     const stats = [
         { label: "Today's Consultations", value: "8", icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
@@ -46,6 +70,23 @@ export default function DoctorDashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* Notifications Banner */}
+            {!notifLoading && notifications.length > 0 && (
+                <div className="bg-blue-50 border border-blue-200 rounded-[2rem] p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center animate-pulse">
+                            <Bell className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-slate-900 text-sm uppercase tracking-wider">
+                                {notifications.length} New Announcement{notifications.length > 1 ? 's' : ''}
+                            </h4>
+                            <p className="text-slate-600 text-sm font-medium">{notifications[0]?.message}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -120,23 +161,40 @@ export default function DoctorDashboard() {
                     </CardContent>
                 </Card>
 
-                {/* Technical Bulletins / Recent Actions */}
+                {/* Announcements / Live Feed */}
                 <div className="space-y-8">
                     <Card className="glass-light border-white/20 shadow-2xl rounded-[3rem] overflow-hidden">
                         <CardHeader className="p-8 pb-4">
                             <CardTitle className="text-xl font-black text-slate-900 flex items-center gap-3 italic">
-                                <Activity className="h-5 w-5 text-primary" />
-                                Lab Feed
+                                <Bell className="h-5 w-5 text-primary" />
+                                Announcements
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-8 pt-0 space-y-6">
-                            {[1, 2, 3].map((i) => (
-                                <div key={i} className="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-0.5 before:bg-slate-100 last:before:bottom-6">
-                                    <div className="absolute left-[-3px] top-1.5 w-2 h-2 rounded-full bg-[hsl(var(--gold))]" />
-                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">14 mins ago</p>
-                                    <p className="text-sm font-bold text-slate-900 leading-snug">New molecular data available for Patient #8821</p>
+                            {notifLoading ? (
+                                <div className="flex flex-col items-center gap-3 py-8">
+                                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                    <p className="text-xs font-bold text-slate-400">Loading...</p>
                                 </div>
-                            ))}
+                            ) : notifications.length > 0 ? (
+                                notifications.slice(0, 5).map((n, i) => (
+                                    <div key={n.id || i} className="relative pl-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-0.5 before:bg-slate-100 last:before:bottom-6">
+                                        <div className="absolute left-[-3px] top-1.5 w-2 h-2 rounded-full bg-[hsl(var(--gold))]" />
+                                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                                            {n.sent_at ? new Date(n.sent_at).toLocaleDateString() : 'Recent'}
+                                        </p>
+                                        {n.title && (
+                                            <p className="text-xs font-black text-primary uppercase tracking-wide mb-0.5">{n.title}</p>
+                                        )}
+                                        <p className="text-sm font-bold text-slate-900 leading-snug">{n.message}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-8">
+                                    <Bell className="h-10 w-10 text-slate-200 mx-auto mb-3" />
+                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No announcements</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
