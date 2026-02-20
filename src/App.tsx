@@ -25,7 +25,7 @@ const AdminDoctors = lazy(() => import("./pages/admin/Doctors"));
 const Tests = lazy(() => import("./pages/admin/Tests"));
 const Results = lazy(() => import("./pages/admin/Results"));
 const Branches = lazy(() => import("./pages/admin/Branches"));
-const AdminContent = lazy(() => import("./pages/admin/Content"));
+// const AdminContent = lazy(() => import("./pages/admin/Content"));
 const AdminBlog = lazy(() => import("./pages/admin/Blog"));
 const AdminNotifications = lazy(() => import("./pages/admin/Notifications"));
 const Reports = lazy(() => import("./pages/admin/Reports"));
@@ -33,6 +33,12 @@ const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 
 // Doctor Dashboard
 const DoctorDashboard = lazy(() => import("./pages/doctor/Dashboard"));
+const DoctorAppointments = lazy(() => import("./pages/doctor/subpages/Appointments"));
+const DoctorPatients = lazy(() => import("./pages/doctor/subpages/Patients"));
+const DoctorResults = lazy(() => import("./pages/doctor/subpages/Results"));
+const DoctorPrescriptions = lazy(() => import("./pages/doctor/subpages/Prescriptions"));
+const DoctorNotifications = lazy(() => import("./pages/doctor/subpages/Notifications"));
+const DoctorSettings = lazy(() => import("./pages/doctor/subpages/Settings"));
 
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
@@ -85,23 +91,13 @@ const PatientWrapper = () => {
   );
 };
 
+import DoctorLayout from "@/components/doctor/DoctorLayout";
+
 const DoctorWrapper = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--gold))]"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated || user?.role !== 'doctor') return <Navigate to="/login" replace />;
-
   return (
-    <Layout>
+    <DoctorLayout>
       <Outlet />
-    </Layout>
+    </DoctorLayout>
   );
 };
 
@@ -135,7 +131,7 @@ const App = () => (
                 <Route path="/admin/tests" element={<Tests />} />
                 <Route path="/admin/results" element={<Results />} />
                 <Route path="/admin/branches" element={<Branches />} />
-                <Route path="/admin/content" element={<AdminContent />} />
+                {/* <Route path="/admin/content" element={<AdminContent />} /> */}
                 <Route path="/admin/blog" element={<AdminBlog />} />
                 <Route path="/admin/notifications" element={<AdminNotifications />} />
                 <Route path="/admin/reports" element={<Reports />} />
@@ -145,6 +141,12 @@ const App = () => (
               {/* Doctor Routes - Protected by DoctorWrapper */}
               <Route element={<DoctorWrapper />}>
                 <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+                <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+                <Route path="/doctor/patients" element={<DoctorPatients />} />
+                <Route path="/doctor/results" element={<DoctorResults />} />
+                <Route path="/doctor/prescriptions" element={<DoctorPrescriptions />} />
+                <Route path="/doctor/notifications" element={<DoctorNotifications />} />
+                <Route path="/doctor/settings" element={<DoctorSettings />} />
               </Route>
 
               {/* Patient Routes - Protected by PatientWrapper */}
