@@ -29,14 +29,14 @@ export default function DoctorNotifications() {
     return (
         <div className="space-y-8 animate-fade-in pb-12">
             <div>
-                <h1 className="text-4xl font-black tracking-tighter text-white italic">Clinical Feed</h1>
-                <p className="text-white/60 font-bold mt-1">System alerts, diagnostic notifications, and administrative updates.</p>
+                <h1 className="text-4xl font-black tracking-tighter text-white italic">Recent Alerts</h1>
+                <p className="text-white/60 font-bold mt-1">Stay updated with important case alerts and medical news.</p>
             </div>
 
             <Card className="glass-card border-white/10 shadow-2xl rounded-[2.5rem] overflow-hidden">
                 <CardHeader className="p-8 border-b border-white/5 bg-white/5">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                        <CardTitle className="text-2xl font-black text-white italic tracking-tight">Recent Activity</CardTitle>
+                        <CardTitle className="text-2xl font-black text-white italic tracking-tight">Latest Notifications</CardTitle>
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">

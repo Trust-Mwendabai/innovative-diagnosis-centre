@@ -14,9 +14,10 @@ import {
     Bell,
     ClipboardList
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { API_BASE_URL } from "@/lib/config";
 
 const sidebarItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/doctor/dashboard" },
@@ -30,9 +31,30 @@ const sidebarItems = [
 
 export default function DoctorSidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [notifCount, setNotifCount] = useState(0);
     const location = useLocation();
     const navigate = useNavigate();
     const { logout, user } = useAuth();
+
+    useEffect(() => {
+        const fetchNotifCount = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/notifications/read.php?user_id=${user?.id}&role=doctor`);
+                const data = await res.json();
+                if (data.success) {
+                    setNotifCount(data.notifications?.length || 0);
+                }
+            } catch (error) {
+                console.error("Error fetching notification count:", error);
+            }
+        };
+
+        if (user?.id) fetchNotifCount();
+
+        // Refresh count every 30 seconds
+        const interval = setInterval(fetchNotifCount, 30000);
+        return () => clearInterval(interval);
+    }, [user?.id]);
 
     const handleLogout = () => {
         logout();
@@ -59,6 +81,7 @@ export default function DoctorSidebar() {
             <div className="flex-1 px-3 py-4 overflow-y-auto space-y-1 no-scrollbar">
                 {sidebarItems.map((item) => {
                     const isActive = location.pathname === item.path;
+                    const isNotif = item.label === "Notifications";
 
                     return (
                         <button
@@ -78,10 +101,23 @@ export default function DoctorSidebar() {
                                 <item.icon className={cn("h-4 w-4 shrink-0 transition-transform duration-500", isActive ? "scale-110" : "group-hover:scale-110")} />
                             </div>
                             {!isCollapsed && (
-                                <span className={cn(
-                                    "font-black text-[10px] uppercase tracking-[0.15em] transition-colors",
-                                    isActive ? "text-white" : "text-slate-500"
-                                )}>{item.label}</span>
+                                <div className="flex-1 flex items-center justify-between">
+                                    <span className={cn(
+                                        "font-black text-[10px] uppercase tracking-[0.15em] transition-colors",
+                                        isActive ? "text-white" : "text-slate-500"
+                                    )}>{item.label}</span>
+
+                                    {isNotif && notifCount > 0 && (
+                                        <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-cyan-500 text-white text-[9px] font-black flex items-center justify-center shadow-glow-cyan animate-pulse">
+                                            {notifCount}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                            {isCollapsed && isNotif && notifCount > 0 && (
+                                <div className="absolute top-1 right-1 h-4 w-4 rounded-full bg-cyan-500 border-2 border-slate-950 shadow-glow-cyan flex items-center justify-center">
+                                    <span className="text-[7px] text-white font-black">{notifCount}</span>
+                                </div>
                             )}
                             {isActive && (
                                 <motion.div
@@ -116,13 +152,14 @@ export default function DoctorSidebar() {
                 >
                     {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
                 </button>
-                <button
+                <Button
                     onClick={handleLogout}
-                    className="w-full h-11 flex items-center gap-3 px-4 rounded-xl text-rose-500 hover:bg-rose-500/10 transition-all group font-black uppercase text-[9px] tracking-widest border border-white/5"
+                    variant="ghost"
+                    className="w-full h-10 px-3 flex items-center gap-3 text-rose-500 hover:bg-rose-500/10 hover:text-rose-400 font-bold uppercase tracking-widest text-[9px] transition-all rounded-xl border border-transparent hover:border-rose-500/20"
                 >
-                    <LogOut className="h-4 w-4 shrink-0 group-hover:scale-110 transition-transform" />
-                    {!isCollapsed && <span>Disconnect</span>}
-                </button>
+                    <LogOut className="h-4 w-4" />
+                    {!isCollapsed && <span>Logout</span>}
+                </Button>
             </div>
         </motion.div>
     );
