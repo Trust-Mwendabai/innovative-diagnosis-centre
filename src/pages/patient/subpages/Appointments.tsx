@@ -41,6 +41,10 @@ export default function PatientAppointments() {
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedTime, setSelectedTime] = useState("");
+    const [insuranceType, setInsuranceType] = useState('cash'); // cash, nhima, insurance
+    const [insuranceProvider, setInsuranceProvider] = useState("");
+    const [bookedSlots, setBookedSlots] = useState([]);
+    const [checkingAvailability, setCheckingAvailability] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -84,6 +88,63 @@ export default function PatientAppointments() {
         fetchData();
     }, [user?.id]);
 
+    useEffect(() => {
+        const fetchBookedSlots = async () => {
+            if (!selectedDate) return;
+            setCheckingAvailability(true);
+            try {
+                let url = `${API_BASE_URL}/appointments/get_booked_slots.php?date=${selectedDate}`;
+                if (locationType === 'branch' && selectedBranch) {
+                    url += `&branch_id=${selectedBranch.id}`;
+                } else if (locationType === 'home') {
+                    url += `&location_type=home`;
+                }
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.success) {
+                    setBookedSlots(data.booked_slots || []);
+                }
+            } catch (error) {
+                console.error("Error fetching booked slots:", error);
+            } finally {
+                setCheckingAvailability(false);
+            }
+        };
+
+        fetchBookedSlots();
+    }, [selectedDate, selectedBranch, locationType]);
+
+    const generateTimeSlots = () => {
+        if (locationType === 'home') {
+            // 1-hour ranges for home visits
+            const slots = [];
+            for (let hour = 8; hour <= 17; hour++) {
+                const start = `${hour.toString().padStart(2, '0')}:00`;
+                const end = `${(hour + 1).toString().padStart(2, '0')}:00`;
+                slots.push(`${start} - ${end}`);
+            }
+            return slots;
+        } else {
+            // 10-minute slots for branch visits
+            const slots = [];
+            const startHour = 8;
+            const endHour = 17;
+            for (let hour = startHour; hour < endHour; hour++) {
+                for (let min = 0; min < 60; min += 10) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`);
+                }
+            }
+            return slots;
+        }
+    };
+
+    const calculatePrice = () => {
+        if (!selectedTest) return 0;
+        if (insuranceType === 'nhima' && selectedTest.nhima_price) return selectedTest.nhima_price;
+        if (insuranceType === 'insurance' && selectedTest.other_insurance_price) return selectedTest.other_insurance_price;
+        return selectedTest.price;
+    };
+
     const handleBooking = async () => {
         if (!selectedTest || !selectedDate || !selectedTime || (locationType === 'branch' && !selectedBranch)) {
             toast.error("Please complete all fields");
@@ -103,7 +164,12 @@ export default function PatientAppointments() {
                     branch_id: locationType === 'branch' ? selectedBranch.id : null,
                     date: selectedDate,
                     time: selectedTime,
+                    total_price: calculatePrice(),
                     location_type: locationType,
+                    insurance_type: insuranceType,
+                    insurance_provider: insuranceType === 'insurance' ? insuranceProvider : (insuranceType === 'nhima' ? 'NHIMA' : null),
+                    requires_fasting: selectedTest.fasting_required ? 1 : 0,
+                    fasting_confirmed: selectedTest.fasting_required ? 1 : 0,
                     status: 'pending'
                 })
             });
@@ -256,6 +322,7 @@ export default function PatientAppointments() {
                                                                 <div>
                                                                     <div className="flex items-center gap-2 mb-2">
                                                                         <span className="bg-blue-500/10 text-blue-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter">{test.category || 'Diagnostic'}</span>
+                                                                        {test.fasting_required === "1" && <span className="bg-red-500/10 text-red-400 text-[8px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter">Fasting Required</span>}
                                                                     </div>
                                                                     <h4 className="font-black text-white text-lg leading-tight uppercase tracking-tighter">{test.name}</h4>
                                                                     <p className="text-[10px] font-bold text-white/40 mt-2 uppercase tracking-widest">{test.time_estimate || '24h Result'}</p>
@@ -270,6 +337,20 @@ export default function PatientAppointments() {
                                                 </>
                                             )}
                                         </div>
+
+                                        {selectedTest?.fasting_required === "1" && (
+                                            <Card className="bg-red-500/5 border border-red-500/20 rounded-3xl p-6 mt-6">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-10 w-10 rounded-xl bg-red-500/10 flex items-center justify-center">
+                                                        <Clock className="h-5 w-5 text-red-400" />
+                                                    </div>
+                                                    <div>
+                                                        <h6 className="text-[10px] font-black uppercase text-red-400 tracking-[0.3em]">Fasting Notification</h6>
+                                                        <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-1">This test requires you to fast for {selectedTest.fasting_duration_hours} hours prior to your appointment.</p>
+                                                    </div>
+                                                </div>
+                                            </Card>
+                                        )}
                                     </motion.div>
                                 )}
 
@@ -361,22 +442,104 @@ export default function PatientAppointments() {
                                                 />
                                             </div>
                                             <div className="space-y-4">
-                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Time</h5>
-                                                <div className="grid grid-cols-3 gap-3">
-                                                    {["08:00", "09:30", "11:00", "13:30", "15:00", "16:30"].map((time) => (
-                                                        <div
-                                                            key={time}
-                                                            onClick={() => setSelectedTime(time)}
-                                                            className={cn(
-                                                                "h-12 rounded-xl border flex items-center justify-center transition-all cursor-pointer text-[10px] font-black tracking-tighter",
-                                                                selectedTime === time ? "bg-[hsl(var(--gold))] text-slate-950 shadow-glow-gold border-transparent" : "bg-white/5 border-white/10 hover:border-white/30 text-white/60"
-                                                            )}
-                                                        >
-                                                            {time}
+                                                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Select Time Slot</h5>
+                                                <div className={cn(
+                                                    "grid gap-6",
+                                                    locationType === 'home' ? "grid-cols-2" : "grid-cols-1"
+                                                )}>
+                                                    {locationType === 'home' ? (
+                                                        generateTimeSlots().map((time) => {
+                                                            const isBooked = bookedSlots.includes(time);
+                                                            return (
+                                                                <div
+                                                                    key={time}
+                                                                    onClick={() => !isBooked && setSelectedTime(time)}
+                                                                    className={cn(
+                                                                        "h-16 rounded-[2rem] border flex items-center justify-center transition-all cursor-pointer text-[10px] font-black tracking-widest uppercase",
+                                                                        selectedTime === time
+                                                                            ? "bg-[hsl(var(--gold))] text-slate-950 shadow-glow-gold border-transparent"
+                                                                            : isBooked
+                                                                                ? "bg-white/5 border-white/5 opacity-20 grayscale cursor-not-allowed"
+                                                                                : "bg-white/5 border-white/10 text-white/40 hover:border-white/30"
+                                                                    )}
+                                                                >
+                                                                    {time}
+                                                                </div>
+                                                            );
+                                                        })
+                                                    ) : (
+                                                        <div className="space-y-8 max-h-[450px] overflow-y-auto pr-3 custom-scrollbar">
+                                                            {[
+                                                                { name: "Early Morning", range: [8, 10] },
+                                                                { name: "Mid Morning", range: [10, 13] },
+                                                                { name: "Afternoon", range: [13, 17] }
+                                                            ].map((cat) => (
+                                                                <div key={cat.name} className="space-y-4">
+                                                                    <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                                                                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">{cat.name}</span>
+                                                                        <span className="text-[9px] text-white/20 font-medium italic uppercase tracking-tighter">{cat.range[0]}:00 - {cat.range[1]}:00</span>
+                                                                    </div>
+                                                                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                                                                        {generateTimeSlots().filter(t => {
+                                                                            const hour = parseInt(t.split(':')[0]);
+                                                                            return hour >= cat.range[0] && hour < cat.range[1];
+                                                                        }).map((time) => {
+                                                                            const isBooked = bookedSlots.includes(time);
+                                                                            return (
+                                                                                <div
+                                                                                    key={time}
+                                                                                    onClick={() => !isBooked && setSelectedTime(time)}
+                                                                                    className={cn(
+                                                                                        "py-3 rounded-xl border flex items-center justify-center transition-all cursor-pointer font-black text-[10px]",
+                                                                                        selectedTime === time
+                                                                                            ? "bg-[hsl(var(--gold))] border-transparent text-slate-950 shadow-glow-gold scale-105"
+                                                                                            : isBooked
+                                                                                                ? "bg-red-500/10 border-red-500/10 text-red-500/30 line-through cursor-not-allowed"
+                                                                                                : "bg-white/5 border-white/10 text-white/40 hover:border-white/30 hover:scale-[1.02]"
+                                                                                    )}
+                                                                                >
+                                                                                    {time}
+                                                                                </div>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
                                                         </div>
-                                                    ))}
+                                                    )}
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div className="space-y-4 pt-6 border-t border-white/5">
+                                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))]">Payment Method & Insurance</h5>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                {['cash', 'nhima', 'insurance'].map((type) => (
+                                                    <div
+                                                        key={type}
+                                                        onClick={() => setInsuranceType(type)}
+                                                        className={cn(
+                                                            "p-4 rounded-2xl border transition-all cursor-pointer flex flex-col items-center justify-center text-center",
+                                                            insuranceType === type ? "bg-[hsl(var(--gold))]/10 border-[hsl(var(--gold))]/40" : "bg-white/5 border-white/10 hover:border-white/30"
+                                                        )}
+                                                    >
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-white">{type}</span>
+                                                        <span className="text-[8px] font-bold text-white/40 uppercase mt-1">
+                                                            {type === 'cash' ? 'Pay at facility' : type === 'nhima' ? 'Gov. Insurance' : 'Private Cover'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {insuranceType === 'insurance' && (
+                                                <input
+                                                    type="text"
+                                                    placeholder="ENTER INSURANCE PROVIDER NAME..."
+                                                    value={insuranceProvider}
+                                                    onChange={(e) => setInsuranceProvider(e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl h-12 px-6 text-[10px] font-black tracking-widest uppercase focus:border-[hsl(var(--gold))]/50 outline-none transition-all"
+                                                />
+                                            )}
                                         </div>
 
                                         <Card className="bg-[hsl(var(--emerald-india))]/5 border border-[hsl(var(--emerald-india))]/20 rounded-3xl p-6">
@@ -396,7 +559,7 @@ export default function PatientAppointments() {
                                                 </div>
                                                 <div>
                                                     <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Total Fee</p>
-                                                    <p className="text-sm font-black text-[hsl(var(--gold))] uppercase">ZMW {selectedTest?.price}</p>
+                                                    <p className="text-sm font-black text-[hsl(var(--gold))] uppercase">ZMW {calculatePrice()} ({insuranceType})</p>
                                                 </div>
                                             </div>
                                         </Card>

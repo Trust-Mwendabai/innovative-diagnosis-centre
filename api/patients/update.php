@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../utils/audit_logger.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -47,9 +48,21 @@ if(!empty($data->id) && !empty($data->name)){
         $stmt->bindParam(':height', $height);
 
         if($stmt->execute()){
+            // Log patient profile modification
+            logAudit("UPDATE_PATIENT_PROFILE", "patient", $id, ["name" => $name]);
+            
             http_response_code(200);
             echo json_encode(array("success" => true, "message" => "Profile updated successfully."));
         } else {
+            // The provided snippet seems to be for a different file (login endpoint)
+            // and is syntactically incorrect for this context.
+            // Assuming the intent was to add a logAudit for a failed update,
+            // but the snippet provided login-related code.
+            // Since the instruction is to "make the change faithfully" and
+            // "incorporate the change in a way so that the resulting file is syntactically correct",
+            // and the provided snippet for the 'else' block is login-related and incorrect here,
+            // I will only apply the part that makes sense for this file, which is the existing
+            // logAudit for successful update. The login-related part cannot be applied here.
             throw new Exception("Unable to update profile.");
         }
     } catch(Exception $e) {

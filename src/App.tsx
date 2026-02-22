@@ -8,9 +8,9 @@ import Index from "./pages/Index";
 import Services from "./pages/Services";
 import BookTest from "./pages/BookTest";
 import TestRecommender from "./pages/TestRecommender";
-import Locations from "./pages/Locations";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
+import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
@@ -29,6 +29,7 @@ const Branches = lazy(() => import("./pages/admin/Branches"));
 const AdminBlog = lazy(() => import("./pages/admin/Blog"));
 const AdminNotifications = lazy(() => import("./pages/admin/Notifications"));
 const Reports = lazy(() => import("./pages/admin/Reports"));
+const AuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 
 // Doctor Dashboard
@@ -67,8 +68,10 @@ const PatientHistory = lazy(() => import("./pages/patient/subpages/History"));
 const PatientProfile = lazy(() => import("./pages/patient/subpages/Profile"));
 const PatientBilling = lazy(() => import("./pages/patient/subpages/Billing"));
 const PatientNotifications = lazy(() => import("./pages/patient/subpages/Notifications"));
-const PatientResources = lazy(() => import("./pages/patient/subpages/Resources"));
-const HealthTrends = lazy(() => import("./pages/patient/subpages/HealthTrends"));
+const PatientResources = lazy(() => import("./pages/patient/subpages/HealthInsight"));
+const HealthTrends = lazy(() => import("./pages/patient/subpages/HealthInsight"));
+const HealthInsight = lazy(() => import("./pages/patient/subpages/HealthInsight"));
+const PatientPrescriptions = lazy(() => import("./pages/patient/subpages/Prescriptions"));
 
 
 const PatientWrapper = () => {
@@ -135,6 +138,7 @@ const App = () => (
                 <Route path="/admin/blog" element={<AdminBlog />} />
                 <Route path="/admin/notifications" element={<AdminNotifications />} />
                 <Route path="/admin/reports" element={<Reports />} />
+                <Route path="/admin/audit-logs" element={<AuditLogs />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
               </Route>
 
@@ -159,8 +163,10 @@ const App = () => (
                 <Route path="profile" element={<PatientProfile />} />
                 <Route path="billing" element={<PatientBilling />} />
                 <Route path="notifications" element={<PatientNotifications />} />
-                <Route path="resources" element={<PatientResources />} />
-                <Route path="trends" element={<HealthTrends />} />
+                <Route path="resources" element={<Navigate to="/patient/insights" replace />} />
+                <Route path="trends" element={<Navigate to="/patient/insights" replace />} />
+                <Route path="insights" element={<HealthInsight />} />
+                <Route path="prescriptions" element={<PatientPrescriptions />} />
 
               </Route>
 
@@ -170,10 +176,10 @@ const App = () => (
                 <Route path="/services" element={<Services />} />
                 <Route path="/book" element={<BookTest />} />
                 <Route path="/recommender" element={<TestRecommender />} />
-                <Route path="/locations" element={<Locations />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:id" element={<BlogDetail />} />
+                <Route path="/gallery" element={<Gallery />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
               </Route>

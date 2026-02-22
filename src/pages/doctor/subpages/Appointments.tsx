@@ -15,8 +15,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { API_BASE_URL } from "@/lib/config";
+import { useAuth } from "@/context/AuthContext";
+import { cn } from "@/lib/utils";
 
 export default function DoctorAppointments() {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
     const [appointments, setAppointments] = useState<any[]>([]);
@@ -24,8 +27,9 @@ export default function DoctorAppointments() {
 
     useEffect(() => {
         const fetchAppointments = async () => {
+            if (!user?.id) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/appointments/read.php`);
+                const res = await fetch(`${API_BASE_URL}/doctor/get_assigned_data.php?doctor_id=${user.id}`);
                 const data = await res.json();
                 if (data.success) {
                     setAppointments(data.appointments);
@@ -38,7 +42,7 @@ export default function DoctorAppointments() {
         };
 
         fetchAppointments();
-    }, []);
+    }, [user?.id]);
 
     const filteredAppointments = appointments.filter(apt =>
         (apt.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -146,6 +150,3 @@ export default function DoctorAppointments() {
     );
 }
 
-function cn(...classes: any[]) {
-    return classes.filter(Boolean).join(" ");
-}

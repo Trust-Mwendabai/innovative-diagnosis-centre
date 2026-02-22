@@ -11,20 +11,34 @@ import {
     ChevronRight,
     UserCircle2,
     Activity,
-    FileText
+    FileText,
+    Pill
 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/config";
+import { useAuth } from "@/context/AuthContext";
+import { PrescriptionDialog } from "@/components/doctor/PrescriptionDialog";
 
 export default function DoctorPatients() {
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
     const [patients, setPatients] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // Prescription Dialog State
+    const [prescriptionOpen, setPrescriptionOpen] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState<{ id: number, name: string } | null>(null);
+
+    const handlePrescribe = (patient: any) => {
+        setSelectedPatient({ id: patient.id, name: patient.name });
+        setPrescriptionOpen(true);
+    };
+
     useEffect(() => {
         const fetchPatients = async () => {
+            if (!user?.id) return;
             try {
-                const res = await fetch(`${API_BASE_URL}/patients/read.php`);
+                const res = await fetch(`${API_BASE_URL}/doctor/get_assigned_data.php?doctor_id=${user.id}`);
                 const data = await res.json();
                 if (data.success) {
                     setPatients(data.patients);
@@ -37,7 +51,7 @@ export default function DoctorPatients() {
         };
 
         fetchPatients();
-    }, []);
+    }, [user?.id]);
 
     const filteredPatients = patients.filter(patient =>
         patient.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -97,7 +111,9 @@ export default function DoctorPatients() {
                                             <div className="flex items-center gap-4 mt-2">
                                                 <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">#{patient.id}</span>
                                                 <span className="w-1 h-1 rounded-full bg-white/10" />
-                                                <span className="text-[10px] font-black text-cyan-500/60 uppercase tracking-widest">{patient.gender} • {patient.age || 'N/A'}yrs</span>
+                                                <span className="text-[10px] font-black text-cyan-500/60 uppercase tracking-widest">
+                                                    {patient.gender} • {patient.date_of_birth ? (new Date().getFullYear() - new Date(patient.date_of_birth).getFullYear()) : 'N/A'}yrs
+                                                </span>
                                             </div>
                                             <div className="mt-6 space-y-3">
                                                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-500/60">
@@ -108,13 +124,23 @@ export default function DoctorPatients() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <Button
-                                            onClick={() => navigate('/doctor/results')}
-                                            variant="ghost"
-                                            className="rounded-2xl h-10 w-10 p-0 text-white/20 hover:text-cyan-500 hover:bg-cyan-500/10 transition-all border border-white/5"
-                                        >
-                                            <ChevronRight className="h-5 w-5" />
-                                        </Button>
+                                        <div className="flex flex-col gap-2">
+                                            <Button
+                                                onClick={() => navigate('/doctor/results')}
+                                                variant="ghost"
+                                                className="rounded-2xl h-10 w-10 p-0 text-white/20 hover:text-cyan-500 hover:bg-cyan-500/10 transition-all border border-white/5"
+                                            >
+                                                <ChevronRight className="h-5 w-5" />
+                                            </Button>
+                                            <Button
+                                                onClick={() => handlePrescribe(patient)}
+                                                variant="ghost"
+                                                className="rounded-2xl h-10 w-10 p-0 text-white/20 hover:text-emerald-500 hover:bg-emerald-500/10 transition-all border border-white/5"
+                                                title="Prescribe Medicine"
+                                            >
+                                                <Pill className="h-5 w-5" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -126,6 +152,15 @@ export default function DoctorPatients() {
                     </div>
                 </CardContent>
             </Card>
+
+            {selectedPatient && (
+                <PrescriptionDialog
+                    open={prescriptionOpen}
+                    onOpenChange={setPrescriptionOpen}
+                    patientId={selectedPatient.id}
+                    patientName={selectedPatient.name}
+                />
+            )}
         </div>
     );
 }

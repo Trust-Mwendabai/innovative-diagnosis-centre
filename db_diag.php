@@ -1,33 +1,65 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-$_SERVER['SERVER_NAME'] = 'localhost';
-$_SERVER['SERVER_ADDR'] = '127.0.0.1';
-
 include_once 'api/config/database.php';
 
-echo "Database Connection: " . (isset($conn) ? "ACTIVE" : "FAILED") . "\n";
+$output = "";
 
-if (isset($conn)) {
+function logOut($msg) {
+    global $output;
+    $output .= $msg . "\n";
+}
+
+function dumpTable($conn, $tableName) {
+    logOut("--- Table: $tableName ---");
     try {
-        $tables = ['users', 'patients', 'appointments', 'health_metrics', 'tests'];
-        foreach ($tables as $table) {
-            $stmt = $conn->query("SELECT COUNT(*) FROM $table");
-            $count = $stmt->fetchColumn();
-            echo "Table $table: $count records\n";
+        $stmt = $conn->prepare("DESCRIBE $tableName");
+        $stmt->execute();
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($columns as $col) {
+            logOut("{$col['Field']} - {$col['Type']} - {$col['Null']} - {$col['Key']}");
         }
         
-        echo "\nSample Patient Data:\n";
-        $stmt = $conn->query("SELECT * FROM patients LIMIT 1");
-        print_r($stmt->fetch(PDO::FETCH_ASSOC));
+        $stmt = $conn->prepare("SELECT COUNT(*) as count FROM $tableName");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        logOut("Total rows: {$row['count']}");
         
-        echo "\nSample Appointment Data:\n";
-        $stmt = $conn->query("SELECT * FROM appointments LIMIT 1");
-        print_r($stmt->fetch(PDO::FETCH_ASSOC));
-        
+        if ($tableName === 'patients') {
+            $stmt = $conn->prepare("SELECT id, name, doctor_id FROM $tableName");
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            logOut("Data (Assigned Doctors):");
+            foreach ($rows as $r) {
+                logOut("ID: {$r['id']} - Name: {$r['name']} - DoctorID: " . ($r['doctor_id'] ?? 'NULL'));
+            }
+        }
+        if ($tableName === 'appointments') {
+            $stmt = $conn->prepare("SELECT id, patient_id, doctor_id, status FROM $tableName");
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            logOut("Data (Appointments):");
+            foreach ($rows as $r) {
+                logOut("ID: {$r['id']} - PatientID: " . ($r['patient_id'] ?? 'NULL') . " - DoctorID: " . ($r['doctor_id'] ?? 'NULL') . " - Status: " . ($r['status'] ?? 'NULL'));
+            }
+        }
+        if ($tableName === 'users') {
+            $stmt = $conn->prepare("SELECT id, name, role FROM $tableName WHERE role = 'doctor'");
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            logOut("Data (Doctors):");
+            foreach ($rows as $r) {
+                logOut("ID: {$r['id']} - Name: {$r['name']} - Role: {$r['role']}");
+            }
+        }
     } catch (Exception $e) {
-        echo "DATABASE ERROR: " . $e->getMessage() . "\n";
+        logOut("Error: " . $e->getMessage());
     }
+    logOut("");
 }
+
+dumpTable($conn, 'users');
+dumpTable($conn, 'patients');
+dumpTable($conn, 'appointments');
+
+file_put_contents('diag_output.txt', $output);
+echo "Done. Check diag_output.txt";
 ?>

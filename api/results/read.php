@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../utils/audit_logger.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -26,6 +27,9 @@ try {
     $stmt->execute();
     
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Log access to the broad list of medical results
+    logAudit("VIEW_RESULTS_LIST", "test_results", null, ["count" => count($results)]);
     
     http_response_code(200);
     echo json_encode(array(

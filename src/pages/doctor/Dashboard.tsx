@@ -29,8 +29,25 @@ export default function DoctorDashboard() {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState<any[]>([]);
     const [notifLoading, setNotifLoading] = useState(true);
+    const [dashboardData, setDashboardData] = useState<any>({ patients: [], appointments: [] });
+    const [loadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
+        const fetchDashboardData = async () => {
+            if (!user?.id) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/doctor/get_assigned_data.php?doctor_id=${user.id}`);
+                const data = await res.json();
+                if (data.success) {
+                    setDashboardData(data);
+                }
+            } catch (error) {
+                console.error("Error fetching doctor data:", error);
+            } finally {
+                setLoadingData(false);
+            }
+        };
+
         const fetchNotifications = async () => {
             try {
                 const userId = user?.id || '';
@@ -45,14 +62,15 @@ export default function DoctorDashboard() {
                 setNotifLoading(false);
             }
         };
+        fetchDashboardData();
         fetchNotifications();
     }, [user?.id]);
 
     const stats = [
-        { label: "Visiting Today", value: "8", icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
-        { label: "New Tasks", value: "14", icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
-        { label: "Total Tests", value: "124", icon: Microscope, color: "text-emerald-500", bg: "bg-emerald-50" },
-        { label: "Records Signed", value: "98", icon: FileText, color: "text-purple-500", bg: "bg-purple-50" },
+        { label: "My Patients", value: dashboardData.patients.length.toString(), icon: Users, color: "text-blue-500", bg: "bg-blue-50" },
+        { label: "Active Schedule", value: dashboardData.appointments.length.toString(), icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
+        { label: "Total Tests", value: dashboardData.appointments.length.toString(), icon: Microscope, color: "text-emerald-500", bg: "bg-emerald-50" },
+        { label: "Pending Reports", value: dashboardData.appointments.filter(a => a.status === 'pending').length.toString(), icon: FileText, color: "text-purple-500", bg: "bg-purple-50" },
     ];
 
     return (
@@ -140,34 +158,46 @@ export default function DoctorDashboard() {
                     </CardHeader>
                     <CardContent className="p-0">
                         <div className="divide-y divide-white/5">
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="p-8 hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer border-l-4 border-transparent hover:border-cyan-500">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-16 h-16 rounded-[1.5rem] bg-white/5 flex items-center justify-center font-black text-2xl text-white/10 group-hover:bg-cyan-500/20 group-hover:text-cyan-500 transition-all duration-500 border border-white/5">
-                                            {String.fromCharCode(64 + i)}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-black text-white text-lg group-hover:text-cyan-400 transition-colors italic tracking-tight uppercase">Patient Record #{1000 + i}</h4>
-                                            <p className="text-[10px] font-black text-white/40 flex items-center gap-2 uppercase tracking-widest mt-1">
-                                                <Activity className="h-3 w-3 text-cyan-500" /> Molecular Report
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-12">
-                                        <div className="hidden md:block text-right">
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-1">Time</p>
-                                            <p className="text-sm font-black text-white tracking-widest">09:30 AM</p>
-                                        </div>
-                                        <Button
-                                            onClick={() => navigate('/doctor/results')}
-                                            variant="ghost"
-                                            className="rounded-2xl h-14 font-black uppercase text-[10px] tracking-widest gap-3 text-cyan-500 hover:bg-cyan-500/10 px-8 border border-white/5 bg-white/5"
-                                        >
-                                            Check Report <ArrowRight className="h-4 w-4" />
-                                        </Button>
-                                    </div>
+                            {loadingData ? (
+                                <div className="p-12 text-center">
+                                    <div className="w-10 h-10 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                                    <p className="text-xs font-black text-white/20 uppercase tracking-widest">Compiling Schedule...</p>
                                 </div>
-                            ))}
+                            ) : dashboardData.appointments.length === 0 ? (
+                                <div className="p-20 text-center">
+                                    <Calendar className="h-12 w-12 text-white/5 mx-auto mb-4" />
+                                    <p className="text-xs font-black text-white/20 uppercase tracking-widest">No assigned appointments found</p>
+                                </div>
+                            ) : (
+                                dashboardData.appointments.slice(0, 5).map((apt: any) => (
+                                    <div key={apt.id} className="p-8 hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer border-l-4 border-transparent hover:border-cyan-500">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-16 h-16 rounded-[1.5rem] bg-white/5 flex items-center justify-center font-black text-2xl text-white/10 group-hover:bg-cyan-500/20 group-hover:text-cyan-500 transition-all duration-500 border border-white/5">
+                                                {apt.patient_name?.charAt(0) || 'P'}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-black text-white text-lg group-hover:text-cyan-400 transition-colors italic tracking-tight uppercase">{apt.patient_name}</h4>
+                                                <p className="text-[10px] font-black text-white/40 flex items-center gap-2 uppercase tracking-widest mt-1">
+                                                    <Activity className="h-3 w-3 text-cyan-500" /> {apt.test_id || 'Diagnostic'} · {apt.status}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-12">
+                                            <div className="hidden md:block text-right">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-1">Date & Time</p>
+                                                <p className="text-sm font-black text-white tracking-widest">{apt.date} · {apt.time}</p>
+                                            </div>
+                                            <Button
+                                                onClick={() => navigate('/doctor/results')}
+                                                variant="ghost"
+                                                className="rounded-2xl h-14 font-black uppercase text-[10px] tracking-widest gap-3 text-cyan-500 hover:bg-cyan-500/10 px-8 border border-white/5 bg-white/5"
+                                            >
+                                                Check Report <ArrowRight className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                         <div className="p-8 bg-slate-950/20 text-center border-t border-white/10">
                             <Button

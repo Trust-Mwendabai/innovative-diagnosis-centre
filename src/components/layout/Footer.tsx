@@ -31,7 +31,7 @@ export default function Footer() {
           <div>
             <h4 className="font-heading font-semibold text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h4>
             <ul className="space-y-2.5">
-              {[["Services", "/services"], ["Make an Appointment", "/book"], ["Patient Registration", "/register"], ["Locations", "/locations"], ["About Us", "/about"], ["Blog", "/blog"]].map(([label, path]) => (
+              {[["Services", "/services"], ["Make an Appointment", "/book"], ["Patient Registration", "/register"], ["Gallery", "/gallery"], ["About Us", "/about"], ["Blog", "/blog"], ["Contact & Locations", "/contact"]].map(([label, path]) => (
                 <li key={path}>
                   <Link
                     to={path}

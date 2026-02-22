@@ -95,12 +95,16 @@ export default function PatientBilling() {
                         </div>
                     </div>
                 </Card>
-                <Card className="glass-card border-none bg-gradient-to-br from-blue-600/10 to-transparent rounded-[2.5rem] p-1">
+                <Card className="glass-card border-none bg-gradient-to-br from-[hsl(var(--gold))]/10 to-transparent rounded-[2.5rem] p-1">
                     <div className="bg-slate-950/40 backdrop-blur-3xl rounded-[2.4rem] p-8">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Saved Methods</p>
-                        <h4 className="text-4xl font-black text-white tracking-tighter">02 Links</h4>
-                        <div className="flex items-center gap-2 mt-4 text-blue-400 font-black text-[10px] uppercase tracking-widest">
-                            <ShieldCheck className="h-4 w-4" /> PCI-DSS Level 1
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">Total Transactions</p>
+                        {loading ? (
+                            <Skeleton className="h-10 w-32 bg-white/5" />
+                        ) : (
+                            <h4 className="text-4xl font-black text-white tracking-tighter">{transactions.length}</h4>
+                        )}
+                        <div className="flex items-center gap-2 mt-4 text-[hsl(var(--gold))] font-black text-[10px] uppercase tracking-widest">
+                            <FileText className="h-4 w-4" /> Comprehensive History
                         </div>
                     </div>
                 </Card>

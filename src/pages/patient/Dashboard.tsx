@@ -227,75 +227,6 @@ export default function PatientDashboard() {
                 <div className="lg:col-span-2 space-y-10">
                     <Card className="glass-card border-white/10 overflow-hidden rounded-[2.5rem]">
                         <CardHeader className="p-8 border-b border-white/5 bg-white/5">
-                            <CardTitle className="text-xl font-black font-heading text-white flex items-center gap-3">
-                                <TrendingUp className="h-6 w-6 text-[hsl(var(--gold))]" />
-                                Health Trends
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-8 h-[350px]">
-                            {loading ? (
-                                <Skeleton className="w-full h-full rounded-2xl bg-white/5" />
-                            ) : (
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={latestMetrics.length > 0 ? latestMetrics.map((m: any) => ({
-                                        name: m.metric_name,
-                                        value: parseFloat(m.metric_value),
-                                        date: m.recorded_at ? new Date(m.recorded_at).toLocaleDateString() : "Recent"
-                                    })) : [
-                                        { name: 'Trend', value: 70, date: 'Mon' },
-                                        { name: 'Trend', value: 75, date: 'Tue' },
-                                        { name: 'Trend', value: 72, date: 'Wed' },
-                                        { name: 'Trend', value: 80, date: 'Thu' },
-                                        { name: 'Trend', value: 85, date: 'Fri' },
-                                    ]}>
-                                        <defs>
-                                            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="hsl(var(--gold))" stopOpacity={0.3} />
-                                                <stop offset="95%" stopColor="hsl(var(--gold))" stopOpacity={0} />
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                                        <XAxis
-                                            dataKey="date"
-                                            axisLine={false}
-                                            tickLine={false}
-                                            tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 'bold' }}
-                                        />
-                                        <YAxis
-                                            axisLine={false}
-                                            tickLine={false}
-                                            tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 'bold' }}
-                                        />
-                                        <Tooltip
-                                            contentStyle={{
-                                                borderRadius: '20px',
-                                                border: '1px solid rgba(255,255,255,0.1)',
-                                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                                                backdropFilter: 'blur(10px)',
-                                                boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)',
-                                                padding: '12px',
-                                                fontWeight: 'black',
-                                                color: '#fff'
-                                            }}
-                                            itemStyle={{ color: 'hsl(var(--gold))' }}
-                                        />
-                                        <Area
-                                            type="monotone"
-                                            dataKey="value"
-                                            stroke="hsl(var(--gold))"
-                                            strokeWidth={4}
-                                            fillOpacity={1}
-                                            fill="url(#colorValue)"
-                                            animationDuration={2500}
-                                        />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="glass-card border-white/10 overflow-hidden rounded-[2.5rem]">
-                        <CardHeader className="p-8 border-b border-white/5 bg-white/5">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-xl font-black font-heading text-white flex items-center gap-3">
                                     <Clock className="h-6 w-6 text-[hsl(var(--saffron))]" />
@@ -378,31 +309,13 @@ export default function PatientDashboard() {
                                 <p className="text-2xl font-black text-white">{patientData?.blood_group || "Not set"}</p>
                             </div>
 
-                            {latestMetrics.slice(0, 2).map((metric: any) => (
-                                <div key={metric.metric_name} className="p-6 rounded-3xl bg-white/5 border border-white/5 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-3">
-                                        <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
-                                    </div>
-                                    <p className="text-[10px] font-black uppercase text-white/40 mb-2 tracking-[0.2em]">{metric.metric_name}</p>
-                                    <p className="text-2xl font-black text-white">{metric.metric_value} <span className="text-[10px] text-white/20 uppercase">{metric.unit}</span></p>
-                                </div>
-                            ))}
-
-                            {latestMetrics.length === 0 && (
-                                <div className="p-6 rounded-3xl bg-white/5 border border-white/5 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-3">
-                                        <ArrowUpRight className="h-4 w-4 text-white/10 group-hover:text-[hsl(var(--gold))] transition-colors" />
-                                    </div>
-                                    <p className="text-xs font-bold text-white/40 mb-2">Latest Results</p>
-                                    <p className="text-2xl font-black text-white">No data yet</p>
-                                </div>
-                            )}
-
                             <div className="pt-4">
-                                <Button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[11px] group">
-                                    <User className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
-                                    View Medical History
-                                    <ChevronRight className="ml-auto h-4 w-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                <Button asChild className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[11px] group">
+                                    <Link to="/patient/history">
+                                        <User className="mr-3 h-5 w-5 text-[hsl(var(--gold))]" />
+                                        View Medical History
+                                        <ChevronRight className="ml-auto h-4 w-4 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                    </Link>
                                 </Button>
                             </div>
                         </CardContent>

@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../utils/audit_logger.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -11,7 +12,10 @@ try {
     $id = (int)$_GET['id'];
     
     // Get patient info
-    $query = "SELECT * FROM patients WHERE id = :id";
+    $query = "SELECT p.*, u.name as doctor_name 
+              FROM patients p 
+              LEFT JOIN users u ON p.doctor_id = u.id 
+              WHERE p.id = :id";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':id', $id);
     $stmt->execute();
@@ -39,6 +43,9 @@ try {
     $stmt->bindParam(':id', $id);
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Log access to sensitive patient data
+    logAudit("VIEW_PATIENT_DETAILS", "patient", $id, ["patient_name" => $patient['name']]);
     
     http_response_code(200);
     echo json_encode(array(

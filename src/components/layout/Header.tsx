@@ -10,10 +10,9 @@ const navLinks = [
     { label: "Services", path: "/services" },
     { label: "Appointments", path: "/book" },
     { label: "Test Recommender", path: "/recommender" },
-    { label: "Locations", path: "/locations" },
-    { label: "About", path: "/about" },
     { label: "Blog", path: "/blog" },
-    { label: "Contact", path: "/contact" },
+    { label: "Gallery", path: "/gallery" },
+    { label: "Contact & Locations", path: "/contact" },
 ];
 
 export default function Header() {

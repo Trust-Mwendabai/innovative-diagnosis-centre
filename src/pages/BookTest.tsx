@@ -10,18 +10,26 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card, CardContent } from "@/components/ui/card";
-import { tests, healthPackages } from "@/data/tests";
 import { branches } from "@/data/branches";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL } from "@/lib/config";
 
 const timeSlots = ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "14:00", "15:00", "16:00"];
-const steps = ["Select Test", "Location", "Date & Time", "Your Details", "Confirm"];
+const steps = ["Method", "Select Test", "Location", "Date & Time", "Details", "Confirm"];
 
 const stepVariants = {
   enter: { opacity: 0, x: 50 },
   center: { opacity: 1, x: 0 },
   exit: { opacity: 0, x: -50 },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } as any
+  },
 };
 
 export default function BookTest() {
@@ -34,14 +42,37 @@ export default function BookTest() {
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "insurance" | null>(null);
+  const [subPaymentMethod, setSubPaymentMethod] = useState<"private" | "nhima" | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const allOptions = [...tests.map((t) => ({ id: t.id, label: t.name, price: t.price })), ...healthPackages.map((p) => ({ id: p.id, label: p.name + " (Package)", price: p.price }))];
-  const selected = allOptions.find((o) => o.id === selectedTest);
+  const [availableTests, setAvailableTests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const selected = availableTests.find((o) => o.id === selectedTest);
 
   useEffect(() => {
+    fetchTests();
     if (params.get("test") || params.get("package")) setStep(1);
   }, []);
+
+  const fetchTests = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/tests/read.php`);
+      const data = await res.json();
+      if (data.success) {
+        setAvailableTests(data.tests.map((t: any) => ({
+          id: t.id,
+          label: t.name,
+          price: parseFloat(t.price)
+        })));
+      }
+    } catch (error) {
+      toast.error("Error loading available tests");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const goNext = () => { setDirection(1); setStep(step + 1); };
   const goBack = () => { setDirection(-1); setStep(step - 1); };
@@ -62,9 +93,11 @@ export default function BookTest() {
           phone: form.phone,
           date: format(date, "yyyy-MM-dd"),
           time: time,
-          locationType: locationType,
+          location_type: locationType,
           branch: branch,
           testId: selectedTest,
+          payment_method: paymentMethod,
+          sub_payment_method: subPaymentMethod,
         }),
       });
 
@@ -106,7 +139,7 @@ export default function BookTest() {
 
             <h1 className="font-heading text-4xl font-black text-foreground mb-4">Slot Secured!</h1>
             <p className="text-muted-foreground mb-10 font-medium tracking-wide">
-              Your diagnostic appointment for <span className="text-[hsl(var(--gold))]">{selected?.label}</span> has been provisionally booked. Our medical coordinator will reach out shortly.
+              Your diagnostic appointment for <span className="text-[hsl(var(--gold))]">{selected?.label}</span> has been provisionally booked via <span className="text-emerald-500 uppercase font-black">{subPaymentMethod || paymentMethod}</span>. Our medical coordinator will reach out shortly.
             </p>
 
             <div className="rounded-[2rem] bg-foreground/5 border border-foreground/5 p-8 text-left space-y-4 mb-10">
@@ -192,8 +225,97 @@ export default function BookTest() {
             exit="exit"
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Step 0: Select Test */}
+            {/* Step 0: Payment Method */}
             {step === 0 && (
+              <Card className="glass-card border-white/10 p-8 rounded-[2.5rem] shadow-2xl">
+                <CardContent className="p-0 space-y-8">
+                  <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+                    <div className="h-12 w-12 rounded-2xl bg-[hsl(var(--gold))]/10 flex items-center justify-center">
+                      <Sparkles className="h-6 w-6 text-[hsl(var(--gold))]" />
+                    </div>
+                    <div>
+                      <h2 className="font-heading font-black text-2xl text-foreground">Billing Method</h2>
+                      <p className="text-muted-foreground text-sm font-medium">How would you like to settle your diagnostic fees?</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button
+                      onClick={() => { setPaymentMethod("cash"); setSubPaymentMethod(null); }}
+                      className={cn(
+                        "group p-6 rounded-[1.5rem] border text-left transition-all duration-300",
+                        paymentMethod === "cash"
+                          ? "border-[hsl(var(--gold))] bg-[hsl(var(--gold))]/10 shadow-glow-gold"
+                          : "border-white/5 bg-white/5 hover:bg-white/10"
+                      )}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-8 w-8 rounded-xl bg-slate-950 flex items-center justify-center">
+                          <Check className={cn("h-4 w-4", paymentMethod === "cash" ? "text-[hsl(var(--gold))]" : "text-white/10")} />
+                        </div>
+                        <span className="font-black text-lg text-foreground uppercase tracking-tight">Self-Pay (Cash/Card)</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-medium">Standard clinic rates apply. Pay on arrival or collection.</p>
+                    </button>
+
+                    <button
+                      onClick={() => setPaymentMethod("insurance")}
+                      className={cn(
+                        "group p-6 rounded-[1.5rem] border text-left transition-all duration-300",
+                        paymentMethod === "insurance"
+                          ? "border-cyan-500 bg-cyan-500/10 shadow-glow-cyan"
+                          : "border-white/5 bg-white/5 hover:bg-white/10"
+                      )}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="h-8 w-8 rounded-xl bg-slate-950 flex items-center justify-center">
+                          <Check className={cn("h-4 w-4", paymentMethod === "insurance" ? "text-cyan-500" : "text-white/10")} />
+                        </div>
+                        <span className="font-black text-lg text-foreground uppercase tracking-tight">Health Insurance</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-medium">Use your health scheme for full or partial cover.</p>
+                    </button>
+                  </div>
+
+                  <AnimatePresence>
+                    {paymentMethod === "insurance" && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-6 rounded-[2rem] bg-cyan-500/5 border border-cyan-500/10 space-y-6"
+                      >
+                        <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-500/60 ml-1">Select Insurance Provider Type</Label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <button
+                            onClick={() => setSubPaymentMethod("nhima")}
+                            className={cn(
+                              "p-4 rounded-2xl border transition-all duration-300 flex items-center gap-3",
+                              subPaymentMethod === "nhima" ? "bg-cyan-500 text-white border-transparent" : "bg-slate-950 border-white/5 text-white/40 hover:text-white"
+                            )}
+                          >
+                            <Check className={cn("h-4 w-4", subPaymentMethod === "nhima" ? "opacity-100" : "opacity-0")} />
+                            <span className="font-black uppercase tracking-widest text-[10px]">NHIMA (Government)</span>
+                          </button>
+                          <button
+                            onClick={() => setSubPaymentMethod("private")}
+                            className={cn(
+                              "p-4 rounded-2xl border transition-all duration-300 flex items-center gap-3",
+                              subPaymentMethod === "private" ? "bg-cyan-500 text-white border-transparent" : "bg-slate-950 border-white/5 text-white/40 hover:text-white"
+                            )}
+                          >
+                            <Check className={cn("h-4 w-4", subPaymentMethod === "private" ? "opacity-100" : "opacity-0")} />
+                            <span className="font-black uppercase tracking-widest text-[10px]">Private Insurance</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Step 1: Select Test */}
+            {step === 1 && (
               <Card className="glass-card border-white/10 p-8 rounded-[2.5rem] shadow-2xl">
                 <CardContent className="p-0 space-y-8">
                   <div className="flex items-center gap-4 border-b border-white/5 pb-6">
@@ -206,7 +328,12 @@ export default function BookTest() {
                     </div>
                   </div>
                   <div className="grid gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                    {allOptions.map((o) => (
+                    {loading ? (
+                      <div className="flex flex-col items-center justify-center py-12 gap-4">
+                        <div className="w-10 h-10 border-4 border-[hsl(var(--gold))] border-t-transparent rounded-full animate-spin" />
+                        <p className="text-foreground/40 font-black uppercase tracking-widest text-[10px] animate-pulse">Retrieving Options...</p>
+                      </div>
+                    ) : availableTests.map((o) => (
                       <button
                         key={o.id}
                         onClick={() => setSelectedTest(o.id)}
@@ -219,8 +346,16 @@ export default function BookTest() {
                       >
                         <span className={cn("font-bold text-lg transition-colors", selectedTest === o.id ? "text-foreground" : "text-muted-foreground")}>{o.label}</span>
                         <div className="flex flex-col items-end">
-                          <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/40 group-hover:text-muted-foreground/60">ZMW Price</span>
-                          <span className="font-heading font-black text-xl text-[hsl(var(--gold))]">ZMW {o.price}</span>
+                          <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/40 group-hover:text-muted-foreground/60">
+                            {paymentMethod === "cash" ? "ZMW Price" : subPaymentMethod === "nhima" ? "NHIMA Co-pay" : "Coverage"}
+                          </span>
+                          <span className={cn("font-heading font-black text-xl", paymentMethod === "cash" ? "text-[hsl(var(--gold))]" : "text-emerald-500")}>
+                            {paymentMethod === "cash"
+                              ? `ZMW ${o.price}`
+                              : subPaymentMethod === "nhima"
+                                ? `ZMW ${(o.price * 0.25).toFixed(0)}`
+                                : "Full Cover"}
+                          </span>
                         </div>
                       </button>
                     ))}
@@ -229,8 +364,8 @@ export default function BookTest() {
               </Card>
             )}
 
-            {/* Step 1: Location */}
-            {step === 1 && (
+            {/* Step 2: Location */}
+            {step === 2 && (
               <Card className="glass-card border-white/10 p-8 rounded-[2.5rem] shadow-2xl">
                 <CardContent className="p-0 space-y-8">
                   <div className="flex items-center gap-4 border-b border-white/5 pb-6">
@@ -282,8 +417,8 @@ export default function BookTest() {
               </Card>
             )}
 
-            {/* Step 2: Date & Time */}
-            {step === 2 && (
+            {/* Step 3: Date & Time */}
+            {step === 3 && (
               <Card className="glass-card border-white/10 p-8 rounded-[2.5rem] shadow-2xl">
                 <CardContent className="p-0 space-y-8">
                   <div className="flex items-center gap-4 border-b border-white/5 pb-6">
@@ -311,26 +446,57 @@ export default function BookTest() {
 
                     <div className="pt-4">
                       <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 mb-4 block">Available Time Slots</Label>
-                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                        {timeSlots.map((t) => (
-                          <button
-                            key={t}
-                            onClick={() => setTime(t)}
-                            className={cn(
-                              "py-3 rounded-xl border text-sm font-black transition-all duration-300",
-                              time === t ? "bg-[hsl(var(--gold))] text-white border-transparent shadow-glow-gold" : "bg-foreground/5 border-foreground/10 text-muted-foreground hover:text-foreground hover:bg-foreground/10"
-                            )}
-                          >{t}</button>
-                        ))}
-                      </div>
+
+                      {(() => {
+                        const categories = [
+                          { name: "Early Morning", range: [7, 9] },
+                          { name: "Mid Morning", range: [9, 12] },
+                          { name: "Afternoon", range: [12, 17] }
+                        ];
+
+                        return (
+                          <div className="space-y-8">
+                            {categories.map((cat) => (
+                              <div key={cat.name} className="space-y-4">
+                                <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-[hsl(var(--gold))] border-b border-white/5 pb-2 flex items-center justify-between">
+                                  {cat.name}
+                                  <span className="text-[8px] text-white/20 font-medium tracking-normal italic uppercase">
+                                    {cat.range[0].toString().padStart(2, '0')}:00 - {cat.range[1].toString().padStart(2, '0')}:00
+                                  </span>
+                                </h4>
+                                <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2">
+                                  {Array.from({ length: (cat.range[1] - cat.range[0]) * 6 }).map((_, i) => {
+                                    const hour = cat.range[0] + Math.floor(i / 6);
+                                    const min = (i % 6) * 10;
+                                    const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+
+                                    return (
+                                      <button
+                                        key={timeStr}
+                                        onClick={() => setTime(timeStr)}
+                                        className={cn(
+                                          "py-2.5 rounded-lg border text-[10px] font-black transition-all duration-300",
+                                          time === timeStr ? "bg-[hsl(var(--gold))] text-white border-transparent shadow-glow-gold scale-105" : "bg-foreground/5 border-foreground/10 text-muted-foreground hover:text-foreground hover:bg-foreground/10"
+                                        )}
+                                      >
+                                        {timeStr}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Step 3: Details */}
-            {step === 3 && (
+            {/* Step 4: Details */}
+            {step === 4 && (
               <Card className="glass-card border-white/10 p-8 rounded-[2.5rem] shadow-2xl">
                 <CardContent className="p-0 space-y-8">
                   <div className="flex items-center gap-4 border-b border-white/5 pb-6">
@@ -361,8 +527,8 @@ export default function BookTest() {
               </Card>
             )}
 
-            {/* Step 4: Confirm */}
-            {step === 4 && (
+            {/* Step 5: Confirm */}
+            {step === 5 && (
               <Card className="glass-card border-white/10 p-8 rounded-[2.5rem] shadow-2xl">
                 <CardContent className="p-0 space-y-8">
                   <div className="flex items-center gap-4 border-b border-white/5 pb-6">
@@ -382,8 +548,10 @@ export default function BookTest() {
                         <p className="text-xl font-black text-white">{selected?.label}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-widest">Service Fee</p>
-                        <p className="text-xl font-black text-[hsl(var(--gold))]">ZMW {selected?.price}</p>
+                        <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-widest">Expected Payment</p>
+                        <p className={cn("text-xl font-black", paymentMethod === "cash" ? "text-[hsl(var(--gold))]" : "text-emerald-500")}>
+                          {paymentMethod === "cash" ? `ZMW ${selected?.price}` : subPaymentMethod === "nhima" ? `ZMW ${(selected?.price * 0.25).toFixed(0)} (NHIMA Co-pay)` : "Private Insurance Coverage"}
+                        </p>
                       </div>
                       <div>
                         <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-widest">Date & Time</p>
@@ -413,14 +581,15 @@ export default function BookTest() {
             <ChevronLeft className="mr-2 h-4 w-4" /> Go Back
           </Button>
 
-          {step < 4 ? (
+          {step < 5 ? (
             <Button
               onClick={goNext}
               disabled={
-                (step === 0 && !selectedTest) ||
-                (step === 1 && locationType === "branch" && !branch) ||
-                (step === 2 && (!date || !time)) ||
-                (step === 3 && (!form.name || !form.phone))
+                (step === 0 && (!paymentMethod || (paymentMethod === "insurance" && !subPaymentMethod))) ||
+                (step === 1 && !selectedTest) ||
+                (step === 2 && locationType === "branch" && !branch) ||
+                (step === 3 && (!date || !time)) ||
+                (step === 4 && (!form.name || !form.phone))
               }
               className="h-14 px-10 rounded-2xl bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white font-black uppercase tracking-widest shadow-glow-gold hover:scale-[1.05] transition-all disabled:opacity-20"
             >

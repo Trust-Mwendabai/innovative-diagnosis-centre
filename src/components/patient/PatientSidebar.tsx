@@ -13,7 +13,8 @@ import {
     ChevronLeft,
     PanelLeftClose,
     PanelLeftOpen,
-    TrendingUp
+    TrendingUp,
+    Pill
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -29,8 +30,8 @@ const menuItems = [
     { icon: User, label: "My Profile", path: "/patient/profile" },
     { icon: CreditCard, label: "Billing", path: "/patient/billing" },
     { icon: Bell, label: "Notifications", path: "/patient/notifications" },
-    { icon: BookOpen, label: "Health Guru", path: "/patient/resources" },
-    { icon: TrendingUp, label: "Health Trends", path: "/patient/trends" },
+    { icon: Pill, label: "Prescriptions", path: "/patient/prescriptions" },
+    { icon: BookOpen, label: "Health Insights", path: "/patient/insights" },
 ];
 
 interface SidebarProps {

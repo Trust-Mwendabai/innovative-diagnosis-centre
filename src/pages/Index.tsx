@@ -4,9 +4,10 @@ import { ArrowRight, Microscope, FlaskConical, MapPin, ShieldCheck, Home, Star, 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { tests, healthPackages } from "@/data/tests";
 import { testimonials } from "@/data/testimonials";
 import heroImage from "@/assets/hero-lab.jpg";
+import { API_BASE_URL } from "@/lib/config";
+import { useState, useEffect } from "react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -34,7 +35,29 @@ const staggerContainer = {
 };
 
 export default function Index() {
-  const popularTests = tests.filter((t) => t.popular);
+  const [popularTests, setPopularTests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPopularTests();
+  }, []);
+
+  const fetchPopularTests = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/tests/read.php`);
+      const data = await res.json();
+      if (data.success) {
+        // Since we don't have a 'popular' flag in the simplest backend yet, 
+        // let's take the first 3 or filter by some logic.
+        // For now, let's take the first 3 as 'popular'.
+        setPopularTests(data.tests.slice(0, 3));
+      }
+    } catch (error) {
+      console.error("Error fetching popular tests:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -221,87 +244,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ================== HEALTH PACKAGES ================== */}
-      <section className="relative py-32 md:py-48 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1600&q=80"
-            className="h-full w-full object-cover opacity-20"
-            alt="Health Screening Environment"
-          />
-          <div className="absolute inset-0 bg-slate-950/90" />
-          <div className="absolute inset-0 pattern-mandala opacity-10" />
-        </div>
-
-        <div className="container relative">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-center mb-20"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(var(--gold))]/10 text-[hsl(var(--gold))] text-[10px] font-black mb-6 uppercase tracking-[0.2em]">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Comprehensive Care
-            </div>
-            <h2 className="font-heading text-4xl md:text-6xl font-black text-white leading-tight italic">
-              Signature <span className="text-[hsl(var(--gold))]">Saffron</span> Protocols
-            </h2>
-            <p className="text-white/50 mt-8 max-w-2xl mx-auto text-lg font-medium leading-relaxed">
-              Synthesizing advanced biochemical analysis into integrated health assessments for a definitive portrait of your well-being.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
-          >
-            {healthPackages.slice(0, 3).map((pkg) => (
-              <motion.div key={pkg.id} variants={fadeUp}>
-                <Card className="h-full relative overflow-hidden glass-card border-white/10 group rounded-[3rem]">
-                  {pkg.popular && (
-                    <div className="absolute top-6 right-6 px-4 py-1.5 rounded-full bg-gradient-to-r from-[hsl(var(--saffron))] to-[hsl(var(--gold))] text-white text-[9px] font-black uppercase tracking-widest shadow-glow-gold z-10">
-                      Standard Choice
-                    </div>
-                  )}
-                  <CardContent className="p-10">
-                    <h3 className="font-heading text-2xl font-black text-white group-hover:text-[hsl(var(--gold))] transition-all mb-4">
-                      {pkg.name}
-                    </h3>
-                    <p className="text-sm text-white/40 font-medium mb-8 leading-relaxed">{pkg.description}</p>
-                    <ul className="mb-10 space-y-4">
-                      {pkg.tests.slice(0, 5).map((t) => (
-                        <li key={t} className="text-[11px] font-bold text-white/50 flex items-center gap-3">
-                          <div className="h-5 w-5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                            <ShieldCheck className="h-3 w-3 text-[hsl(var(--gold))]" />
-                          </div>
-                          {t}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-auto pt-8 border-t border-white/5 flex items-center justify-between">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Package Fee</span>
-                        <span className="text-2xl font-black text-white italic">ZMW {pkg.price}</span>
-                      </div>
-                      <Link to={`/book?package=${pkg.id}`}>
-                        <Button className="h-12 px-6 rounded-xl bg-[hsl(var(--gold))] text-white font-black uppercase tracking-widest text-[10px] shadow-glow-gold hover:scale-105 transition-all">
-                          Select Protocol
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      {/* Why Choose Us section follows... */}
 
       {/* ================== WHY CHOOSE US ================== */}
       <section className="container py-32">

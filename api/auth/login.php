@@ -6,6 +6,7 @@ header("Access-Control-Allow-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 include_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../utils/audit_logger.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -27,6 +28,9 @@ if(!empty($identifier) && !empty($data->password)) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if (password_verify($password, $row['password'])) {
+                // Log successful login security event
+                logAudit("USER_LOGIN", "users", $row['id'], ["role" => $row['role']]);
+
                 // Success: Return user data and mock token
                 http_response_code(200);
                 echo json_encode([

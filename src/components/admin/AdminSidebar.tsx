@@ -16,7 +16,8 @@ import {
     Layout,
     Newspaper,
     Bell,
-    BarChart3
+    BarChart3,
+    Shield
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ const sidebarItems = [
     { icon: Newspaper, label: "Blog Manager", path: "/admin/blog" },
     { icon: Bell, label: "Notifications", path: "/admin/notifications" },
     { icon: BarChart3, label: "Reports", path: "/admin/reports" },
+    { icon: Shield, label: "Audit Logs", path: "/admin/audit-logs" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 

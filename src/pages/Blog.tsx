@@ -226,33 +226,6 @@ export default function Blog() {
         )}
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="container">
-        <div className="glass-card border-white/10 rounded-[4rem] overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--saffron))]/20 to-transparent" />
-          <div className="absolute inset-0 pattern-mandala opacity-10 pointer-events-none" />
-
-          <div className="relative p-12 md:p-24 flex flex-col lg:flex-row items-center gap-16">
-            <div className="flex-1 text-center lg:text-left">
-              <h2 className="font-heading text-4xl md:text-5xl font-black text-foreground italic mb-6">
-                Stay <span className="text-[hsl(var(--gold))] underline decoration-4 underline-offset-8">Informed</span>
-              </h2>
-              <p className="text-muted-foreground text-xl font-medium max-w-xl mx-auto lg:mx-0">
-                Subscribe to our clinical bulletin for the latest diagnostic breakthroughs and health protocols.
-              </p>
-            </div>
-            <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4">
-              <Input
-                placeholder="Expert email address..."
-                className="h-16 sm:w-80 rounded-2xl bg-foreground/5 border-border/50 text-foreground font-bold"
-              />
-              <Button className="h-16 px-10 rounded-2xl bg-[hsl(var(--gold))] text-white font-black uppercase tracking-widest text-[10px] shadow-glow-gold hover:scale-[1.05] transition-all">
-                Secure Subscription
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

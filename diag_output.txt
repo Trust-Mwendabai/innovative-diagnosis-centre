@@ -1,0 +1,68 @@
+--- Table: users ---
+id - int(11) - NO - PRI
+name - varchar(255) - NO - 
+email - varchar(255) - NO - UNI
+phone - varchar(50) - YES - UNI
+role - enum('admin','staff','doctor','patient') - YES - 
+password - varchar(255) - NO - 
+otp_code - varchar(10) - YES - 
+otp_expiry - timestamp - YES - 
+created_at - timestamp - NO - 
+Total rows: 6
+Data (Doctors):
+ID: 8 - Name: Dr. Zambian Medic - Role: doctor
+ID: 9 - Name: Trust Muhau Mwendabai - Role: doctor
+
+--- Table: patients ---
+id - int(11) - NO - PRI
+user_id - int(11) - YES - MUL
+name - varchar(100) - NO - 
+email - varchar(100) - YES - 
+phone - varchar(20) - YES - 
+address - text - YES - 
+dob - date - YES - 
+gender - enum('male','female','other') - YES - 
+blood_group - varchar(10) - YES - 
+weight - decimal(5,2) - YES - 
+height - decimal(5,2) - YES - 
+created_at - timestamp - NO - 
+doctor_id - int(11) - YES - MUL
+Total rows: 3
+Data (Assigned Doctors):
+ID: 1 - Name: trust - DoctorID: NULL
+ID: 2 - Name: tr - DoctorID: NULL
+ID: 3 - Name: trust - DoctorID: NULL
+
+--- Table: appointments ---
+id - int(11) - NO - PRI
+patient_id - int(11) - YES - MUL
+name - varchar(255) - NO - 
+email - varchar(255) - NO - 
+phone - varchar(50) - NO - 
+date - date - NO - MUL
+time - varchar(20) - NO - 
+location_type - enum('branch','home') - NO - 
+is_home_collection - tinyint(1) - YES - 
+branch_id - varchar(50) - YES - 
+staff_id - int(11) - YES - 
+test_id - varchar(100) - YES - 
+test_ids - text - YES - 
+total_price - decimal(10,2) - YES - 
+status - enum('pending','confirmed','completed','cancelled') - YES - 
+created_at - timestamp - NO - 
+insurance_type - varchar(50) - YES - 
+insurance_provider - varchar(100) - YES - 
+requires_fasting - tinyint(1) - YES - 
+fasting_confirmed - tinyint(1) - YES - 
+doctor_id - int(11) - YES - MUL
+Total rows: 8
+Data (Appointments):
+ID: 1 - PatientID: 1 - DoctorID: 9 - Status: pending
+ID: 2 - PatientID: 1 - DoctorID: 8 - Status: pending
+ID: 3 - PatientID: NULL - DoctorID: 9 - Status: pending
+ID: 4 - PatientID: NULL - DoctorID: 8 - Status: pending
+ID: 5 - PatientID: NULL - DoctorID: 8 - Status: pending
+ID: 6 - PatientID: NULL - DoctorID: 8 - Status: pending
+ID: 7 - PatientID: NULL - DoctorID: 9 - Status: pending
+ID: 8 - PatientID: 1 - DoctorID: 9 - Status: pending
+

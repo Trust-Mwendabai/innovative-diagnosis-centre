@@ -106,7 +106,7 @@ export default function Doctors() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-4xl font-black tracking-tighter text-slate-900 dark:text-white italic">Doctors</h1>
-                    <p className="text-muted-foreground font-bold mt-1">Manage clinical staff and doctors.</p>
+                    <p className="text-slate-500 dark:text-slate-400 font-bold mt-1">Manage clinical staff and doctors.</p>
                 </div>
                 <Button onClick={() => setIsAddModalOpen(true)} className="gradient-primary py-5 px-6 shadow-lg shadow-primary/20">
                     <UserPlus className="mr-2 h-4 w-4" /> Add Doctor
@@ -114,58 +114,58 @@ export default function Doctors() {
             </div>
 
             <Card className="glass-light border-white/20 shadow-2xl rounded-[2.5rem] overflow-hidden">
-                <CardHeader className="p-8 border-b border-white/10 bg-white/40">
+                <CardHeader className="p-8 border-b border-white/10 bg-slate-100/50 dark:bg-slate-900/60">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <CardTitle className="text-2xl font-black text-slate-900 dark:text-white italic">Medical Staff</CardTitle>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                             <Input
                                 placeholder="Search by name or email..."
-                                className="pl-9 w-full sm:w-80 bg-white/50 border-white/30 focus:bg-white h-11 rounded-xl"
+                                className="pl-9 w-full sm:w-80 bg-white/80 dark:bg-slate-800/80 border-white/30 focus:bg-white text-slate-900 dark:text-white h-11 rounded-xl font-bold"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 bg-white/40 dark:bg-slate-950/40">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-32 gap-4">
                             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                            <p className="text-muted-foreground font-bold animate-pulse">Loading doctors...</p>
+                            <p className="text-slate-600 dark:text-slate-300 font-black animate-pulse">Loading doctors...</p>
                         </div>
                     ) : filteredDoctors.length === 0 ? (
                         <div className="text-center py-32 bg-white/20">
                             <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Stethoscope className="w-10 h-10 text-slate-300 dark:text-slate-600" />
+                                <Stethoscope className="w-10 h-10 text-slate-400 dark:text-slate-500" />
                             </div>
                             <h3 className="text-2xl font-black text-slate-800 dark:text-white italic">No Doctors Found</h3>
-                            <p className="text-muted-foreground font-bold max-w-md mx-auto mt-2">
+                            <p className="text-slate-500 dark:text-slate-400 font-bold max-w-md mx-auto mt-2">
                                 Manage your medical team by adding new doctors to the system.
                             </p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-slate-50/50">
+                                <TableHeader className="bg-slate-200/50 dark:bg-slate-800/50">
                                     <TableRow className="hover:bg-transparent border-white/10">
-                                        <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Doctor Name</TableHead>
-                                        <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Contact Details</TableHead>
-                                        <TableHead className="py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 text-center">Joined</TableHead>
-                                        <TableHead className="py-6 px-8 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Actions</TableHead>
+                                        <TableHead className="py-6 px-8 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Doctor Name</TableHead>
+                                        <TableHead className="py-6 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Contact Details</TableHead>
+                                        <TableHead className="py-6 text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 text-center">Joined</TableHead>
+                                        <TableHead className="py-6 px-8 text-right text-[11px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredDoctors.map((d) => (
-                                        <TableRow key={d.id} className="group hover:bg-white/60 transition-colors border-white/5">
+                                        <TableRow key={d.id} className="group hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors border-white/5">
                                             <TableCell className="py-6 px-8">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 font-black text-lg">
                                                         <Stethoscope className="h-6 w-6" />
                                                     </div>
                                                     <div>
-                                                        <div className="font-black text-slate-900 dark:text-slate-200 group-hover:text-primary transition-colors text-lg italic">Dr. {d.name}</div>
-                                                        <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-1 mt-1">
+                                                        <div className="font-black text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors text-lg italic">Dr. {d.name}</div>
+                                                        <div className="text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest flex items-center gap-1 mt-1">
                                                             <UserCheck className="h-3 w-3 text-emerald-500" /> Verified Practitioner
                                                         </div>
                                                     </div>
@@ -177,20 +177,20 @@ export default function Doctors() {
                                                         <Mail className="h-4 w-4 text-primary" /> {d.email}
                                                     </div>
                                                     {d.phone && (
-                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground font-bold italic">
+                                                        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-bold italic">
                                                             <Phone className="h-4 w-4 text-emerald-500" /> {d.phone}
                                                         </div>
                                                     )}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="py-6 text-center text-sm font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">
+                                            <TableCell className="py-6 text-center text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">
                                                 {new Date(d.created_at).toLocaleDateString()}
                                             </TableCell>
                                             <TableCell className="py-6 px-8 text-right">
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-10 w-10 text-destructive hover:bg-destructive/5 rounded-xl transition-all"
+                                                    className="h-10 w-10 text-destructive hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-xl transition-all"
                                                     onClick={() => handleDeleteDoctor(d.id)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -207,56 +207,56 @@ export default function Doctors() {
 
             {/* Add Doctor Dialog */}
             <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-                <DialogContent className="sm:max-w-md rounded-[2rem] border-white/20 glass-light backdrop-blur-2xl">
-                    <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-slate-900">Add New Doctor</DialogTitle>
-                        <DialogDescription className="font-medium">
+                <DialogContent className="sm:max-w-md rounded-[2.5rem] border-white/20 glass-light backdrop-blur-2xl dark:bg-slate-900">
+                    <DialogHeader className="p-6 bg-slate-100/50 dark:bg-slate-950/50 border-b border-white/10">
+                        <DialogTitle className="text-2xl font-black text-slate-900 dark:text-white italic uppercase tracking-tighter">Add New Doctor</DialogTitle>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-bold">
                             Register a new medical professional to the system.
-                        </DialogDescription>
+                        </p>
                     </DialogHeader>
-                    <form onSubmit={handleAddDoctor} className="space-y-4 pt-4">
+                    <form onSubmit={handleAddDoctor} className="p-6 space-y-6 bg-white/40 dark:bg-slate-900/40">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Full Name</label>
                             <Input
                                 placeholder="e.g. Kelvin Bwalya"
-                                className="h-12 rounded-xl bg-white/50 border-white/20 focus:bg-white"
+                                className="h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border-white/30 text-slate-900 dark:text-white font-black focus:ring-2 focus:ring-primary"
                                 value={newDoctor.name}
                                 onChange={(e) => setNewDoctor({ ...newDoctor, name: e.target.value })}
                                 required
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Email Address</label>
                             <Input
                                 type="email"
                                 placeholder="dr.kelvin@idc.zm"
-                                className="h-12 rounded-xl bg-white/50 border-white/20 focus:bg-white"
+                                className="h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border-white/30 text-slate-900 dark:text-white font-black focus:ring-2 focus:ring-primary"
                                 value={newDoctor.email}
                                 onChange={(e) => setNewDoctor({ ...newDoctor, email: e.target.value })}
                                 required
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone (Optional)</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Phone (Optional)</label>
                             <Input
                                 placeholder="+260..."
-                                className="h-12 rounded-xl bg-white/50 border-white/20 focus:bg-white"
+                                className="h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border-white/30 text-slate-900 dark:text-white font-black focus:ring-2 focus:ring-primary"
                                 value={newDoctor.phone}
                                 onChange={(e) => setNewDoctor({ ...newDoctor, phone: e.target.value })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Temporary Password</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Temporary Password</label>
                             <Input
                                 type="password"
                                 placeholder="doctor123"
-                                className="h-12 rounded-xl bg-white/50 border-white/20 focus:bg-white"
+                                className="h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border-white/30 text-slate-900 dark:text-white font-black focus:ring-2 focus:ring-primary"
                                 value={newDoctor.password}
                                 onChange={(e) => setNewDoctor({ ...newDoctor, password: e.target.value })}
                             />
                         </div>
-                        <DialogFooter className="pt-6">
-                            <Button type="submit" className="w-full h-12 rounded-xl gradient-primary font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20" disabled={submitting}>
+                        <DialogFooter className="pt-4">
+                            <Button type="submit" className="w-full h-12 rounded-2xl gradient-primary text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all active:scale-95" disabled={submitting}>
                                 {submitting ? "Processing..." : "Add Doctor"}
                             </Button>
                         </DialogFooter>

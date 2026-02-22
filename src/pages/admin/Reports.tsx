@@ -70,7 +70,7 @@ export default function Reports() {
         toast.success(`Generating ${format} report...`);
 
         try {
-            const doc = new jsPDF() as any;
+            const doc = new jsPDF();
 
             // Header
             doc.setFontSize(22);
@@ -84,54 +84,63 @@ export default function Reports() {
 
             // Stats Summary
             doc.setFontSize(16);
-            doc.setTextColor(0);
+            doc.setTextColor(0, 0, 0);
             doc.text("Performance Overview", 14, 50);
 
             const statsData = [
-                ["Metric", "Value", "Trend"],
                 ["Monthly Growth", "+12.5%", "+4.1%"],
                 ["Patient Retention", "94.2%", "+2.3%"],
                 ["Avg. Test Value", "K1,450", "+1.1%"],
                 ["Report Accuracy", "99.9%", "Optimal"]
             ];
 
-            doc.autoTable({
+            (doc as any).autoTable({
                 startY: 55,
-                head: [statsData[0]],
-                body: statsData.slice(1),
+                head: [["Metric", "Value", "Trend"]],
+                body: statsData,
                 theme: 'grid',
-                headStyles: { fillStyle: [59, 130, 246] }
+                headStyles: { fillColor: [59, 130, 246] },
+                styles: { fontStyle: 'bold' }
             });
+
+            let finalY = (doc as any).lastAutoTable.finalY || 100;
 
             // Trend Data
             if (data.trends && data.trends.length > 0) {
-                doc.text("Patient Volume Trends", 14, (doc as any).lastAutoTable.finalY + 15);
+                doc.setFontSize(16);
+                doc.text("Patient Volume Trends", 14, finalY + 15);
                 const trendRows = data.trends.map((t: any) => [t.month, t.count]);
-                doc.autoTable({
-                    startY: (doc as any).lastAutoTable.finalY + 20,
+                (doc as any).autoTable({
+                    startY: finalY + 20,
                     head: [["Month", "Appointments"]],
                     body: trendRows,
-                    theme: 'striped'
+                    theme: 'striped',
+                    headStyles: { fillColor: [59, 130, 246] }
                 });
+                finalY = (doc as any).lastAutoTable.finalY || finalY + 50;
             }
 
-            // Status distribution
+            // Test Distribution
             if (data.distribution && data.distribution.length > 0) {
-                doc.text("Top Performed Tests", 14, (doc as any).lastAutoTable.finalY + 15);
+                if (finalY > 230) { doc.addPage(); finalY = 20; }
+                doc.setFontSize(16);
+                doc.text("Top Performed Tests", 14, finalY + 15);
                 const distRows = data.distribution.map((d: any) => [d.name, d.total]);
-                doc.autoTable({
-                    startY: (doc as any).lastAutoTable.finalY + 20,
+                (doc as any).autoTable({
+                    startY: finalY + 20,
                     head: [["Test Name", "Volume"]],
                     body: distRows,
-                    theme: 'grid'
+                    theme: 'grid',
+                    headStyles: { fillColor: [16, 185, 129] }
                 });
             }
 
+            window.open(doc.output('bloburl'), '_blank');
             doc.save(`IDC_Analytics_Report_${new Date().toISOString().split('T')[0]}.pdf`);
             toast.info("Download started automatically.");
         } catch (error) {
             console.error("PDF generation error:", error);
-            toast.error("Failed to generate PDF.");
+            toast.error("Failed to generate PDF. Check console for details.");
         }
     };
 
@@ -248,14 +257,14 @@ export default function Reports() {
                     </CardContent>
                 </Card>
 
-                <Card className="glass-light border-white/20 shadow-premium rounded-[2.5rem] overflow-hidden">
-                    <CardHeader className="p-8">
-                        <CardTitle className="text-xl font-black text-slate-900 flex items-center gap-2">
+                <Card className="glass-light border-white/20 shadow-premium rounded-[2.5rem] overflow-hidden lg:col-span-2">
+                    <CardHeader className="p-8 pb-4">
+                        <CardTitle className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                             <PieChartIcon className="h-5 w-5 text-amber-500" /> Top Performed Tests
                         </CardTitle>
-                        <CardDescription className="font-bold">Distribution based on appointment volume.</CardDescription>
+                        <CardDescription className="font-bold">Distribution based on appointment volume across all diagnostics.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[350px] p-8 pt-0 flex items-center">
+                    <CardContent className="h-[300px] p-8 pt-0 flex items-center">
                         {loading ? (
                             <div className="w-full h-full bg-slate-50 animate-pulse rounded-2xl" />
                         ) : (
@@ -280,13 +289,13 @@ export default function Reports() {
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
-                                <div className="w-1/2 space-y-4">
+                                <div className="w-1/2 grid grid-cols-2 gap-4">
                                     {data?.distribution.map((entry: any, index: number) => (
-                                        <div key={index} className="flex items-center gap-3">
-                                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                            <div className="flex-1">
-                                                <p className="text-xs font-black text-slate-900 truncate">{entry.name}</p>
-                                                <p className="text-[10px] font-bold text-slate-400">{entry.total} bookings</p>
+                                        <div key={index} className="flex items-center gap-3 bg-slate-50/50 p-4 rounded-2xl border border-white/40 shadow-sm">
+                                            <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-xs font-black text-slate-900 truncate uppercase tracking-tighter">{entry.name}</p>
+                                                <p className="text-[10px] font-bold text-emerald-600">{entry.total} bookings</p>
                                             </div>
                                         </div>
                                     ))}
@@ -294,18 +303,6 @@ export default function Reports() {
                             </>
                         )}
                     </CardContent>
-                </Card>
-
-                <Card className="glass-light border-white/20 shadow-premium p-8 rounded-[2.5rem] bg-indigo-50/50 flex flex-col justify-center">
-                    <div className="flex gap-4">
-                        <div className="p-4 rounded-3xl bg-white text-indigo-600 shadow-sm h-fit">
-                            <Activity className="h-6 w-6" />
-                        </div>
-                        <div>
-                            <h5 className="text-sm font-black text-slate-900 mb-1">Intelligence Overview</h5>
-                            <p className="text-xs leading-relaxed font-medium text-slate-500">Your clinic data is showing consistent growth. All systems are performing at optimal capacity with 99.9% report accuracy.</p>
-                        </div>
-                    </div>
                 </Card>
             </div>
         </div>

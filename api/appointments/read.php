@@ -4,7 +4,10 @@ include_once __DIR__ . '/../config/database.php';
 header("Content-Type: application/json; charset=UTF-8");
 
 try {
-    $query = "SELECT * FROM appointments ORDER BY created_at DESC";
+    $query = "SELECT a.*, u.name as doctor_name 
+              FROM appointments a 
+              LEFT JOIN users u ON a.doctor_id = u.id 
+              ORDER BY a.created_at DESC";
     $stmt = $conn->prepare($query);
     $stmt->execute();
 
@@ -27,6 +30,13 @@ try {
                 "location_type" => $location_type,
                 "branch_id" => $branch_id,
                 "test_id" => $test_id,
+                "doctor_id" => $doctor_id,
+                "doctor_name" => $doctor_name,
+                "total_price" => $total_price,
+                "insurance_type" => $insurance_type,
+                "insurance_provider" => $insurance_provider,
+                "requires_fasting" => $requires_fasting,
+                "fasting_confirmed" => $fasting_confirmed,
                 "status" => $status,
                 "created_at" => $created_at
             );

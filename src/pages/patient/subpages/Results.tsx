@@ -235,23 +235,7 @@ export default function PatientResults() {
                 )}
             </div>
 
-            {/* Preparation Card */}
-            <Card className="glass-card border-none bg-gradient-to-br from-blue-600/20 to-transparent p-1 rounded-[3rem]">
-                <div className="bg-slate-950/80 backdrop-blur-3xl rounded-[2.9rem] p-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div className="flex items-center gap-8">
-                        <div className="h-20 w-20 rounded-[2rem] bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                            <TrendingUp className="h-10 w-10 text-blue-400" />
-                        </div>
-                        <div>
-                            <h4 className="text-2xl font-black text-white uppercase tracking-tight">Need a professional review?</h4>
-                            <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest mt-1">Book a follow-up consultation with our specialists</p>
-                        </div>
-                    </div>
-                    <Button className="h-16 px-10 rounded-2xl bg-white text-slate-950 font-black uppercase tracking-widest hover:bg-white/90 transition-all">
-                        Consult Physician <ArrowUpRight className="ml-3 h-5 w-5" />
-                    </Button>
-                </div>
-            </Card>
+
         </div>
     );
 }

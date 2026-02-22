@@ -7,9 +7,11 @@ try {
     $search = isset($_GET['search']) ? $_GET['search'] : "";
     
     $query = "SELECT p.*, 
+                u.name as doctor_name,
                 (SELECT COUNT(*) FROM appointments WHERE patient_id = p.id) as total_appointments,
                 (SELECT MAX(date) FROM appointments WHERE patient_id = p.id) as last_test_date
-              FROM patients p";
+              FROM patients p
+              LEFT JOIN users u ON p.doctor_id = u.id";
               
     if (!empty($search)) {
         $query .= " WHERE p.name LIKE :search OR p.email LIKE :search OR p.phone LIKE :search";

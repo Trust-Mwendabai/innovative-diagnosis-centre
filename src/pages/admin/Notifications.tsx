@@ -27,12 +27,21 @@ interface Notification {
     patient_name: string;
     title: string;
     type: string;
-    recipient: string; // This usually maps to recipient_group in DB
+    recipient: string;
     recipient_group: string;
+    category: string;
+    sent_by_name: string;
     message: string;
     status: string;
     sent_at: string;
 }
+
+const CATEGORY_META: Record<string, { label: string; color: string; bg: string }> = {
+    general: { label: "General", color: "text-emerald-400", bg: "bg-emerald-500/10 border border-emerald-500/20" },
+    role_based: { label: "Role-Based", color: "text-sky-400", bg: "bg-sky-500/10 border border-sky-500/20" },
+    individual: { label: "Personal", color: "text-violet-400", bg: "bg-violet-500/10 border border-violet-500/20" },
+    system: { label: "System", color: "text-amber-400", bg: "bg-amber-500/10 border border-amber-500/20" },
+};
 
 export default function Notifications() {
     const [logs, setLogs] = useState<Notification[]>([]);
@@ -43,7 +52,8 @@ export default function Notifications() {
     const [broadcastForm, setBroadcastForm] = useState({
         subject: "",
         message: "",
-        recipient_group: "all_patients"
+        recipient_group: "all_patients",
+        recipient_id: ""
     });
 
     useEffect(() => {
@@ -85,7 +95,10 @@ export default function Notifications() {
                 recipient_group: broadcastForm.recipient_group,
                 title: broadcastForm.subject,
                 message: broadcastForm.message,
-                type: "system"
+                type: "system",
+                ...(broadcastForm.recipient_group === "individual" && broadcastForm.recipient_id
+                    ? { recipient_id: broadcastForm.recipient_id }
+                    : {})
             };
 
             if (isEdit) {
@@ -101,7 +114,7 @@ export default function Notifications() {
 
             if (data.success) {
                 toast.success(isEdit ? "Announcement updated" : "Announcement sent successfully");
-                setBroadcastForm({ recipient_group: "all_patients", message: "", subject: "" });
+                setBroadcastForm({ recipient_group: "all_patients", message: "", subject: "", recipient_id: "" });
                 setEditingId(null);
                 fetchLogs();
             } else {
@@ -142,7 +155,8 @@ export default function Notifications() {
         setBroadcastForm({
             subject: log.title || "",
             message: log.message || "",
-            recipient_group: log.recipient_group || "all_patients"
+            recipient_group: log.recipient_group || "all_patients",
+            recipient_id: ""
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -152,7 +166,8 @@ export default function Notifications() {
         setBroadcastForm({
             subject: "",
             message: "",
-            recipient_group: "all_patients"
+            recipient_group: "all_patients",
+            recipient_id: ""
         });
     };
 
@@ -214,44 +229,54 @@ export default function Notifications() {
                                                         <CheckCircle2 className="h-5 w-5" />
                                                     </div>
                                                     <div className="flex-1 space-y-2">
-                                                        <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3 flex-wrap">
                                                             <div>
                                                                 <h4 className="font-bold text-white text-sm">
-                                                                    {log.recipient_group || 'Everyone'}
+                                                                    {log.recipient_group === 'everyone' ? 'Everyone' :
+                                                                        log.recipient_group === 'all_patients' ? 'All Patients' :
+                                                                            log.recipient_group === 'all_doctors' ? 'All Doctors' :
+                                                                                log.recipient_group === 'all_staff' ? 'All Staff' :
+                                                                                    log.recipient_group === 'individual' ? `Individual #${log.patient_id}` :
+                                                                                        log.recipient_group || 'Everyone'}
                                                                 </h4>
                                                                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                                                                     {new Date(log.sent_at).toLocaleDateString()} at {new Date(log.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                                 </p>
                                                             </div>
-                                                            <div className="flex items-center gap-2">
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    onClick={() => handleEdit(log)}
-                                                                    className="h-8 w-8 p-0 rounded-full hover:bg-emerald-500/20 text-slate-500 hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-all"
-                                                                >
-                                                                    <Edit className="h-4 w-4" />
-                                                                </Button>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    onClick={() => handleDelete(log.id)}
-                                                                    className="h-8 w-8 p-0 rounded-full hover:bg-rose-500/20 text-slate-500 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all"
-                                                                >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-2">
-                                                            {log.title && (
-                                                                <h5 className="text-emerald-400 font-bold text-xs uppercase tracking-wide border-b border-white/5 pb-2 mb-2">
-                                                                    {log.title}
-                                                                </h5>
+                                                            {log.category && CATEGORY_META[log.category] && (
+                                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-xl text-[9px] font-black uppercase tracking-widest ${CATEGORY_META[log.category].bg} ${CATEGORY_META[log.category].color}`}>
+                                                                    {CATEGORY_META[log.category].label}
+                                                                </span>
                                                             )}
-                                                            <p className="text-sm text-slate-300 font-medium leading-relaxed">
-                                                                {log.message}
-                                                            </p>
                                                         </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => handleEdit(log)}
+                                                                className="h-8 w-8 p-0 rounded-full hover:bg-emerald-500/20 text-slate-500 hover:text-emerald-400 opacity-0 group-hover:opacity-100 transition-all"
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => handleDelete(log.id)}
+                                                                className="h-8 w-8 p-0 rounded-full hover:bg-rose-500/20 text-slate-500 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all"
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="bg-black/20 p-4 rounded-xl border border-white/5 space-y-2">
+                                                        {log.title && (
+                                                            <h5 className="text-emerald-400 font-bold text-xs uppercase tracking-wide border-b border-white/5 pb-2 mb-2">
+                                                                {log.title}
+                                                            </h5>
+                                                        )}
+                                                        <p className="text-sm text-slate-300 font-medium leading-relaxed">
+                                                            {log.message}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -288,15 +313,25 @@ export default function Notifications() {
                                     <select
                                         className="w-full h-14 rounded-2xl border border-white/10 bg-black/40 px-4 text-sm font-bold text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none appearance-none cursor-pointer hover:bg-black/60 transition-colors"
                                         value={broadcastForm.recipient_group}
-                                        onChange={(e) => setBroadcastForm({ ...broadcastForm, recipient_group: e.target.value })}
+                                        onChange={(e) => setBroadcastForm({ ...broadcastForm, recipient_group: e.target.value, recipient_id: "" })}
                                     >
-                                        <option value="all_patients" className="bg-slate-900 text-white">All Patients</option>
-                                        <option value="all_doctors" className="bg-slate-900 text-white">All Doctors</option>
-                                        <option value="all_staff" className="bg-slate-900 text-white">All Staff</option>
-                                        <option value="everyone" className="bg-slate-900 text-white">Everyone</option>
+                                        <option value="all_patients" className="bg-slate-900 text-white">🏥 All Patients</option>
+                                        <option value="all_doctors" className="bg-slate-900 text-white">🩺 All Doctors</option>
+                                        <option value="all_staff" className="bg-slate-900 text-white">🧑‍⚕️ All Staff</option>
+                                        <option value="everyone" className="bg-slate-900 text-white">🌐 Everyone (General)</option>
+                                        <option value="individual" className="bg-slate-900 text-white">👤 Individual User</option>
                                     </select>
                                     <Users className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 pointer-events-none" />
                                 </div>
+                                {broadcastForm.recipient_group === "individual" && (
+                                    <Input
+                                        type="number"
+                                        placeholder="Enter User ID (e.g. 4)"
+                                        className="h-12 rounded-2xl border border-violet-500/30 bg-violet-500/5 text-sm font-bold text-white placeholder:text-slate-600 focus:ring-2 focus:ring-violet-500 focus:outline-none"
+                                        value={broadcastForm.recipient_id}
+                                        onChange={(e) => setBroadcastForm({ ...broadcastForm, recipient_id: e.target.value })}
+                                    />
+                                )}
                             </div>
 
                             <div className="space-y-3">
@@ -347,6 +382,6 @@ export default function Notifications() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
